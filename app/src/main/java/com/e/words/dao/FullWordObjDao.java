@@ -28,9 +28,9 @@ public abstract class FullWordObjDao {
                 translate.foreignId = wid;
                 addTranslate(translate);
             }
-            for (Example example : explList) {
+           /* for (Example example : explList) {
                 example.
-            }
+            }*/
         }
     }
 }
