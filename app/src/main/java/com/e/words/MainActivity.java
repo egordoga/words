@@ -47,13 +47,14 @@ public class MainActivity extends AppCompatActivity {
         adapter.setItem(DataTest.getList());
 
         test.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
              //   String s = RestRequest.getWordJson("issue", "1033", "1049");
              //   System.out.println(s);
            //     SoundTrack.playTrack();
-                new TempSoundFile().recordFile();
+           //     new TempSoundFile().recordFile();
+                RestRequest rr = new RestRequest();
+              new RestRequest.SoundTask().execute(RestRequest.getURLSound("look.wav"));
             }
         });
 

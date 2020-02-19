@@ -15,8 +15,7 @@ import static android.media.AudioTrack.MODE_STATIC;
 
 public class SoundTrack {
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void playTrack() {
+    public static void playTrack(byte[] sound) {
         AudioAttributes attributes = new AudioAttributes.Builder()
                 .setLegacyStreamType(AudioManager.STREAM_VOICE_CALL)
                 .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -28,8 +27,8 @@ public class SoundTrack {
                 .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                 .build();
 
-        byte[] sound = RestRequest.getSoundBytes("look.wav");
-      //  byte[] sound = TempSoundFile.getBytesFromString();
+      //  byte[] sound = RestRequest.getSoundBytes("look.wav");
+      //  byte[] sound = TempSoundFile.getBytesFromFile();
 
         System.out.println("GGGGG " + sound.length);
 

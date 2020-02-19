@@ -3,6 +3,8 @@ package com.e.words.abby.rest;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.e.words.sound.SoundTrack;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,8 +17,9 @@ import okhttp3.Response;
 public class RestRequest {
     private static final String URL_BASE = "https://developers.lingvolive.com/api/v1/";
   //  private static OkHttpClient client = new OkHttpClient.Builder().build();
+    public static byte[] arrBytes;
 
-    private static URL getURLSound(String fileName) {
+    public static URL getURLSound(String fileName) {
         Uri uri  = Uri.parse(URL_BASE + "sound").buildUpon()
                 .appendQueryParameter("dictionaryName", "LingvoUniversal%20(En-Ru)")
                 .appendQueryParameter("fileName", fileName)
@@ -77,7 +80,11 @@ public class RestRequest {
         return null;
     }
 
-    public static byte[] getSoundBytes(String fileName) {
+    public void playSound() {
+        new SoundTask().execute(getURLSound("issue.wav"));
+    }
+
+    public /*static*/ byte[] getSoundBytes(String fileName) {
         try {
             return new SoundTask().execute(getURLSound(fileName)).get();
         } catch (ExecutionException | InterruptedException e) {
@@ -98,7 +105,7 @@ public class RestRequest {
         }
     }
 
-    private static class SoundTask extends AsyncTask<URL, Void, byte[]> {
+    public static class SoundTask extends AsyncTask<URL, Void, byte[]> {
         @Override
         protected byte[] doInBackground(URL... urls) {
             try {
@@ -107,6 +114,13 @@ public class RestRequest {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(byte[] bytes) {
+
+            SoundTrack.playTrack(bytes);
+            System.out.println("AAA  " + bytes.length);
         }
     }
 
