@@ -25,7 +25,7 @@ public class JsonConvert {
         try {
             JsonObj jsonObj = mapper.readValue(json, JsonObj.class);
             wordDto = convertBody(jsonObj.bodies);
-            wordDto.word = jsonObj.title;
+            wordDto.word.str = jsonObj.title;
             System.out.println(wordDto);
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class JsonConvert {
                     s = convertParagraph(markup).trim();
                     if (!s.equals("") && !(s.startsWith("/") && s.endsWith("/"))) {
                         twe = new TranslWithExDto();
-                        twe.transl = s;
+                        twe.transl.str = s;
                         twes.add(twe);
                     }
                     sb.append("TTTRRR").append(s).append("!*!");
@@ -114,8 +114,8 @@ public class JsonConvert {
                         switch (markup.node) {
                             case EXAMPLE:
                                 if (markup.markupList.size()  == 2) {
-                                    exDto.en = markup.markupList.get(0).text;
-                                    exDto.ru = markup.markupList.get(1).text;
+                                    exDto.en.str = markup.markupList.get(0).text;
+                                    exDto.ru.str = markup.markupList.get(1).text;
                                 }
                                 //    exDtos.add(exDto);
                                 s = convertSimpleParagraph(markup);
@@ -169,19 +169,19 @@ public class JsonConvert {
             if (s.startsWith("TTTRRR")) {
                 s = s.substring(6).trim();
                 if (s.startsWith("/") && s.endsWith("/")) {
-                    twe.transl = "";
+                    twe.transl.str = "";
                    // continue;
                 } else {
                     list.add(twe);
                     twe = new TranslWithExDto();
-                    twe.transl = s;
+                    twe.transl.str = s;
                 }
             } else if (s.startsWith("EEEXXX")) {
                 s = s.substring(6);
                 ExampleDto exDto = new ExampleDto();
                 String[] exs = s.split("—");
-                exDto.en = exs[0];
-                exDto.ru = exs[1];
+                exDto.en.str = exs[0];
+                exDto.ru.str = exs[1];
                 twe.exs.add(exDto);
             }
 

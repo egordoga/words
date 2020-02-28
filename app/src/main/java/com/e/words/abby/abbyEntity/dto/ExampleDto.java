@@ -1,6 +1,6 @@
 package com.e.words.abby.abbyEntity.dto;
 
 public class ExampleDto {
-    public String ru;
-    public String en;
+    public RuString ru = new RuString();
+    public EnString en = new EnString();
 }
