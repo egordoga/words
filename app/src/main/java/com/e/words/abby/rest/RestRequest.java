@@ -2,12 +2,18 @@ package com.e.words.abby.rest;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.e.words.sound.SoundTrack;
+import com.e.words.temp.TestTTS;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 
 import okhttp3.OkHttpClient;
@@ -21,7 +27,7 @@ public class RestRequest {
 
     public static URL getURLSound(String fileName) {
         Uri uri  = Uri.parse(URL_BASE + "sound").buildUpon()
-                .appendQueryParameter("dictionaryName", "LingvoUniversal%20(En-Ru)")
+                .appendQueryParameter("dictionaryName", "LingvoUniversal (En-Ru)")
                 .appendQueryParameter("fileName", fileName)
                 .build();
         URL url = null;
@@ -60,7 +66,7 @@ public class RestRequest {
         return response.body() != null ? response.body().string() : null;
     }
 
-    private static byte[] getSoundResult(/*OkHttpClient client, */URL url) throws IOException {
+    private static String getSoundResult(/*OkHttpClient client, */URL url) throws IOException {
         OkHttpClient client = new OkHttpClient.Builder().build();
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Bearer  " + AuthToken.getInstance())
@@ -68,7 +74,7 @@ public class RestRequest {
                 .build();
         Response response = client.newCall(request).execute();
 
-        return response.body() != null ? response.body().bytes() : null;
+        return response.body() != null ? response.body().string() : null;
     }
 
     public static String getWordJson(String word, String langFrom, String langTo) {
@@ -80,18 +86,27 @@ public class RestRequest {
         return null;
     }
 
-    public void playSound() {
-        new SoundTask().execute(getURLSound("issue.wav"));
-    }
-
-    public /*static*/ byte[] getSoundBytes(String fileName) {
+    public static String getSoundString(String filename) {
         try {
-            return new SoundTask().execute(getURLSound(fileName)).get();
+            return new SoundTask().execute(getURLSound(filename)).get();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
+
+//    public void playSound() {
+//        new SoundTask().execute(getURLSound("issue.wav"));
+//    }
+//
+//    public /*static*/ byte[] getSoundBytes(String fileName) {
+//        try {
+//            return new SoundTask().execute(getURLSound(fileName)).get();
+//        } catch (ExecutionException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     private static class WordTask extends AsyncTask<URL, Void, String> {
         @Override
@@ -105,9 +120,9 @@ public class RestRequest {
         }
     }
 
-    public static class SoundTask extends AsyncTask<URL, Void, byte[]> {
+    public static class SoundTask extends AsyncTask<URL, Void, String> {
         @Override
-        protected byte[] doInBackground(URL... urls) {
+        protected String doInBackground(URL... urls) {
             try {
                 return getSoundResult(urls[0]);
             } catch (IOException e) {
@@ -116,11 +131,18 @@ public class RestRequest {
             return null;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
-        protected void onPostExecute(byte[] bytes) {
+        protected void onPostExecute(String str) {
 
-            SoundTrack.playTrack(bytes);
-            System.out.println("AAA  " + bytes.length);
+
+
+//            SoundTrack.playTrack(bytes);
+           System.out.println("SIZE   " + str.length());
+            System.out.println(str);
+            str = str.substring(1, str.length() - 1);
+            System.out.println(Arrays.toString(Base64.getDecoder().decode(str)));
+         //   new TestTTS().saveSoundFile();
         }
     }
 

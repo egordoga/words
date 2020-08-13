@@ -9,10 +9,10 @@ import com.e.words.abby.abbyEntity.dto.ExampleDto;
 import com.e.words.abby.abbyEntity.dto.TranslWithExDto;
 import com.e.words.abby.abbyEntity.dto.WordDto;
 import com.e.words.entity.ForeignWordWithTranslate;
-import com.e.words.entity.entutyNew.Example;
-import com.e.words.entity.entutyNew.Transcription;
-import com.e.words.entity.entutyNew.Translation;
-import com.e.words.entity.entutyNew.Word;
+import com.e.words.entity.entityNew.Example;
+import com.e.words.entity.entityNew.Transcription;
+import com.e.words.entity.entityNew.Translation;
+import com.e.words.entity.entityNew.Word;
 
 import java.util.List;
 

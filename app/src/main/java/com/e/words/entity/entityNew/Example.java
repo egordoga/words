@@ -1,4 +1,4 @@
-package com.e.words.entity.entutyNew;
+package com.e.words.entity.entityNew;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
