@@ -116,6 +116,20 @@ public class TestTTS {
             fos.write(str.getBytes()/*Base64.getDecoder().decode(str)*/);
             fos.flush();
             fos.close();
+            System.out.println("FILE SAVED");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readTestFile(Context ctx) {
+        FileInputStream fin = null;
+        try {
+            fin = ctx.openFileInput("testFile");
+            byte[] bytes = new byte[fin.available()];
+            fin.read(bytes);
+            String text = new String (bytes);
+            System.out.println(text);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -93,8 +93,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
                 testTTS.saveSoundFile("issue.wav", s, ctx);*/
 
-          //    testTTS.testSaveFile(ctx);
-                testTTS.playSound();
+            //  testTTS.testSaveFile(ctx);
+                testTTS.readTestFile(ctx);
+           //     testTTS.playSound();
 
 //                AudioAttributes attributes = new AudioAttributes.Builder()
 //                        .setUsage(AudioAttributes.USAGE_GAME)
