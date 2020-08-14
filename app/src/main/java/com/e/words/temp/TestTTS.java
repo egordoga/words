@@ -62,33 +62,53 @@ public class TestTTS {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void playSound(/*Context ctx*/) {
-//        AudioAttributes attributes = new AudioAttributes.Builder()
-//                .setUsage(AudioAttributes.USAGE_GAME)
-//                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-//                .build();
-//        SoundPool sSoundPool = new SoundPool.Builder()
-//                .setAudioAttributes(attributes)
-//                .build();
-//        int id = sSoundPool.load("issue.wav", 1);
-//        sSoundPool.play(id, 1, 1, 0, 0, 1);
-//        sSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-//            @Override
-//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-//                ctx.loa
-//            }
-//        });
+    public void playSound(Context ctx) {
+        AudioAttributes attributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        SoundPool sSoundPool = new SoundPool.Builder()
+                .setAudioAttributes(attributes)
+                .build();
+   //     int id = sSoundPool.load("issue.wav", 1);
+        int id1 = sSoundPool.load(ctx, R.raw.sound11, 1);
 
-        MediaPlayer mp=new MediaPlayer();
-        try{
-            FileInputStream fis = new FileInputStream(new File("issue.wav"));
-            FileDescriptor fd = fis.getFD();
-            mp.setDataSource(fd);//Write your location here
-            mp.prepare();
-            mp.start();
-            System.out.println("OOO");
+        sSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                sSoundPool.play(id1, 1, 1, 0, 0, 1);
+            }
+        });
 
-        }catch(Exception e){e.printStackTrace();}
+//        FileInputStream fin = null;
+//        try {
+//            fin = ctx.openFileInput("issue.wav");
+//            byte[] bytes = new byte[fin.available()];
+//            fin.read(bytes);
+//            String text = new String (bytes);
+//            System.out.println(text);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        MediaPlayer mp=new MediaPlayer();
+//        try{
+////            FileInputStream fis = new FileInputStream(new File("issue.wav"));
+//            FileDescriptor fd = fin.getFD();
+//            mp.setDataSource(fd);//Write your location here
+//            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                @Override
+//                public void onPrepared(MediaPlayer mp) {
+//                    mp.start();
+//                }
+//            });
+//
+//            //    mp.prepare();
+//          //  mp.start();
+//            System.out.println("OOO");
+//
+//        }catch(Exception e){e.printStackTrace();}
 
     }
 
@@ -125,7 +145,7 @@ public class TestTTS {
     public void readTestFile(Context ctx) {
         FileInputStream fin = null;
         try {
-            fin = ctx.openFileInput("testFile");
+            fin = ctx.openFileInput("issue.wav");
             byte[] bytes = new byte[fin.available()];
             fin.read(bytes);
             String text = new String (bytes);
