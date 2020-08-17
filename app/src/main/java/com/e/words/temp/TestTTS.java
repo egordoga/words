@@ -63,52 +63,60 @@ public class TestTTS {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void playSound(Context ctx) {
-        AudioAttributes attributes = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build();
-        SoundPool sSoundPool = new SoundPool.Builder()
-                .setAudioAttributes(attributes)
-                .build();
-   //     int id = sSoundPool.load("issue.wav", 1);
-        int id1 = sSoundPool.load(ctx, R.raw.sound11, 1);
-
-        sSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                sSoundPool.play(id1, 1, 1, 0, 0, 1);
-            }
-        });
-
-//        FileInputStream fin = null;
-//        try {
-//            fin = ctx.openFileInput("issue.wav");
-//            byte[] bytes = new byte[fin.available()];
-//            fin.read(bytes);
-//            String text = new String (bytes);
-//            System.out.println(text);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+//        AudioAttributes attributes = new AudioAttributes.Builder()
+//                .setUsage(AudioAttributes.USAGE_GAME)
+//                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+//                .build();
+//        SoundPool sSoundPool = new SoundPool.Builder()
+//                .setAudioAttributes(attributes)
+//                .build();
 //
-//        MediaPlayer mp=new MediaPlayer();
-//        try{
-////            FileInputStream fis = new FileInputStream(new File("issue.wav"));
-//            FileDescriptor fd = fin.getFD();
-//            mp.setDataSource(fd);//Write your location here
-//            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//        File dir = ctx.getFilesDir();
+//        File file = new File(dir, "testFile");
+//        if (file.exists()) {
+//            System.out.println("FILE PRESENT");
+//        } else {
+//            System.out.println("FILE NOT FIND");
+//        }
+//        int id = sSoundPool.load(file.getPath(), 1);
+//        //int id1 = sSoundPool.load(ctx, R.raw.sound11, 1);
+//
+//        sSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+//            @Override
+//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+//                sSoundPool.play(id, 1, 1, 0, 0, 1);
+//            }
+//        });
+
+        FileInputStream fin = null;
+        try {
+            fin = ctx.openFileInput("testFile");
+            byte[] bytes = new byte[fin.available()];
+            fin.read(bytes);
+            String text = new String (bytes);
+         //   System.out.println(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        MediaPlayer mp=new MediaPlayer();
+        try{
+//            FileInputStream fis = new FileInputStream(new File("issue.wav"));
+            FileDescriptor fd = fin.getFD();
+            mp.setDataSource(fd);//Write your location here
+         //   mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 //            mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 //                @Override
 //                public void onPrepared(MediaPlayer mp) {
 //                    mp.start();
 //                }
 //            });
-//
-//            //    mp.prepare();
-//          //  mp.start();
-//            System.out.println("OOO");
-//
-//        }catch(Exception e){e.printStackTrace();}
+
+                mp.prepare();
+            mp.start();
+            System.out.println("OOO");
+
+        }catch(Exception e){e.printStackTrace();}
 
     }
 
@@ -128,12 +136,13 @@ public class TestTTS {
         }
     }
 
-    public void testSaveFile(Context ctx) {
-        String str = "FFDDFFDFDFDFDFFFD";
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void testSaveFile(Context ctx, String str) {
+        //String str = "FFDDFFDFDFDFDFFFD";
         FileOutputStream fos = null;
         try {
             fos = ctx.openFileOutput("testFile", MODE_PRIVATE);
-            fos.write(str.getBytes()/*Base64.getDecoder().decode(str)*/);
+            fos.write(/*str.getBytes() */   Base64.getDecoder().decode(str));
             fos.flush();
             fos.close();
             System.out.println("FILE SAVED");

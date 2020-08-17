@@ -33,6 +33,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
@@ -84,16 +86,19 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
            //     SoundTrack.playTrack();
            //     new TempSoundFile().recordFile();
 //                RestRequest rr = new RestRequest();
-              /*  String s = "NONE";
-                s =  RestRequest.getSoundString("issue.wav");
-                System.out.println(s);
-                System.out.println("AAA " +s.charAt(22) + "  " + s.length());
-                s = s.substring(1, s.length() - 1);
+//                String s = "NONE";
+//                s =  RestRequest.getSoundString("issue.wav");
+//                System.out.println(s);
+//                System.out.println("AAA " +s.charAt(22) + "  " + s.length());
+//                s = s.substring(1, s.length() - 1);
+//
+//                byte[] s1 = Base64.getDecoder().decode(s);
+//                System.out.println(Arrays.toString(s1));
 
 
-                testTTS.saveSoundFile("issue.wav", s, ctx);*/
+           //     testTTS.saveSoundFile("issue.wav", s, ctx);
 
-            //  testTTS.testSaveFile(ctx);
+           //   testTTS.testSaveFile(ctx, s);
               //  testTTS.readTestFile(ctx);
                 testTTS.playSound(ctx);
 
