@@ -79,6 +79,9 @@ public class JsonConvertNew {
                     case CARD_REF:
                         return null;
                     case TEXT:
+                        if (isExample) {
+                            sb.append("   ");
+                        }
                         sb.append(markup.text);
                         if (!markup.isItalics && !markup.text.equals(", ") && !markup.text.equals("; ") && !markup.isOptional) {
                             s.append(markup.text);
@@ -223,6 +226,7 @@ public class JsonConvertNew {
             wordObj.transcriptions.add(new TranscriptionNew(trnscrs.get(i), snds.get(i)));
         }
         //wordDto.twes = twes;
+        wordObj.article = sb.toString();
         return sb.toString();
     }
 

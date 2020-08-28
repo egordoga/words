@@ -61,7 +61,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
         notifyDataSetChanged();
     }
 
-    class VocabularyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class VocabularyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvWord;
         TextView tvTranscr;
         TextView tvTransl;

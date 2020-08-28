@@ -1,5 +1,6 @@
 package com.e.words;
 
+import com.e.words.abby.abbyEntity.dto.StrWithLocaleDto;
 import com.e.words.entity.ForeignWord;
 import com.e.words.entity.ForeignWordWithTranslate;
 import com.e.words.entity.Translate;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class DataTest {
 
@@ -87,6 +89,22 @@ public class DataTest {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jsonMinicard, Minicard.class);
     }
+
+     public static List<StrWithLocaleDto> sunriseTtsList() {
+         List<StrWithLocaleDto> list = new ArrayList<>();
+         Locale enLoc = new Locale("en");
+         Locale ruLoc = new Locale("ru");
+         String w = "sunrise";
+         String s = "восход солнца; утренняя заря";
+         String p = "scarlet shafts of sunrise";
+         String s1 = "утро, начало дня";
+         list.add(new StrWithLocaleDto(w, enLoc));
+         list.add(new StrWithLocaleDto(w, enLoc));
+         list.add(new StrWithLocaleDto(s, ruLoc));
+         list.add(new StrWithLocaleDto(p, enLoc));
+         list.add(new StrWithLocaleDto(s1, ruLoc));
+         return list;
+     }
 
 
 }

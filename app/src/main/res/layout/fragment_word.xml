@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.WordFragment"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl_word"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_word"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.viewpager.widget.ViewPager>
+
+</LinearLayout>
+
+
+
+<!--<androidx.coordinatorlayout.widget.CoordinatorLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark">-->
+
+<!--&lt;!&ndash;        <Toolbar&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/toolbar"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="?attr/actionBarSize"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:background="@color/colorAccent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_scrollFlags="scroll|enterAlways" />&ndash;&gt;-->
+<!--        &lt;!&ndash;            android:background="?attr/colorPrimary"&ndash;&gt;-->
+
+
+<!--        <com.google.android.material.tabs.TabLayout-->
+<!--            android:id="@+id/tl_word"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_width="match_parent" />-->
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+<!--        <androidx.viewpager.widget.ViewPager-->
+<!--            android:id="@+id/vp_word"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"/>-->
+
+<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->

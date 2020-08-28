@@ -138,10 +138,10 @@ public class RestRequest {
 
 
 //            SoundTrack.playTrack(bytes);
-           System.out.println("SIZE   " + str.length());
-            System.out.println(str);
-            str = str.substring(1, str.length() - 1);
-            System.out.println(Arrays.toString(Base64.getDecoder().decode(str)));
+//           System.out.println("SIZE   " + str.length());
+//            System.out.println(str);
+//            str = str.substring(1, str.length() - 1);
+//            System.out.println(Arrays.toString(Base64.getDecoder().decode(str)));
          //   new TestTTS().saveSoundFile();
         }
     }
