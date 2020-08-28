@@ -12,23 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
+import com.e.words.abby.abbyEntity.dto.TranslAndEx;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.fragment.FullWordFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder>{
 
     private final FullWordFragment fragment;
-    private List<WordObj> wordObjList;
+    private WordObj wordObj;
+    private List<TranslAndEx> taeList;
     private LayoutInflater inflater;
 
-    public WordAdapter(FullWordFragment fragment) {
+    public WordAdapter(FullWordFragment fragment, WordObj wordObj) {
         this.fragment = fragment;
         this.inflater = (LayoutInflater) Objects.requireNonNull(fragment.getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.wordObjList = new ArrayList<>();
+        this.taeList = wordObj.translations;
     }
 
     @NonNull
@@ -40,23 +41,25 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
-
+        holder.tvTranslWe.setText(taeList.get(position).transl);
+        ExampleAdapter adapter = new ExampleAdapter(fragment, taeList.get(position).examples);
+        holder.rvExample.setAdapter(adapter);
     }
 
     @Override
     public int getItemCount() {
-        return wordObjList.size();
+        return taeList.size();
     }
 
     static class WordViewHolder extends RecyclerView.ViewHolder {
-        TextView tvWordWe;
+        TextView tvTranslWe;
+        CheckBox cbTranslWe;
         RecyclerView rvExample;
-        CheckBox cbWordWe;
         @SuppressLint("ResourceType")
         public WordViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvWordWe = itemView.findViewById(R.id.tv_word_we);
-            cbWordWe = itemView.findViewById(R.id.cb_word_we);
+            tvTranslWe = itemView.findViewById(R.id.tv_transl_we);
+            cbTranslWe = itemView.findViewById(R.id.cb_transl_we);
             rvExample = itemView.findViewById(R.layout.example_item_view);
         }
     }

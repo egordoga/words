@@ -20,13 +20,13 @@ import java.util.Objects;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder>{
     private FullWordFragment fragment;
-    private List<WordObj> wordObjList;
+    private List<String> examples;
     private LayoutInflater inflater;
 
-    public ExampleAdapter(FullWordFragment fragment, List<WordObj> wordObjList) {
+    public ExampleAdapter(FullWordFragment fragment, List<String> examples/*WordObj wordObj, int position*/) {
         this.fragment = fragment;
         this.inflater = (LayoutInflater) Objects.requireNonNull(fragment.getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.wordObjList = wordObjList;
+        this.examples = examples;
     }
 
     @NonNull
@@ -38,12 +38,12 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     @Override
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
-
+        holder.tvExample.setText(examples.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return wordObjList.;
+        return examples.size();
     }
 
     static class ExampleViewHolder extends RecyclerView.ViewHolder {
