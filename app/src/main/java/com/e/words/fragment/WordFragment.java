@@ -73,11 +73,11 @@ public class WordFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_word, container, false);
         mFragmentAdapter = new ArticleFragmentPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mViewPager = (ViewPager) view.findViewById(R.id.vp_word);
+        mViewPager = view.findViewById(R.id.vp_word);
         mViewPager.setAdapter(mFragmentAdapter);
 
         // link the tabLayout and the viewpager together
-        mTabLayout = (TabLayout) view.findViewById(R.id.tl_word);
+        mTabLayout = view.findViewById(R.id.tl_word);
         mTabLayout.setupWithViewPager(mViewPager);
         return view;
     }

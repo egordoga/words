@@ -31,6 +31,7 @@ public class JsonConvertNew {
         WordDtoNew wordDto = null;
         try {
             JsonObj jsonObj = mapper.readValue(json, JsonObj.class);
+            wordObj.word = jsonObj.title;
             String w = convertBody(jsonObj.bodies);
         //    wordDto.word.str = jsonObj.title;
             System.out.println(w);

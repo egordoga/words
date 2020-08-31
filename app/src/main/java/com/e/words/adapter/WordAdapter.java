@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
@@ -25,6 +27,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     private WordObj wordObj;
     private List<TranslAndEx> taeList;
     private LayoutInflater inflater;
+    private RecyclerView.RecycledViewPool pool = new RecyclerView.RecycledViewPool();
 
     public WordAdapter(FullWordFragment fragment, WordObj wordObj) {
         this.fragment = fragment;
@@ -42,8 +45,25 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
         holder.tvTranslWe.setText(taeList.get(position).transl);
+        holder.ctvTransl.setText(taeList.get(position).transl);
+        holder.ctvTransl.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("WrongConstant")
+            @Override
+            public void onClick(View v) {
+                boolean value = holder.ctvTransl.isChecked();
+                if (value) {
+                    holder.ctvTransl.setCheckMarkDrawable(R.drawable.checkbox_full);
+                    holder.ctvTransl.setVisibility(1);
+                }
+            }
+        });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                holder.rvExample.getContext(), LinearLayoutManager.VERTICAL, false);
+        layoutManager.setInitialPrefetchItemCount(taeList.get(position).examples.size());
         ExampleAdapter adapter = new ExampleAdapter(fragment, taeList.get(position).examples);
+        holder.rvExample.setLayoutManager(layoutManager);
         holder.rvExample.setAdapter(adapter);
+        holder.rvExample.setRecycledViewPool(pool);
     }
 
     @Override
@@ -51,16 +71,19 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
         return taeList.size();
     }
 
-    static class WordViewHolder extends RecyclerView.ViewHolder {
+     static class WordViewHolder extends RecyclerView.ViewHolder {
+        CheckedTextView ctvTransl;
         TextView tvTranslWe;
         CheckBox cbTranslWe;
         RecyclerView rvExample;
-        @SuppressLint("ResourceType")
+     //   @SuppressLint("ResourceType")
         public WordViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTranslWe = itemView.findViewById(R.id.tv_transl_we);
             cbTranslWe = itemView.findViewById(R.id.cb_transl_we);
-            rvExample = itemView.findViewById(R.layout.example_item_view);
+            rvExample = itemView.findViewById(R.id.rv_example);
+            ctvTransl = itemView.findViewById(R.id.ctv_transl);
+          //  rvExample.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
         }
     }
 }

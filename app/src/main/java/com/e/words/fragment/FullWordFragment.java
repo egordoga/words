@@ -3,12 +3,20 @@ package com.e.words.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 import com.e.words.R;
+import com.e.words.abby.JsonConvertNew;
+import com.e.words.abby.JsonData;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+import com.e.words.adapter.WordAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +24,15 @@ import com.e.words.R;
  * create an instance of this fragment.
  */
 public class FullWordFragment extends Fragment {
+
+    private TextView tvWordFw;
+    private TextView tvTranscrFw;
+    private RecyclerView rvFullWord;
+    private RecyclerView rvExample;
+    private WordAdapter adapter;
+    private WordObj wordObj;
+    JsonConvertNew jc;
+    private CheckedTextView ctvTransl;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,12 +72,27 @@ public class FullWordFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        jc = new JsonConvertNew();
+        jc.jsonToObj(JsonData.LOOK);
+        wordObj = jc.wordObj;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_full_word, container, false);
+        View view = inflater.inflate(R.layout.fragment_full_word, container, false);
+        ctvTransl = view.findViewById(R.id.ctv_transl);
+        tvWordFw = view.findViewById(R.id.tv_word_fw);
+        tvTranscrFw = view.findViewById(R.id.tv_transcr_fw);
+        tvWordFw.setText(wordObj.word);
+        tvTranscrFw.setText(wordObj.transcriptions.get(0).transcript);
+        rvFullWord = view.findViewById(R.id.rv_fw);
+        rvFullWord.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new WordAdapter(this, wordObj);
+        rvFullWord.setAdapter(adapter);
+     //   rvExample = view.findViewById(R.id.rv_example);
+     //   rvExample.setLayoutManager(new LinearLayoutManager(getContext()));
+        return view;
     }
 }
