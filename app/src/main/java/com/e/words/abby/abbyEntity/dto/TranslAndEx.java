@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TranslAndEx {
-    public String word;
+  //  public String word;
     public String transl;
     public List<String> examples = new ArrayList<>();
+
+    public Boolean isChecked = false;
 
     @NonNull
     @Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,11 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <CheckedTextView
-            android:id="@+id/ctv_transl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tv_transl_we"
@@ -32,6 +28,23 @@
             android:layout_weight="0" />
 
     </LinearLayout>
+
+    <CheckedTextView
+        android:id="@+id/ctv_transl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+
+
+        android:checked = "false"
+        android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"/>
+<!--    android:textAppearance="?android:textAppearanceLarge"-->
+<!--    tools:text="Call Mom"-->
+<!--        android:drawableEnd="@null"/>-->
+<!--        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"-->
+<!--        android:drawableRight="@null"-->
+<!--        />-->
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_example"

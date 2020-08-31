@@ -16,7 +16,9 @@ public class WordObj {
     public String article;
     public List<TranscriptionNew> transcriptions = new ArrayList<>();
     public List<TranslAndEx> translations = new ArrayList<>();
-//    public Set<TranslAndEx> translations = new HashSet<>();
+
+
+
 
     @NonNull
     @Override

@@ -2,6 +2,7 @@ package com.e.words.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     private List<TranslAndEx> taeList;
     private LayoutInflater inflater;
     private RecyclerView.RecycledViewPool pool = new RecyclerView.RecycledViewPool();
+   // private SparseBooleanArray itemStateArray= new SparseBooleanArray();
 
     public WordAdapter(FullWordFragment fragment, WordObj wordObj) {
         this.fragment = fragment;
@@ -45,15 +47,22 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
         holder.tvTranslWe.setText(taeList.get(position).transl);
-        holder.ctvTransl.setText(taeList.get(position).transl);
-        holder.ctvTransl.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("WrongConstant")
+        holder.ctvTranslWe.setText(taeList.get(position).transl);
+       // holder.ctvTranslWe.setChecked(itemStateArray.get(position));
+        holder.ctvTranslWe.setChecked(taeList.get(position).isChecked);
+        holder.ctvTranslWe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean value = holder.ctvTransl.isChecked();
-                if (value) {
-                    holder.ctvTransl.setCheckMarkDrawable(R.drawable.checkbox_full);
-                    holder.ctvTransl.setVisibility(1);
+             //   if (!itemStateArray.get(position, false)) {
+                if (!taeList.get(position).isChecked) {
+                    holder.ctvTranslWe.setChecked(true);
+                 //   itemStateArray.put(position, true);
+                    taeList.get(position).isChecked = true;
+                }
+                else  {
+                    holder.ctvTranslWe.setChecked(false);
+                //    itemStateArray.put(position, false);
+                    taeList.get(position).isChecked = false;
                 }
             }
         });
@@ -71,19 +80,35 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
         return taeList.size();
     }
 
-     static class WordViewHolder extends RecyclerView.ViewHolder {
-        CheckedTextView ctvTransl;
+    void loadItems(List<TranslAndEx> items) {
+        this.taeList = items;
+        notifyDataSetChanged();
+    }
+
+      class WordViewHolder extends RecyclerView.ViewHolder /*implements View.OnClickListener*/{
+        CheckedTextView ctvTranslWe;
         TextView tvTranslWe;
         CheckBox cbTranslWe;
         RecyclerView rvExample;
-     //   @SuppressLint("ResourceType")
         public WordViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTranslWe = itemView.findViewById(R.id.tv_transl_we);
             cbTranslWe = itemView.findViewById(R.id.cb_transl_we);
             rvExample = itemView.findViewById(R.id.rv_example);
-            ctvTransl = itemView.findViewById(R.id.ctv_transl);
-          //  rvExample.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            ctvTranslWe = itemView.findViewById(R.id.ctv_transl);
         }
-    }
+
+//         @Override
+//         public void onClick(View v) {
+//             int adapterPosition = getAdapterPosition();
+//             if (!itemStateArray.get(adapterPosition, false)) {
+//                 ctvTransl.setChecked(true);
+//                 itemStateArray.put(adapterPosition, true);
+//             }
+//             else  {
+//                 ctvTransl.setChecked(false);
+//                 itemStateArray.put(adapterPosition, false);
+//             }
+//         }
+     }
 }
