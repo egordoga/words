@@ -4,29 +4,25 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
+import android.widget.CheckedTextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
 import com.e.words.fragment.FullWordFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder>{
-    private FullWordFragment fragment;
-    private List<String> examples;
+public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
+    private List<ExampleDto> exampleDtos;
     private LayoutInflater inflater;
 
-    public ExampleAdapter(FullWordFragment fragment, List<String> examples/*WordObj wordObj, int position*/) {
-        this.fragment = fragment;
+    public ExampleAdapter(FullWordFragment fragment, List<ExampleDto> exampleDtos) {
         this.inflater = (LayoutInflater) Objects.requireNonNull(fragment.getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.examples = examples;
+        this.exampleDtos = exampleDtos;
     }
 
     @NonNull
@@ -38,21 +34,30 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     @Override
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
-        holder.tvExample.setText(examples.get(position));
+        holder.ctvExample.setText(exampleDtos.get(position).example /*+ "   " + examples.get(position).index*/);
+        holder.ctvExample.setChecked(exampleDtos.get(position).isChecked);
+        holder.ctvExample.setOnClickListener(v -> {
+            if (!exampleDtos.get(position).isChecked) {
+                holder.ctvExample.setChecked(true);
+                exampleDtos.get(position).isChecked = true;
+            } else {
+                holder.ctvExample.setChecked(false);
+                exampleDtos.get(position).isChecked = false;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return examples.size();
+        return exampleDtos.size();
     }
 
     static class ExampleViewHolder extends RecyclerView.ViewHolder {
-        TextView tvExample;
-        CheckBox cbExample;
+        CheckedTextView ctvExample;
+
         public ExampleViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvExample = itemView.findViewById(R.id.tv_example);
-            cbExample = itemView.findViewById(R.id.cb_example);
+            ctvExample = itemView.findViewById(R.id.ctv_example);
         }
     }
 }

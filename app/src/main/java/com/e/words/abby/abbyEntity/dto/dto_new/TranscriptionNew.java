@@ -2,7 +2,9 @@ package com.e.words.abby.abbyEntity.dto.dto_new;
 
 import androidx.annotation.NonNull;
 
-public class TranscriptionNew {
+import java.io.Serializable;
+
+public class TranscriptionNew implements Serializable {
     public String transcript;
     public String soundFile;
 

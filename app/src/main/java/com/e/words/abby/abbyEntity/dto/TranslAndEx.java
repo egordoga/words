@@ -1,25 +1,42 @@
 package com.e.words.abby.abbyEntity.dto;
 
-import androidx.annotation.NonNull;
+import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class TranslAndEx {
-  //  public String word;
+public class TranslAndEx implements Serializable {
     public String transl;
-    public List<String> examples = new ArrayList<>();
+    public List<ExampleDto> exampleDtos = new ArrayList<>();
 
     public Boolean isChecked = false;
+    public int index;
 
-    @NonNull
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("TR  ").append(transl).append("\n");
-        for (String example : examples) {
-            sb.append("EX   ").append(example).append("\n");
+    public TranslAndEx() {
+    }
+
+    public TranslAndEx(String transl, int index, List<ExampleDto> exampleDtos, Boolean isChecked) {
+        this.transl = transl;
+        this.index = index;
+        this.exampleDtos = exampleDtos;
+        this.isChecked = isChecked;
+    }
+
+    public TranslAndEx(String transl, List<ExampleDto> exampleDtos, int index) {
+        this.transl = transl;
+        this.exampleDtos = exampleDtos;
+        this.index = index;
+    }
+
+    public List<ExampleDto> getCheckedExamples() {
+        List<ExampleDto> checkedList = new LinkedList<>();
+        for (ExampleDto exampleDto : exampleDtos) {
+            if (exampleDto.isChecked) {
+                checkedList.add(new ExampleDto(exampleDto.example, exampleDto.index, false));
+            }
         }
-        return sb.toString();
+        return checkedList;
     }
 }

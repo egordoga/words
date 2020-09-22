@@ -2,10 +2,7 @@ package com.e.words.temp;
 
 import android.content.Context;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.net.rtp.AudioStream;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 //
@@ -14,25 +11,13 @@ import android.speech.tts.TextToSpeech;
 
 import androidx.annotation.RequiresApi;
 
-import com.e.words.R;
-import com.e.words.abby.JsonData;
-import com.e.words.abby.abbyEntity.dto.StrWithLocaleDto;
-import com.e.words.abby.abbyEntity.dto.WordDto;
+import com.e.words.abby.depricated.dto.StrWithLocaleDto;
 import com.e.words.abby.rest.RestRequest;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.SequenceInputStream;
-import java.net.SocketException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;

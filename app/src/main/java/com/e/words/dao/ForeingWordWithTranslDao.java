@@ -3,11 +3,7 @@ package com.e.words.dao;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Transaction;
 
-import com.e.words.abby.abbyEntity.dto.ExampleDto;
-import com.e.words.abby.abbyEntity.dto.TranslWithExDto;
-import com.e.words.abby.abbyEntity.dto.WordDto;
 import com.e.words.entity.ForeignWordWithTranslate;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Transcription;
@@ -25,7 +21,7 @@ public abstract class ForeingWordWithTranslDao {
     public abstract List<ForeignWordWithTranslate> getWordWithTranslate(String word);
 
     @Insert
-    public abstract int issertWord(Word word);
+    public abstract int insertWord(Word word);
 
     @Insert
     public abstract int insertTranslation(Translation translation);
@@ -36,17 +32,17 @@ public abstract class ForeingWordWithTranslDao {
     @Insert
     public abstract void insertExample(Example example);
 
-    @Transaction
-    public void saveWordDto(WordDto wordDto) {
-        int wordId = issertWord(new Word(wordDto.word.str));
-        List<TranslWithExDto> tweList = wordDto.twes;
-        for (TranslWithExDto twe : tweList) {
-            int translId = insertTranslation(new Translation(twe.transl.str, wordId));
-            for (ExampleDto ex : twe.exs) {
-
-            }
-        }
-    }
+//    @Transaction
+//    public void saveWordDto(WordDto wordDto) {
+//        int wordId = insertWord(new Word(wordDto.word.str));
+//        List<TranslWithExDto> tweList = wordDto.twes;
+//        for (TranslWithExDto twe : tweList) {
+//            int translId = insertTranslation(new Translation(twe.transl.str, wordId));
+//            for (ExampleDto ex : twe.exs) {
+//
+//            }
+//        }
+//    }
 
 
 }

@@ -1,6 +1,6 @@
 package com.e.words;
 
-import com.e.words.abby.abbyEntity.dto.StrWithLocaleDto;
+import com.e.words.abby.depricated.dto.StrWithLocaleDto;
 import com.e.words.entity.ForeignWord;
 import com.e.words.entity.ForeignWordWithTranslate;
 import com.e.words.entity.Translate;

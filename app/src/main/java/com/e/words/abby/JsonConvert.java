@@ -1,8 +1,8 @@
 package com.e.words.abby;
 
-import com.e.words.abby.abbyEntity.dto.ExampleDto;
+import com.e.words.abby.depricated.dto.ExampleDtoOld;
 import com.e.words.abby.abbyEntity.dto.TranslWithExDto;
-import com.e.words.abby.abbyEntity.dto.WordDto;
+import com.e.words.abby.depricated.dto.WordDto;
 import com.e.words.abby.abbyEntity.genereted.Body;
 import com.e.words.abby.abbyEntity.genereted.Item;
 import com.e.words.abby.abbyEntity.genereted.JsonObj;
@@ -66,7 +66,7 @@ public class JsonConvert {
 
     private TranslWithExDto convertListItem(Item item, List<TranslWithExDto> twes, StringBuilder sb) {
         TranslWithExDto twe = null;
-        List<ExampleDto> exs = new ArrayList<ExampleDto>();
+        List<ExampleDtoOld> exs = new ArrayList<ExampleDtoOld>();
         String s = "";
         for (Markup markup : item.markupList) {
             switch (markup.node) {
@@ -102,12 +102,12 @@ public class JsonConvert {
 
 
 
-    private List<ExampleDto> convertExampleItem(List<Item> items, /*List<ExampleDto> exDtos,*/ StringBuilder sb) {
-        List<ExampleDto> exDtos = new ArrayList<ExampleDto>();
-        ExampleDto exDto;
+    private List<ExampleDtoOld> convertExampleItem(List<Item> items, /*List<ExampleDto> exDtos,*/ StringBuilder sb) {
+        List<ExampleDtoOld> exDtos = new ArrayList<ExampleDtoOld>();
+        ExampleDtoOld exDto;
         String s = "";
         for (Item item : items) {
-            exDto = new ExampleDto();
+            exDto = new ExampleDtoOld();
             switch (item.node) {
                 case EXAMPLE_ITEM:
                     for (Markup markup : item.markupList) {
@@ -178,7 +178,7 @@ public class JsonConvert {
                 }
             } else if (s.startsWith("EEEXXX")) {
                 s = s.substring(6);
-                ExampleDto exDto = new ExampleDto();
+                ExampleDtoOld exDto = new ExampleDtoOld();
                 String[] exs = s.split("—");
                 exDto.en.str = exs[0];
                 exDto.ru.str = exs[1];

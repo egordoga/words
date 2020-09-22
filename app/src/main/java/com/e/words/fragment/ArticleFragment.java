@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.e.words.R;
 import com.e.words.abby.JsonConvertNew;
 import com.e.words.abby.JsonData;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,20 +38,11 @@ public class ArticleFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ArticleFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ArticleFragment newInstance(String param1, String param2) {
+
+    public static ArticleFragment newInstance(WordObj wordObj) {
         ArticleFragment fragment = new ArticleFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable("wordObj", wordObj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,12 +51,11 @@ public class ArticleFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            WordObj wordObj = (WordObj) getArguments().getSerializable("wordObj");
+            article = wordObj.article;
         }
-        JsonConvertNew jc = new JsonConvertNew();
-        jc.jsonToObj(JsonData.LOOK);
-        article = jc.wordObj.article;
+//        JsonConvertNew jc = new JsonConvertNew();
+//        jc.jsonToObj(JsonData.LOOK);
     }
 
     @Override

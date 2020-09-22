@@ -1,4 +1,4 @@
-package com.e.words.abby.abbyEntity.dto;
+package com.e.words.abby.depricated.dto;
 
 import java.util.Locale;
 

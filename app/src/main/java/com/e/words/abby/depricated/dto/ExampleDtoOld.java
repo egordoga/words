@@ -1,6 +1,6 @@
-package com.e.words.abby.abbyEntity.dto;
+package com.e.words.abby.depricated.dto;
 
-public class ExampleDto {
+public class ExampleDtoOld {
     public RuString ru = new RuString();
     public EnString en = new EnString();
 }

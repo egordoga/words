@@ -1,5 +1,7 @@
 package com.e.words.abby.abbyEntity.dto;
 
+import com.e.words.abby.depricated.dto.EnString;
+
 import java.util.ArrayList;
 import java.util.List;
 

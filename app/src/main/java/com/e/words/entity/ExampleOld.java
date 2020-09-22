@@ -5,7 +5,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 //@Entity(foreignKeys = @ForeignKey(entity = Translate.class, parentColumns = "id", childColumns = "translateId"))
-public class Example {
+public class ExampleOld {
 
  //   @PrimaryKey(autoGenerate = true)
     public Long id;
@@ -16,7 +16,7 @@ public class Example {
     public Byte[] translateSound;
     public Long translateId;
 
-    public Example(String forein, String translate, Byte[] foreinSound, Byte[] translateSound) {
+    public ExampleOld(String forein, String translate, Byte[] foreinSound, Byte[] translateSound) {
         this.forein = forein;
         this.translate = translate;
         this.foreinSound = foreinSound;

@@ -5,46 +5,53 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.fragment.ArticleFragment;
 import com.e.words.fragment.FullWordFragment;
-import com.e.words.fragment.ShortWordFragment;
 
 public class ArticleFragmentPagerAdapter extends FragmentPagerAdapter {
-    private final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
+    private WordObj wordObj;
+    private WordObj smallWord;
 
 
-    public ArticleFragmentPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+    public ArticleFragmentPagerAdapter(@NonNull FragmentManager fm, int behavior,
+                                       WordObj wordObj, WordObj smallWord) {
         super(fm, behavior);
+
+        this.wordObj = wordObj;
+        this.smallWord = smallWord;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new ArticleFragment();
-            case 1: return new FullWordFragment();
-            case 2: return new ShortWordFragment();
-            default: return null;
+            case 0:
+                return ArticleFragment.newInstance(wordObj);
+            case 1:
+            case 2:
+                return FullWordFragment.newInstance(wordObj, smallWord, position);
+            default:
+                return new ArticleFragment();
         }
     }
 
     @Override
     public int getCount() {
-        return PAGE_COUNT;
+        return 3;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch(position) {
+        switch (position) {
             case 0:
-                return "Fragment 1 title";
+                return "Словарная статья";
 
             case 1:
-                return "Fragment 2 title";
+                return "Полный перевод";
 
             case 2:
-                return "Fragment 3 title";
+                return "Избранный перевод";
 
             default:
                 return null;

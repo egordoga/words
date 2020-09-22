@@ -1,84 +1,86 @@
 package com.e.words.fragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.e.words.R;
+import com.e.words.abby.JsonConvertNew;
+import com.e.words.abby.JsonData;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.ArticleFragmentPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WordFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class WordFragment extends Fragment {
 
-    private ArticleFragmentPagerAdapter mFragmentAdapter;
-    private ViewPager mViewPager;
-    private TabLayout mTabLayout;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private WordObj wordObj;
+    private WordObj smallWord;
 
     public WordFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WordFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WordFragment newInstance(String param1, String param2) {
-        WordFragment fragment = new WordFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        JsonConvertNew jc = new JsonConvertNew();
+        jc.jsonToObj(JsonData.LOOK);
+        wordObj = jc.wordObj;
+        smallWord = new WordObj();
+        smallWord.word = wordObj.word;
+        smallWord.transcriptions = wordObj.transcriptions;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_word, container, false);
-        mFragmentAdapter = new ArticleFragmentPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mViewPager = view.findViewById(R.id.vp_word);
+        ArticleFragmentPagerAdapter mFragmentAdapter = new ArticleFragmentPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
+                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, wordObj, smallWord);
+        ViewPager mViewPager = view.findViewById(R.id.vp_word);
         mViewPager.setAdapter(mFragmentAdapter);
-
-        // link the tabLayout and the viewpager together
-        mTabLayout = view.findViewById(R.id.tl_word);
+        TabLayout mTabLayout = view.findViewById(R.id.tl_word);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+             //   Toast.makeText(getContext(), "Size " + getSmallWord().translations.size(), Toast.LENGTH_LONG).show();
+//                int position = tab.getPosition();
+//                switch (position) {
+//                    case 0:
+//                        replaceFragment(ArticleFragment.newInstance(wordObj));
+//                        break;
+//                    case 1:
+//                    case 2:
+//                        replaceFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ position));
+//                }
+
+                if (tab.getPosition() == 2 || tab.getPosition() == 1) {
+                  //  redrawFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ tab.getPosition()));
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 2 || tab.getPosition() == 1) {
+                   // redrawFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ tab.getPosition()));
+                }
+            }
+        });
         return view;
     }
 }

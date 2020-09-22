@@ -1,20 +1,38 @@
 package com.e.words.entity.entityNew;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(foreignKeys = @ForeignKey(entity = Translation.class, parentColumns = "id", childColumns = "translId",
+        onDelete = CASCADE, onUpdate = CASCADE))
 public class Example {
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
-    public String en;
-    public String ru;
-    public int translId;
+    public long id;
+    public String example;
+    public int index;
+    @ColumnInfo(index = true)
+    public long translId;
+    @Ignore
+    public Boolean isChecked = false;
 
-    public Example(String en, String ru, int translId) {
-        this.en = en;
-        this.ru = ru;
-        this.translId = translId;
+//    public Example(String en, String ru, int translId) {
+//        this.en = en;
+//        this.ru = ru;
+//        this.translId = translId;
+//    }
+
+
+    public Example() {
+    }
+
+    public Example(String example, int index) {
+        this.example = example;
+        this.index = index;
     }
 }
