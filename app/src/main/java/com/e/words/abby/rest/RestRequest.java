@@ -57,24 +57,45 @@ public class RestRequest {
 
     private static String getWordResult(/*OkHttpClient client, */URL url) throws IOException {
         OkHttpClient client = new OkHttpClient.Builder().build();
+
+
+
+        System.out.println("Before WORD RES");
+
+
+
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Bearer  " + AuthToken.getInstance())
                 .url(url)
                 .build();
         Response response = client.newCall(request).execute();
+        int code = response.code();
 
-        return response.body() != null ? response.body().string() : null;
+        System.out.println("WORD CODE" + code);
+
+
+        return code == 200 ? response.body().string() : "" + code;
     }
 
     private static String getSoundResult(/*OkHttpClient client, */URL url) throws IOException {
         OkHttpClient client = new OkHttpClient.Builder().build();
+
+
+        System.out.println("before SOUND RES");
+
+
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Bearer  " + AuthToken.getInstance())
                 .url(url)
                 .build();
         Response response = client.newCall(request).execute();
+        int code = response.code();
 
-        return response.body() != null ? response.body().string() : null;
+
+        System.out.println("sound code " + code);
+
+
+        return code == 200 ? response.body().string() : String.valueOf(code);
     }
 
     public static String getWordJson(String word, String langFrom, String langTo) {

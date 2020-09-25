@@ -109,14 +109,21 @@ public class AddWordFragment extends Fragment {
             }
             if (wordObj == null) {
                 String json = RestRequest.getWordJson(word, Lang.EN.number, Lang.RU.number);
-                JsonConvertNew jc = new JsonConvertNew();
-                wordObj = jc.jsonToObj(json);
-                repo.addWord(wordObj, json, getSounds(jc.sounds));
-                wf = WordFragment.newInstance(wordObj); //TODO method
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, wf)
-                        .commit();
+                if ("404".equals(json)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder
+                            .setTitle("ERROR 404")
+                            .setMessage("Такого слова не найдено в словаре");
+                } else {
+                    JsonConvertNew jc = new JsonConvertNew();
+                    wordObj = jc.jsonToObj(json);
+                    repo.addWord(wordObj, json, getSounds(jc.sounds));
+                    wf = WordFragment.newInstance(wordObj); //TODO method
+                    Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_act, wf)
+                            .commit();
+                }
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                // WordObj finalWordObj = wordObj;
@@ -143,8 +150,15 @@ public class AddWordFragment extends Fragment {
         List<byte[]> list = new ArrayList<>();
         for (String fileName : fileNames) {
             String snd64 = RestRequest.getSoundString(fileName);
-            byte[] arr = Base64.getDecoder().decode(snd64);
-            list.add(arr);
+            if ("404".equals(snd64)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder
+                        .setTitle("ERROR 404")
+                        .setMessage("При загрузке звука произошел сбой");
+            } else {
+                byte[] arr = Base64.getDecoder().decode(snd64);
+                list.add(arr);
+            }
         }
         return list;
     }
