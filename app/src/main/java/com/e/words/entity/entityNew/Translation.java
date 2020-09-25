@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = @ForeignKey(entity = Word.class, parentColumns = "id", childColumns = "wordId",
-                     onDelete = CASCADE, onUpdate = CASCADE))
+                     onDelete = CASCADE))
 public class Translation {
 
     @PrimaryKey(autoGenerate = true)
@@ -25,6 +25,7 @@ public class Translation {
     public Translation() {
     }
 
+    @Ignore
     public Translation(String translation, int index, long wordId) {
         this.translation = translation;
         this.index = index;

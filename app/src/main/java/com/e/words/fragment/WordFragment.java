@@ -1,5 +1,6 @@
 package com.e.words.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,14 @@ import com.e.words.abby.JsonConvertNew;
 import com.e.words.abby.JsonData;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.ArticleFragmentPagerAdapter;
+import com.e.words.entity.entityNew.Example;
+import com.e.words.entity.entityNew.Translation;
+import com.e.words.entity.entityNew.TranslationAndExample;
+import com.e.words.repository.WordObjRepo;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class WordFragment extends Fragment {
 
@@ -26,16 +32,42 @@ public class WordFragment extends Fragment {
     public WordFragment() {
     }
 
+    public static WordFragment newInstance(WordObj wordObj) {
+        WordFragment fragment = new WordFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("wordObj", wordObj);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            wordObj = (WordObj) getArguments().getSerializable("wordObj");
+        }
 
-        JsonConvertNew jc = new JsonConvertNew();
-        jc.jsonToObj(JsonData.LOOK);
-        wordObj = jc.wordObj;
+//        JsonConvertNew jc = new JsonConvertNew();
+//        jc.jsonToObj(JsonData.LOOK);
+//        wordObj = jc.wordObj;
         smallWord = new WordObj();
         smallWord.word = wordObj.word;
-        smallWord.transcriptions = wordObj.transcriptions;
+        smallWord.word.transcript = wordObj.word.transcript;
+
+
+
+//        try {
+//            smallWord = new FindWordAsyncTask().execute("look").get();
+//            JsonConvertNew jc = new JsonConvertNew();
+//            wordObj = jc.jsonToObj(smallWord.word.json);
+//          //  wordObj = jc.wordObj;
+//            setCheckedFields(smallWord);
+//        } catch (ExecutionException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        //        smallWord = new WordObj();
+//        smallWord.word = wordObj.word;
+//        smallWord.word.transcript = wordObj.word.transcript;
     }
 
     @Override
@@ -82,5 +114,23 @@ public class WordFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void setCheckedFields(WordObj wordDb) {
+        for (TranslationAndExample tae : wordDb.translations) {
+            Translation tr = wordObj.translations.get(tae.translation.index).translation;
+            tr.isChecked = true;
+            for (Example ex : tae.examples) {
+                Example objEx = wordObj.translations.get(tae.translation.index).examples.get(ex.index);
+                objEx.isChecked = true;
+            }
+        }
+    }
+
+    class FindWordAsyncTask extends AsyncTask<String, Void, WordObj> {
+        @Override
+        protected WordObj doInBackground(String... strings) {
+            return new WordObjRepo(getContext()).findWordByWord(strings[0]);
+        }
     }
 }

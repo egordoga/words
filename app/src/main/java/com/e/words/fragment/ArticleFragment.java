@@ -52,7 +52,7 @@ public class ArticleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             WordObj wordObj = (WordObj) getArguments().getSerializable("wordObj");
-            article = wordObj.article;
+            article = wordObj.word.article;
         }
 //        JsonConvertNew jc = new JsonConvertNew();
 //        jc.jsonToObj(JsonData.LOOK);

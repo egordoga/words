@@ -10,6 +10,7 @@ import com.e.words.dao.daoNew.WordDao;
 import com.e.words.entity.ExampleOld;
 import com.e.words.entity.Translate;
 import com.e.words.entity.entityNew.Example;
+import com.e.words.entity.entityNew.Json;
 import com.e.words.entity.entityNew.Sound;
 import com.e.words.entity.entityNew.Translation;
 import com.e.words.entity.entityNew.Word;
@@ -17,7 +18,7 @@ import com.e.words.entity.entityNew.Word;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Word.class, Example.class, /*Lesson.class,*/ Translation.class, Sound.class}, version = 2)
+@Database(entities = {Word.class, Example.class, /*Lesson.class,*/ Translation.class, Sound.class, Json.class}, version = 8, exportSchema = false)
 public abstract class WordDb extends RoomDatabase {
     private static WordDb instance;
     private static final String DB_NAME = "word.db";

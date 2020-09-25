@@ -15,11 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.TranslAndEx;
-import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.WordAdapter;
-import com.e.words.dao.daoNew.WordDao;
+import com.e.words.entity.entityNew.Example;
+import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.repository.WordObjRepo;
 
 import org.jetbrains.annotations.NotNull;
@@ -67,8 +66,9 @@ public class FullWordFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_full_word, container, false);
         TextView tvWordFw = view.findViewById(R.id.tv_word_fw);
         TextView tvTranscrFw = view.findViewById(R.id.tv_transcr_fw);
-        tvWordFw.setText(wordObj.word);
-        tvTranscrFw.setText(wordObj.transcriptions.get(0));
+        tvWordFw.setText(wordObj.word.word);
+    //    String transcrUS = wordObj.word.transcrUS != null ? "   " + wordObj.word.word : "";
+        tvTranscrFw.setText(wordObj.word.transcript);
         RecyclerView rvFullWord = view.findViewById(R.id.rv_fw);
         rvFullWord.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new WordAdapter(this);
@@ -82,7 +82,7 @@ public class FullWordFragment extends Fragment {
         adapter.loadItems(getList());
     }
 
-    private List<TranslAndEx> getList() {
+    private List<TranslationAndExample> getList() {
         if (positionTab == 1) {
             editFullList();
             return wordObj.translations;
@@ -95,25 +95,25 @@ public class FullWordFragment extends Fragment {
 
     public void editSmallWord() {
         smallWord.translations.clear();
-        for (TranslAndEx tae : wordObj.translations) {
-            if (tae.isChecked) {
-                smallWord.translations.add(new TranslAndEx(tae.transl, tae.index, tae.getCheckedExamples(), false));
+        for (TranslationAndExample tae : wordObj.translations) {
+            if (tae.translation.isChecked) {
+                smallWord.translations.add(new TranslationAndExample(tae.translation.translation, tae.translation.index, tae.getCheckedExamples(), false));
             }
         }
     }
 
     private void editFullList() {
-        for (TranslAndEx translation : smallWord.translations) {
-            if (translation.isChecked) {
-                wordObj.translations.get(translation.index).isChecked = false;
-                for (ExampleDto exampleDto : translation.exampleDtos) {
-                        wordObj.translations.get(translation.index).exampleDtos.get(exampleDto.index).isChecked = false;
+        for (TranslationAndExample translation : smallWord.translations) {
+            if (translation.translation.isChecked) {
+                wordObj.translations.get(translation.translation.index).translation.isChecked = false;
+                for (Example exampleDto : translation.examples) {
+                        wordObj.translations.get(translation.translation.index).examples.get(exampleDto.index).isChecked = false;
                 }
                 continue;
             }
-            for (ExampleDto exampleDto : translation.exampleDtos) {
+            for (Example exampleDto : translation.examples) {
                 if (exampleDto.isChecked) {
-                    wordObj.translations.get(translation.index).exampleDtos.get(exampleDto.index).isChecked = false;
+                    wordObj.translations.get(translation.translation.index).examples.get(exampleDto.index).isChecked = false;
                 }
             }
         }
@@ -131,14 +131,35 @@ public class FullWordFragment extends Fragment {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-            Toast.makeText(getContext(), wordObj.word, Toast.LENGTH_LONG).show();
-            byte[] arr = {1, 5, 6};
-            List<byte[]> list = new ArrayList<>();
-            list.add(arr);
-        //    new WordObjRepo(getContext()).addWord(smallWord, list);
-            new WordObjRepo(getContext()).findWordByWord("look");
-            return true;
+//        if (id == R.id.action_save) {
+//            Toast.makeText(getContext(), wordObj.word.word, Toast.LENGTH_LONG).show();
+//            byte[] arr = {1, 5, 6};
+//            List<byte[]> list = new ArrayList<>();
+//            list.add(arr);
+//         //   new WordObjRepo(getContext()).addWord(smallWord, list);
+//        //    new WordObjRepo(getContext()).findWordByWord("look");
+//         //   new WordObjRepo(getContext()).deleteWordByWord("look");
+//            new WordObjRepo(getContext()).printCount();
+//            return true;
+//        }
+
+        WordObjRepo repo = new WordObjRepo(getContext());
+        switch (id) {
+//            case R.id.action_save:
+//                repo.addWord(smallWord, null);
+//                return true;
+            case R.id.action_get:
+                repo.findWordByWord("look");
+                return true;
+            case R.id.action_update:
+                repo.updateWord(smallWord);
+                return true;
+            case R.id.action_delete:
+                repo.deleteWordByWord("look");
+                return true;
+            case R.id.action_count:
+                repo.printCount();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

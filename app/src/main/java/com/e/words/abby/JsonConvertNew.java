@@ -1,13 +1,12 @@
 package com.e.words.abby;
 
-import com.e.words.abby.abbyEntity.dto.TranslAndEx;
-import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
-import com.e.words.abby.abbyEntity.dto.dto_new.TranscriptionNew;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.abby.abbyEntity.genereted.Body;
 import com.e.words.abby.abbyEntity.genereted.Item;
 import com.e.words.abby.abbyEntity.genereted.JsonObj;
 import com.e.words.abby.abbyEntity.genereted.Markup;
+import com.e.words.entity.entityNew.Example;
+import com.e.words.entity.entityNew.TranslationAndExample;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,22 +16,32 @@ import java.util.List;
 
 public class JsonConvertNew {
 
-    public List<String> list = new ArrayList<>();
+  //  public List<String> list = new ArrayList<>();
+    public List<String> sounds = new ArrayList<>();
     public WordObj wordObj = new WordObj();
     public int idxTransl;
     public int idxEx;
 
-    public void jsonToObj(String json) {
+    public WordObj jsonToObj(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         mapper.enable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
         try {
             JsonObj jsonObj = mapper.readValue(json, JsonObj.class);
-            wordObj.word = jsonObj.title;
+            wordObj.word.word = jsonObj.title;
+         //   wordObj.word.json = json;
             String w = convertBody(jsonObj.bodies);
+
+
+
+            System.out.println("TRAN  " + wordObj.word.transcript);
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return wordObj;
     }
 
 
@@ -76,17 +85,17 @@ public class JsonConvertNew {
     }
 
     private void convertListItem(Item item, StringBuilder sb) {
-        TranslAndEx tae = new TranslAndEx();
+        TranslationAndExample tae = new TranslationAndExample();
         for (Markup markup : item.markupList) {
             switch (markup.node) {
                 case PARAGRAPH:
                     String s = convertParagraph(markup, sb, false);
                     if (s != null && s.length() > 0) {
-                        tae.transl = s;
+                        tae.translation.translation = s;
                     }
                     sb.append("\n");
-                    if (tae.transl != null && s != null && s.length() > 0) {
-                        tae.index = idxTransl++;
+                    if (tae.translation != null && s != null && s.length() > 0) {
+                        tae.translation.index = idxTransl++;
                         wordObj.translations.add(tae);
                     }
                     break;
@@ -94,7 +103,7 @@ public class JsonConvertNew {
                     List<String> exs = convertExampleItem(markup.items, sb);
                  //   idxEx = 0;
                     for (String ex : exs) {
-                        tae.exampleDtos.add(new ExampleDto(ex, tae.exampleDtos.size()  /*idxEx++*/));
+                        tae.examples.add(new Example(ex, tae.examples.size()  /*idxEx++*/));
                     }
                     break;
                 case LIST:
@@ -131,7 +140,6 @@ public class JsonConvertNew {
 
     private String convertBody(List<Body> bodies) {
         List<String> trnscrs = new ArrayList<>();
-        List<String> snds = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (Body body : bodies) {
             switch (body.node) {
@@ -144,7 +152,7 @@ public class JsonConvertNew {
                     for (Markup markup : body.markups) {
                         switch (markup.node) {
                             case SOUND:
-                                snds.add(markup.fileName);
+                                sounds.add(markup.fileName);
                                 break;
                             case TRANSCRIPTION:
                                 trnscrs.add("[" + markup.text + "]");
@@ -153,8 +161,22 @@ public class JsonConvertNew {
                     break;
             }
         }
-        wordObj.transcriptions.addAll(trnscrs);
-        wordObj.article = sb.toString();
+        wordObj.word.transcript = trnscrs.get(0);
+        if (trnscrs.size() > 1) {
+            wordObj.word.transcript += ("  " + trnscrs.get(1));
+        }
+
+//        System.out.println("TRNSCR SIZE  " + trnscrs.size());
+//        for (String snd : trnscrs) {
+//            System.out.println("CC " + snd);
+//        }
+//
+//        for (String trnscr : trnscrs) {
+//            if (!(trnscr == null/* || "".equals(trnscr) || "null".equals(trnscr)*/) ) {
+//                wordObj.word.transcript += ("  " + trnscr);
+//            }
+//        }
+        wordObj.word.article = sb.toString();
         return sb.toString();
     }
 

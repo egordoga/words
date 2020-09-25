@@ -31,8 +31,16 @@ public class Example {
     public Example() {
     }
 
+    @Ignore
     public Example(String example, int index) {
         this.example = example;
         this.index = index;
+    }
+
+    @Ignore
+    public Example(String example, int index, Boolean isChecked) {
+        this.example = example;
+        this.index = index;
+        this.isChecked = isChecked;
     }
 }

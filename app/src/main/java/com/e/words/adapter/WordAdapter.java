@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
 import com.e.words.abby.abbyEntity.dto.TranslAndEx;
+import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.fragment.FullWordFragment;
 
 import java.util.LinkedList;
@@ -23,7 +24,7 @@ import java.util.Objects;
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder> {
 
     private FullWordFragment fragment;
-    private List<TranslAndEx> taeList = new LinkedList<>();
+    private List<TranslationAndExample> taeList = new LinkedList<>();
     private LayoutInflater inflater;
     private RecyclerView.RecycledViewPool pool = new RecyclerView.RecycledViewPool();
 
@@ -42,22 +43,22 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
 //        holder.tvTranslWe.setText(taeList.get(position).transl);
-        holder.ctvTranslWe.setText(taeList.get(position).transl /*+ "   " + taeList.get(position).index*/);
-        holder.ctvTranslWe.setChecked(taeList.get(position).isChecked);
+        holder.ctvTranslWe.setText(taeList.get(position).translation.translation /*+ "   " + taeList.get(position).index*/);
+        holder.ctvTranslWe.setChecked(taeList.get(position).translation.isChecked);
         holder.ctvTranslWe.setOnClickListener(v -> {
-            if (!taeList.get(position).isChecked) {
+            if (!taeList.get(position).translation.isChecked) {
                 holder.ctvTranslWe.setChecked(true);
-                taeList.get(position).isChecked = true;
+                taeList.get(position).translation.isChecked = true;
             } else {
                 holder.ctvTranslWe.setChecked(false);
-                taeList.get(position).isChecked = false;
+                taeList.get(position).translation.isChecked = false;
             }
         });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 holder.rvExample.getContext(), LinearLayoutManager.VERTICAL, false);
-        layoutManager.setInitialPrefetchItemCount(taeList.get(position).exampleDtos.size());
-        ExampleAdapter adapter = new ExampleAdapter(fragment, taeList.get(position).exampleDtos);
+        layoutManager.setInitialPrefetchItemCount(taeList.get(position).examples.size());
+        ExampleAdapter adapter = new ExampleAdapter(fragment, taeList.get(position).examples);
         holder.rvExample.setLayoutManager(layoutManager);
         holder.rvExample.setAdapter(adapter);
         holder.rvExample.setRecycledViewPool(pool);
@@ -68,7 +69,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
         return taeList.size();
     }
 
-    public void loadItems(List<TranslAndEx> items) {
+    public void loadItems(List<TranslationAndExample> items) {
         this.taeList = items;
         notifyDataSetChanged();
     }

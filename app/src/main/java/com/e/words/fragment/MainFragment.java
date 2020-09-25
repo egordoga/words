@@ -20,9 +20,10 @@ import java.util.Objects;
  */
 public class MainFragment extends Fragment {
 
-    Button button;
-    ArticleFragment af;
-    WordFragment wf;
+    private Button button;
+    private ArticleFragment af;
+    private WordFragment wf;
+    private AddWordFragment awf;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,6 +65,7 @@ public class MainFragment extends Fragment {
         }
        // af = new ArticleFragment();
         wf = new WordFragment();
+        awf = new AddWordFragment();
     }
 
     @Override
@@ -72,10 +74,18 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         button = view.findViewById(R.id.btn_test_frgm);
 
+//        button.setOnClickListener(v -> {
+//            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.main_act, wf)
+//                    .commit();
+//
+//        });
+
         button.setOnClickListener(v -> {
             Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_act, wf)
+                    .replace(R.id.main_act, awf)
                     .commit();
 
         });

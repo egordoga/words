@@ -2,6 +2,7 @@ package com.e.words.entity.entityNew;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -11,17 +12,20 @@ public class Word {
     public long id;
     @ColumnInfo(index = true)
     public String word;
-    public String json;
-    public String transcrGB;
-    public String transcrUS;
+ //   public String json;
+    public String transcript;
+  //  public String transcrUS;
+    @Ignore
+    public String article;
 
     public Word() {
     }
 
-    public Word(String word, String json, String transcrGB, String transcrUS) {
+    @Ignore
+    public Word(String word, /*String json,*/ String transcript/*, String transcrUS*/) {
         this.word = word;
-        this.json = json;
-        this.transcrGB = transcrGB;
-        this.transcrUS = transcrUS;
+     //   this.json = json;
+        this.transcript = transcript;
+      //  this.transcrUS = transcrUS;
     }
 }

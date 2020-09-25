@@ -11,18 +11,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
 import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
+import com.e.words.entity.entityNew.Example;
 import com.e.words.fragment.FullWordFragment;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
-    private List<ExampleDto> exampleDtos;
+    private List<Example> examples;
     private LayoutInflater inflater;
 
-    public ExampleAdapter(FullWordFragment fragment, List<ExampleDto> exampleDtos) {
+    public ExampleAdapter(FullWordFragment fragment, List<Example> examples) {
         this.inflater = (LayoutInflater) Objects.requireNonNull(fragment.getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.exampleDtos = exampleDtos;
+        this.examples = examples;
     }
 
     @NonNull
@@ -34,22 +35,22 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     @Override
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
-        holder.ctvExample.setText(exampleDtos.get(position).example /*+ "   " + examples.get(position).index*/);
-        holder.ctvExample.setChecked(exampleDtos.get(position).isChecked);
+        holder.ctvExample.setText(examples.get(position).example /*+ "   " + examples.get(position).index*/);
+        holder.ctvExample.setChecked(examples.get(position).isChecked);
         holder.ctvExample.setOnClickListener(v -> {
-            if (!exampleDtos.get(position).isChecked) {
+            if (!examples.get(position).isChecked) {
                 holder.ctvExample.setChecked(true);
-                exampleDtos.get(position).isChecked = true;
+                examples.get(position).isChecked = true;
             } else {
                 holder.ctvExample.setChecked(false);
-                exampleDtos.get(position).isChecked = false;
+                examples.get(position).isChecked = false;
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return exampleDtos.size();
+        return examples.size();
     }
 
     static class ExampleViewHolder extends RecyclerView.ViewHolder {
