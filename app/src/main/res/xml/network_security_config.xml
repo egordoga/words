@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true"
-        debugBuild = "true"/>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">developers.lingvolive.com</domain>
+    </domain-config>
+    <base-config>
+        cleartextTrafficPermitted="false"
+        debugBuild="t"
+    </base-config>
+
+
+
+
 </network-security-config>
+
+<!--
+<debug-overrides>
+<base-config cleartextTrafficPermitted="true" >
+    <trust-anchors>
+        &lt;!&ndash; Trust user added CAs while debuggable only &ndash;&gt;
+        <certificates src="user" />
+        <certificates src="system" />
+    </trust-anchors>
+</base-config>
+</debug-overrides>-->

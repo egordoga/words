@@ -1,16 +1,21 @@
 package com.e.words.repository;
 
-import android.app.Application;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+
+import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.dao.daoNew.WordDao;
 import com.e.words.db.WordDb;
-import com.e.words.entity.entityNew.Word;
+import com.e.words.entity.entityNew.Json;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class WordObjRepo {
 
@@ -48,6 +53,17 @@ public class WordObjRepo {
 //        WordObj w = wordDao.findWordObjByWord(word);
 //        System.out.println(w);
         return wordDao.findWordObjByWord(word);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public Json findJsonByWordId(long wordId) throws ExecutionException, InterruptedException {
+      //  CompletableFuture<Json> future = (CompletableFuture<Json>) WordDb.dbExecutor.submit(() -> wordDao.findJsonByWordId(wordId));
+      //  CompletableFuture<Json> future =  CompletableFuture.supplyAsync(() -> wordDao.findJsonByWordId(wordId));
+        return CompletableFuture.supplyAsync(() -> wordDao.findJsonByWordId(wordId)).get();
+    }
+
+    public List<VocabularyDto> findAllVocabularyDto() {
+        return wordDao.findAllVocabularyDto();
     }
 
     public void deleteWordById(long id) {

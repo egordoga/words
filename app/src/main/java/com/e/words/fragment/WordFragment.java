@@ -21,6 +21,8 @@ import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.repository.WordObjRepo;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -28,14 +30,18 @@ public class WordFragment extends Fragment {
 
     private WordObj wordObj;
     private WordObj smallWord;
+    private String json;
+    private List<byte[]> sounds;
 
     public WordFragment() {
     }
 
-    public static WordFragment newInstance(WordObj wordObj) {
+    public static WordFragment newInstance(WordObj wordObj, String json, List<byte[]> sounds) {
         WordFragment fragment = new WordFragment();
         Bundle args = new Bundle();
         args.putSerializable("wordObj", wordObj);
+        args.putSerializable("sounds", (Serializable) sounds);
+        args.putString("json", json);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,6 +51,8 @@ public class WordFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             wordObj = (WordObj) getArguments().getSerializable("wordObj");
+            sounds = (List<byte[]>) getArguments().getSerializable("sounds");
+            json = getArguments().getString("json");
         }
 
 //        JsonConvertNew jc = new JsonConvertNew();
@@ -53,6 +61,9 @@ public class WordFragment extends Fragment {
         smallWord = new WordObj();
         smallWord.word = wordObj.word;
         smallWord.word.transcript = wordObj.word.transcript;
+
+
+        System.out.println("WordFragment onCreate".toUpperCase() + "  " + wordObj.word.word.toUpperCase());
 
 
 
@@ -75,11 +86,13 @@ public class WordFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_word, container, false);
         ArticleFragmentPagerAdapter mFragmentAdapter = new ArticleFragmentPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
-                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, wordObj, smallWord);
+                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, wordObj, smallWord, json, sounds);
         ViewPager mViewPager = view.findViewById(R.id.vp_word);
         mViewPager.setAdapter(mFragmentAdapter);
         TabLayout mTabLayout = view.findViewById(R.id.tl_word);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        System.out.println("WordFragment onCreateView     ".toUpperCase() + wordObj.word.word);
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 

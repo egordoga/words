@@ -31,6 +31,7 @@ public class JsonConvertNew {
             wordObj.word.word = jsonObj.title;
          //   wordObj.word.json = json;
             String w = convertBody(jsonObj.bodies);
+//            wordObj.word.article = w;
 
 
 

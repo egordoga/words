@@ -53,7 +53,11 @@ public class ArticleFragment extends Fragment {
         if (getArguments() != null) {
             WordObj wordObj = (WordObj) getArguments().getSerializable("wordObj");
             article = wordObj.word.article;
+
+            System.out.println("ArticleFragment  onCreate   ".toUpperCase() + wordObj.word.word);
         }
+
+
 //        JsonConvertNew jc = new JsonConvertNew();
 //        jc.jsonToObj(JsonData.LOOK);
     }
@@ -66,6 +70,7 @@ public class ArticleFragment extends Fragment {
         articleTw = view.findViewById(R.id.tw_article);
         articleTw.setMovementMethod(new ScrollingMovementMethod());
         articleTw.setText(article);
+        System.out.println("ArticleFragment  onCreateView   ".toUpperCase() + article.substring(0,100));
         return view;
     }
 }

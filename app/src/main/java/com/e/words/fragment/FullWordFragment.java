@@ -23,8 +23,10 @@ import com.e.words.repository.WordObjRepo;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FullWordFragment extends Fragment {
 
@@ -32,17 +34,23 @@ public class FullWordFragment extends Fragment {
     private WordObj wordObj;
     private WordObj smallWord;
     private int positionTab;
+    private String json;
+    private List<byte[]> sounds;
+    private AddWordFragment addWordFragment;
 
     public FullWordFragment() {
     }
 
 
-    public static FullWordFragment newInstance(WordObj wordObj, WordObj smallWord, int positionTab) {
+    public static FullWordFragment newInstance(WordObj wordObj, WordObj smallWord, int positionTab,
+                            String json, List<byte[]> sounds) {
         FullWordFragment fragment = new FullWordFragment();
         Bundle args = new Bundle();
         args.putSerializable("wordObj", wordObj);
         args.putSerializable("smallWord", smallWord);
         args.putInt("positionTab", positionTab);
+        args.putSerializable("sounds", (Serializable) sounds);
+        args.putString("json", json);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,16 +62,31 @@ public class FullWordFragment extends Fragment {
             wordObj = (WordObj) getArguments().getSerializable("wordObj");
             smallWord = (WordObj) getArguments().getSerializable("smallWord");
             positionTab = getArguments().getInt("positionTab");
+            json = getArguments().getString("json");
+            sounds = (List<byte[]>) getArguments().getSerializable("sounds");
         }
         if (positionTab == 2) {
             setHasOptionsMenu(true);
         }
+
+
+        System.out.println("FullWordFragment  onCreate   ".toUpperCase()  + wordObj.word.word);
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_full_word, container, false);
+
+
+
+        System.out.println("FullWordFragment  onCreateView   ".toUpperCase()  + wordObj.word.word);
+
+
+
+        addWordFragment = new AddWordFragment();
         TextView tvWordFw = view.findViewById(R.id.tv_word_fw);
         TextView tvTranscrFw = view.findViewById(R.id.tv_transcr_fw);
         tvWordFw.setText(wordObj.word.word);
@@ -73,6 +96,8 @@ public class FullWordFragment extends Fragment {
         rvFullWord.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new WordAdapter(this);
         rvFullWord.setAdapter(adapter);
+
+
         return view;
     }
 
@@ -145,9 +170,9 @@ public class FullWordFragment extends Fragment {
 
         WordObjRepo repo = new WordObjRepo(getContext());
         switch (id) {
-//            case R.id.action_save:
-//                repo.addWord(smallWord, null);
-//                return true;
+            case R.id.action_save:
+                repo.addWord(smallWord, json, sounds);
+                return true;
             case R.id.action_get:
                 repo.findWordByWord("look");
                 return true;
@@ -159,6 +184,12 @@ public class FullWordFragment extends Fragment {
                 return true;
             case R.id.action_count:
                 repo.printCount();
+                return true;
+            case R.id.action_add:
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_act, addWordFragment)
+                    .commit();
                 return true;
         }
 

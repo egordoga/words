@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.DataTest;
 import com.e.words.R;
+import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.entity.ForeignWordWithTranslate;
 import com.e.words.entity.Translate;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.VocabularyViewHolder>
         implements ItemTouchHelperAdapter{
 
-    private List<ForeignWordWithTranslate> wordList;
+    private List<VocabularyDto> wordList;
     private LayoutInflater inflater;
     private ItemClickListener mListener;
 
@@ -39,10 +40,10 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
 
     @Override
     public void onBindViewHolder(@NonNull VocabularyViewHolder holder, int position) {
-        holder.tvWord.setText(wordList.get(position).word.word);
-      //  holder.tvTranscr.setText(wordList.get(position).word.transcription);
-        holder.tvTranscr.setText("AAAAAAAAAAAAAAAAAA");
-        holder.tvTransl.setText(makeTranslateString(wordList.get(position).translateList));
+        holder.tvWord.setText(wordList.get(position).word);
+        holder.tvTranscr.setText(wordList.get(position).transcript);
+       // holder.tvTranscr.setText("AAAAAAAAAAAAAAAAAA");
+        holder.tvTransl.setText(wordList.get(position).translate);
       //  holder.tvTransl.setText("YYYYYYYYYYYYYYYYY");
     }
 
@@ -56,7 +57,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
 
     }
 
-    public void setItem(List<ForeignWordWithTranslate> items) {
+    public void setItem(List<VocabularyDto> items) {
         wordList.addAll(items);
         notifyDataSetChanged();
     }

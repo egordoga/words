@@ -9,28 +9,38 @@ import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.fragment.ArticleFragment;
 import com.e.words.fragment.FullWordFragment;
 
+import java.util.List;
+
 public class ArticleFragmentPagerAdapter extends FragmentPagerAdapter {
     private WordObj wordObj;
     private WordObj smallWord;
+    private String json;
+    private List<byte[]> sounds;
 
 
-    public ArticleFragmentPagerAdapter(@NonNull FragmentManager fm, int behavior,
-                                       WordObj wordObj, WordObj smallWord) {
+    public ArticleFragmentPagerAdapter(@NonNull FragmentManager fm, int behavior, WordObj wordObj,
+                                       WordObj smallWord, String json, List<byte[]> sounds) {
         super(fm, behavior);
 
         this.wordObj = wordObj;
         this.smallWord = smallWord;
+        this.json = json;
+        this.sounds = sounds;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
+
+        System.out.println("ArticleFragmentPagerAdapter  getItem   ".toUpperCase() + wordObj.word.word);
+
+
         switch (position) {
             case 0:
                 return ArticleFragment.newInstance(wordObj);
             case 1:
             case 2:
-                return FullWordFragment.newInstance(wordObj, smallWord, position);
+                return FullWordFragment.newInstance(wordObj, smallWord, position, json, sounds);
             default:
                 return new ArticleFragment();
         }

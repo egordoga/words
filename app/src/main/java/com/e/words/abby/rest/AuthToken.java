@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -19,7 +20,7 @@ public class AuthToken {
 
     private static String getToken() {
         OkHttpClient client = new OkHttpClient.Builder().build();
-        RequestBody body = RequestBody.create(null, "");
+        RequestBody body = RequestBody.create("", null);
         Request request = new Request.Builder()
                 .url(URL)
                 .addHeader("Authorization", KEY)
@@ -39,22 +40,22 @@ public class AuthToken {
         if (instance == null) {
             synchronized (AuthToken.class) {
                 if (instance == null) {
-                    try {
-                        instance = new TokenTask().execute().get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    instance = getToken();
                 }
             }
         }
         return instance;
     }
 
-    private static class TokenTask extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... voids) {
-            return getToken();
-        }
-    }
+//    private static class TokenTask extends AsyncTask<Void, Void, String> {
+//        @Override
+//        protected String doInBackground(Void... voids) {
+//
+//            System.out.println("PPPPPPP");
+//
+//
+//            return getToken();
+//        }
+//    }
 
 }

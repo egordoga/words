@@ -61,6 +61,7 @@ public class RestRequest {
 
 
         System.out.println("Before WORD RES");
+        System.out.println("URL " + url.toString());
 
 
 
@@ -68,7 +69,16 @@ public class RestRequest {
                 .addHeader("Authorization", "Bearer  " + AuthToken.getInstance())
                 .url(url)
                 .build();
+
+
+
+
         Response response = client.newCall(request).execute();
+
+
+        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+
+
         int code = response.code();
 
         System.out.println("WORD CODE" + code);

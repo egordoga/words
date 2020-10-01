@@ -27,4 +27,9 @@
         android:orderInCategory="103"
         android:title="Count"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add"
+        android:orderInCategory="104"
+        android:title="Add word"
+        app:showAsAction="never" />
 </menu>

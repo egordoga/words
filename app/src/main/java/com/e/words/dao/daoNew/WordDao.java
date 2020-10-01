@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Json;
@@ -18,6 +19,7 @@ import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.entity.entityNew.Word;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Dao
@@ -77,9 +79,25 @@ public abstract class WordDao {
     @Query("select * from Word where word = :word")
     public abstract Word findWordByWord(String word);
 
+    @Query("select * from Json where wordId = :wordId")
+    public abstract Json findJsonByWordId(long wordId);
+
     @Transaction
     @Query("select * from Word where word = :word")
     public abstract WordObj findWordObjByWord(String word);
+
+    @Transaction
+    @Query("select * from Word order by word")
+    public abstract List<WordObj> findAllWordObj();
+
+    public List<VocabularyDto> findAllVocabularyDto() {
+        List<VocabularyDto> list = new LinkedList<>();
+        List<WordObj> words = findAllWordObj();
+        for (WordObj word : words) {
+            list.add(new VocabularyDto(word.word.word, word.word.transcript, word.translations.get(0).translation.translation));
+        }
+        return list;
+    }
 
     @Transaction
     @Query("select id, translation, idx from Translation where wordId = :wordId")

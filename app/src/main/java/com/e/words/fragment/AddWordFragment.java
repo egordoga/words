@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,12 @@ import android.widget.Toast;
 
 import com.e.words.R;
 import com.e.words.abby.JsonConvertNew;
+import com.e.words.abby.abbyEntity.dto.dto_new.FullWordObj;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.abby.model.Lang;
 import com.e.words.abby.rest.RestRequest;
 import com.e.words.repository.WordObjRepo;
+import com.e.words.util.Util;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -43,7 +46,7 @@ public class AddWordFragment extends Fragment {
    // @BindView(R.id.btn_add_new_word)
     Button btnAddNewWord;
 
-    private WordObjRepo repo;
+    private static WordObjRepo repo;
     private WordObj wordObj;
     private WordFragment wf;
 //    private String from = "EN";
@@ -87,7 +90,6 @@ public class AddWordFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -103,7 +105,7 @@ public class AddWordFragment extends Fragment {
         btnAddNewWord.setOnClickListener(v -> {
             String word = etNewWord.getText().toString();
             try {
-                wordObj = new FindWordAsyncTask().execute("look").get();
+                wordObj = new FindWordAsyncTask().execute(word).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -113,12 +115,14 @@ public class AddWordFragment extends Fragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder
                             .setTitle("ERROR 404")
-                            .setMessage("Такого слова не найдено в словаре");
+                            .setMessage("Такого слова не найдено в словаре")
+                            .setCancelable(true)
+                            .show();
                 } else {
                     JsonConvertNew jc = new JsonConvertNew();
                     wordObj = jc.jsonToObj(json);
-                    repo.addWord(wordObj, json, getSounds(jc.sounds));
-                    wf = WordFragment.newInstance(wordObj); //TODO method
+                  //  repo.addWord(wordObj, json, getSounds(jc.sounds));
+                    wf = WordFragment.newInstance(wordObj, json, getSounds(jc.sounds)); //TODO method
                     Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.main_act, wf)
@@ -131,7 +135,8 @@ public class AddWordFragment extends Fragment {
                         .setTitle("Внимание!")
                         .setMessage("Такое слово уже есть в словаре. Открыть его?")
                         .setPositiveButton("YES", (dialog, which) -> {
-                            wf = WordFragment.newInstance(wordObj);
+                            FullWordObj fullWordObj = new Util(getContext()).makeFullObj(wordObj);
+                            wf = WordFragment.newInstance(fullWordObj.wordObj, fullWordObj.json, null);
                             Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                                     .beginTransaction()
                                     .replace(R.id.main_act, wf)
@@ -139,7 +144,8 @@ public class AddWordFragment extends Fragment {
                         })
                         .setNegativeButton("CANCEL", (dialog, which) -> {
                             Toast.makeText(getContext(), "Введите другое слово", Toast.LENGTH_LONG).show();
-                        });
+                        })
+                .show();
             }
         });
         return view;
@@ -154,8 +160,14 @@ public class AddWordFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder
                         .setTitle("ERROR 404")
-                        .setMessage("При загрузке звука произошел сбой");
+                        .setMessage("При загрузке звука произошел сбой\nПопробуйте загрузить слово позже");
             } else {
+                if (snd64.startsWith("\"")) {
+                    snd64 = snd64.substring(1);
+                }
+                if (snd64.endsWith("\"")) {
+                    snd64 = snd64.substring(0, snd64.length() - 1);
+                }
                 byte[] arr = Base64.getDecoder().decode(snd64);
                 list.add(arr);
             }
@@ -163,7 +175,7 @@ public class AddWordFragment extends Fragment {
         return list;
     }
 
-    class FindWordAsyncTask extends AsyncTask<String, Void, WordObj> {
+    static class FindWordAsyncTask extends AsyncTask<String, Void, WordObj> {
         @Override
         protected WordObj doInBackground(String... strings) {
             return repo.findWordByWord(strings[0]);

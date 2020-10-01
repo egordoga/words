@@ -20,10 +20,12 @@ import java.util.Objects;
  */
 public class MainFragment extends Fragment {
 
-    private Button button;
+    private Button buttonTest;
+    private Button btnVocab;
     private ArticleFragment af;
     private WordFragment wf;
     private AddWordFragment awf;
+    private VocabularyFragment vocabFrgm;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,13 +68,15 @@ public class MainFragment extends Fragment {
        // af = new ArticleFragment();
         wf = new WordFragment();
         awf = new AddWordFragment();
+        vocabFrgm = new VocabularyFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        button = view.findViewById(R.id.btn_test_frgm);
+        buttonTest = view.findViewById(R.id.btn_test_frgm);
+        btnVocab = view.findViewById(R.id.btn_vocab);
 
 //        button.setOnClickListener(v -> {
 //            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
@@ -82,12 +86,21 @@ public class MainFragment extends Fragment {
 //
 //        });
 
-        button.setOnClickListener(v -> {
+        buttonTest.setOnClickListener(v -> {
             Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_act, awf)
                     .commit();
 
+  //          new RestTest().printResult();
+
+        });
+
+        btnVocab.setOnClickListener(v -> {
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_act, vocabFrgm)
+                    .commit();
         });
         return view;
     }
