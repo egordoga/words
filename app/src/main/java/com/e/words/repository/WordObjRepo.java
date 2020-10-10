@@ -33,7 +33,8 @@ public class WordObjRepo {
         });
     }
 
-    public WordObj findWordByWord(String word) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public WordObj findWordByWord(String word) throws ExecutionException, InterruptedException {
 //        WordObj w = null;
 //        try {
 //            w = new FindWordAsyncTask().get();
@@ -52,7 +53,7 @@ public class WordObjRepo {
 //        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH " + ww.word);
 //        WordObj w = wordDao.findWordObjByWord(word);
 //        System.out.println(w);
-        return wordDao.findWordObjByWord(word);
+        return CompletableFuture.supplyAsync(() ->wordDao.findWordObjByWord(word)).get();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

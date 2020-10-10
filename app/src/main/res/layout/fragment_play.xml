@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.PlayFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+
+        android:text="@string/play_track_txt" />
+    <!--android:layout_width="wrap_content"-->
+
+
+    <Spinner
+        android:id="@+id/spinner_play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="6"
+        android:rowCount="1">
+
+
+
+    <ImageButton
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/btn_blue_first" />
+
+    <ImageButton
+        android:id="@+id/btn_rew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/btn_blue_rew" />
+
+    <ImageButton
+        android:id="@+id/btn_play"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/btn_blue_play" />
+
+    <ImageButton
+        android:id="@+id/btn_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/btn_blue_stop" />
+
+    <ImageButton
+        android:id="@+id/btn_ffw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/btn_blue_ffw" />
+    <ImageButton
+        android:id="@+id/btn_last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/btn_blue_last" />
+    </GridLayout>
+
+</LinearLayout>

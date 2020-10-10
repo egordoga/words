@@ -42,9 +42,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
     public void onBindViewHolder(@NonNull VocabularyViewHolder holder, int position) {
         holder.tvWord.setText(wordList.get(position).word);
         holder.tvTranscr.setText(wordList.get(position).transcript);
-       // holder.tvTranscr.setText("AAAAAAAAAAAAAAAAAA");
         holder.tvTransl.setText(wordList.get(position).translate);
-      //  holder.tvTransl.setText("YYYYYYYYYYYYYYYYY");
     }
 
     @Override
@@ -81,7 +79,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
 
         @Override
         public void onClick(View v) {
-            mListener.onClick(v, getAdapterPosition());
+            mListener.onClick(v, getBindingAdapterPosition());
         }
     }
 
@@ -89,13 +87,13 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
         void onClick(View view, int position);
     }
 
-    private String makeTranslateString(List<Translate> translate) {
-        StringBuilder sb = new StringBuilder();
-        for (Translate s : translate) {
-            sb.append(s.word).append(", ");
-        }
-        sb.delete(sb.length() - 2, sb.length());
-       // sb.substring(0, sb.length() - 3);
-        return sb.toString();
-    }
+//    private String makeTranslateString(List<Translate> translate) {
+//        StringBuilder sb = new StringBuilder();
+//        for (Translate s : translate) {
+//            sb.append(s.word).append(", ");
+//        }
+//        sb.delete(sb.length() - 2, sb.length());
+//       // sb.substring(0, sb.length() - 3);
+//        return sb.toString();
+//    }
 }

@@ -44,7 +44,7 @@ public class MainActivity extends /*FragmentActivity*/AppCompatActivity implemen
 //        adapter = new VocabularyAdapter(this, null);
 //        rvVocabulary.setAdapter(adapter);
 //        adapter.setItem(DataTest.getList());
-//        tts = new TextToSpeech(this, this);
+        tts = new TextToSpeech(this, this);
 //        testTTS = new TestTTS();
 //        Context ctx = this;
 //        artFrgm = new ArticleFragment();

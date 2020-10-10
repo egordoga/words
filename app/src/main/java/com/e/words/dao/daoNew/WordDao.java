@@ -94,7 +94,8 @@ public abstract class WordDao {
         List<VocabularyDto> list = new LinkedList<>();
         List<WordObj> words = findAllWordObj();
         for (WordObj word : words) {
-            list.add(new VocabularyDto(word.word.word, word.word.transcript, word.translations.get(0).translation.translation));
+            list.add(new VocabularyDto(word.word.id, word.word.word, word.word.transcript,
+                    word.translations.get(0).translation.translation));
         }
         return list;
     }

@@ -23,5 +23,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="test fragment" />
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play" />
 
 </LinearLayout>

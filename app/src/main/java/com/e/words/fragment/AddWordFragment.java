@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment;
 
 import android.os.StrictMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +27,8 @@ import com.e.words.abby.model.Lang;
 import com.e.words.abby.rest.RestRequest;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.util.Util;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -45,6 +50,7 @@ public class AddWordFragment extends Fragment {
     EditText etNewWord;
    // @BindView(R.id.btn_add_new_word)
     Button btnAddNewWord;
+    private MainFragment mainFrgm;
 
     private static WordObjRepo repo;
     private WordObj wordObj;
@@ -90,6 +96,8 @@ public class AddWordFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mainFrgm = new MainFragment();
+        setHasOptionsMenu(true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -151,6 +159,25 @@ public class AddWordFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_return, menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.act_return_main:
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_act, mainFrgm)
+                        .commit();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private List<byte[]> getSounds(List<String> fileNames) {
         List<byte[]> list = new ArrayList<>();
@@ -178,7 +205,7 @@ public class AddWordFragment extends Fragment {
     static class FindWordAsyncTask extends AsyncTask<String, Void, WordObj> {
         @Override
         protected WordObj doInBackground(String... strings) {
-            return repo.findWordByWord(strings[0]);
+            return null /*repo.findWordByWord(strings[0])*/;
         }
     }
 }

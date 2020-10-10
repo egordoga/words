@@ -11,8 +11,11 @@ import android.speech.tts.TextToSpeech;
 
 import androidx.annotation.RequiresApi;
 
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.abby.depricated.dto.StrWithLocaleDto;
 import com.e.words.abby.rest.RestRequest;
+import com.e.words.entity.entityNew.Example;
+import com.e.words.entity.entityNew.TranslationAndExample;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -46,6 +50,36 @@ public class TestTTS {
 
             textToSpeech.playSilentUtterance(750, TextToSpeech.QUEUE_ADD, null);
         }
+    }
+
+    public void test(TextToSpeech tts) {
+        Locale enLoc = new Locale("en");
+        Locale ruLoc = new Locale("ru");
+   //     tts.en
+        tts.setLanguage(ruLoc);
+        tts.speak("Я использую этот вспомогательный класс вот так", TextToSpeech.QUEUE_FLUSH, null, null);
+//        tts.setLanguage(enLoc);
+//        tts.speak("This project is licensed under the Apache", TextToSpeech.QUEUE_FLUSH, null, null);
+    }
+
+    public void playWordObj(WordObj wordObj, TextToSpeech tts) {
+        Locale enLoc = new Locale("en");
+        Locale ruLoc = new Locale("ru");
+      //  tts.setPitch(1.3f);
+        tts.setSpeechRate(0.7f);
+        String couple = wordObj.word.word + ". " + wordObj.word.word;
+        tts.setLanguage(enLoc);
+        tts.speak(couple, TextToSpeech.QUEUE_ADD, null, null);
+        for (TranslationAndExample tae : wordObj.translations) {
+            tts.setLanguage(ruLoc);
+            tts.speak(tae.translation.translation, TextToSpeech.QUEUE_ADD, null, null);
+            tts.setLanguage(enLoc);
+            for (Example ex : tae.examples) {
+                String[] arr = ex.example.split("—");
+                tts.speak(arr[0], TextToSpeech.QUEUE_ADD, null, null);
+            }
+        }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

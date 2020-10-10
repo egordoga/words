@@ -1,5 +1,6 @@
 package com.e.words.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class FullWordFragment extends Fragment {
 
@@ -70,7 +73,7 @@ public class FullWordFragment extends Fragment {
         }
 
 
-        System.out.println("FullWordFragment  onCreate   ".toUpperCase()  + wordObj.word.word);
+     //   System.out.println("FullWordFragment  onCreate   ".toUpperCase()  + wordObj.word.word);
 
 
     }
@@ -82,7 +85,7 @@ public class FullWordFragment extends Fragment {
 
 
 
-        System.out.println("FullWordFragment  onCreateView   ".toUpperCase()  + wordObj.word.word);
+    //    System.out.println("FullWordFragment  onCreateView   ".toUpperCase()  + wordObj.word.word);
 
 
 
@@ -148,6 +151,7 @@ public class FullWordFragment extends Fragment {
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -174,7 +178,11 @@ public class FullWordFragment extends Fragment {
                 repo.addWord(smallWord, json, sounds);
                 return true;
             case R.id.action_get:
-                repo.findWordByWord("look");
+                try {
+                    repo.findWordByWord("look");
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return true;
             case R.id.action_update:
                 repo.updateWord(smallWord);

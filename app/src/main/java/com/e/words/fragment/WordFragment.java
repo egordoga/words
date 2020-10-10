@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.e.words.R;
 import com.e.words.abby.JsonConvertNew;
@@ -20,6 +22,7 @@ import com.e.words.entity.entityNew.Translation;
 import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.repository.WordObjRepo;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.Serializable;
 import java.util.List;
@@ -66,7 +69,6 @@ public class WordFragment extends Fragment {
         System.out.println("WordFragment onCreate".toUpperCase() + "  " + wordObj.word.word.toUpperCase());
 
 
-
 //        try {
 //            smallWord = new FindWordAsyncTask().execute("look").get();
 //            JsonConvertNew jc = new JsonConvertNew();
@@ -85,20 +87,35 @@ public class WordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_word, container, false);
-        ArticleFragmentPagerAdapter mFragmentAdapter = new ArticleFragmentPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
-                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, wordObj, smallWord, json, sounds);
-        ViewPager mViewPager = view.findViewById(R.id.vp_word);
+//        ArticleFragmentPagerAdapter mFragmentAdapter = new ArticleFragmentPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
+//                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, wordObj, smallWord, json, sounds);
+        ArticleFragmentPagerAdapter mFragmentAdapter = new ArticleFragmentPagerAdapter(this, wordObj, smallWord, json, sounds);
+        ViewPager2 mViewPager = view.findViewById(R.id.vp_word);
         mViewPager.setAdapter(mFragmentAdapter);
         TabLayout mTabLayout = view.findViewById(R.id.tl_word);
-        mTabLayout.setupWithViewPager(mViewPager);
+        new TabLayoutMediator(mTabLayout, mViewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Словарная статья");
+                    break;
+                case 1:
+                    tab.setText("Полный перевод");
+                    break;
+                case 2:
+                    tab.setText("Избранный перевод");
+            }
+        }).attach();
+        // mTabLayout.setupWithViewPager(mViewPager);
 
-        System.out.println("WordFragment onCreateView     ".toUpperCase() + wordObj.word.word);
+        System.out.println("WordFragment onCreateView     ".
+
+                toUpperCase() + wordObj.word.word);
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-             //   Toast.makeText(getContext(), "Size " + getSmallWord().translations.size(), Toast.LENGTH_LONG).show();
+                //   Toast.makeText(getContext(), "Size " + getSmallWord().translations.size(), Toast.LENGTH_LONG).show();
 //                int position = tab.getPosition();
 //                switch (position) {
 //                    case 0:
@@ -110,7 +127,7 @@ public class WordFragment extends Fragment {
 //                }
 
                 if (tab.getPosition() == 2 || tab.getPosition() == 1) {
-                  //  redrawFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ tab.getPosition()));
+                    //  redrawFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ tab.getPosition()));
                 }
             }
 
@@ -122,7 +139,7 @@ public class WordFragment extends Fragment {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 2 || tab.getPosition() == 1) {
-                   // redrawFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ tab.getPosition()));
+                    // redrawFragment(FullWordFragment.newInstance(wordObj, /*smallWord,*/ tab.getPosition()));
                 }
             }
         });
@@ -140,10 +157,10 @@ public class WordFragment extends Fragment {
         }
     }
 
-    class FindWordAsyncTask extends AsyncTask<String, Void, WordObj> {
-        @Override
-        protected WordObj doInBackground(String... strings) {
-            return new WordObjRepo(getContext()).findWordByWord(strings[0]);
-        }
-    }
+//    class FindWordAsyncTask extends AsyncTask<String, Void, WordObj> {
+//        @Override
+//        protected WordObj doInBackground(String... strings) {
+//            return null /*new WordObjRepo(getContext()).findWordByWord(strings[0])*/;
+//        }
+//    }
 }
