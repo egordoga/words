@@ -23,11 +23,13 @@ import android.widget.Toast;
 import com.e.words.R;
 import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.adapter.VocabularyAdapter;
+import com.e.words.entity.entityNew.Track;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -142,7 +144,25 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
                                             .setNegativeButton("CANCEL", (dialog1, which1) -> dialog1.cancel())
                                             .create()
                                             .show();
-                                } else repoTrack.addToTrack(trackNames[which], vocabList.get(position).wordId);
+                                } else {
+                                    try {
+                                        Track track = repoTrack.findTrackByName(trackNames[which]);
+                                        String[] ids = track.wordIds.split(";;");
+                                        boolean isPresent = Arrays.asList(ids).contains(String.valueOf(vocabList.get(position).wordId));
+                                        if (isPresent) {
+                                            AlertDialog.Builder wordPresent = new AlertDialog.Builder(getContext());
+                                            wordPresent
+                                                    .setTitle("Предупреждение")
+                                                    .setMessage("Такое слово уже есть в этом треке")
+                                                    .create()
+                                                    .show();
+                                        } else {
+                                            repoTrack.addToTrack(track, vocabList.get(position).wordId);
+                                        }
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             });
 
                     builder.create();

@@ -35,11 +35,13 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
     private Button btnVocab;
     private Button btnAddWord;
     private Button btnPlay;
+    private Button btnTrack;
     private ArticleFragment af;
     private WordFragment wf;
     private AddWordFragment awf;
     private PlayFragment pf;
     private VocabularyFragment vocabFrgm;
+    private TrackFragment trackFrgm;
     private TextToSpeech tts;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -85,6 +87,7 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
         awf = new AddWordFragment();
         pf = new PlayFragment();
         vocabFrgm = new VocabularyFragment();
+        trackFrgm = new TrackFragment();
     }
 
     @Override
@@ -102,6 +105,7 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
         btnVocab = view.findViewById(R.id.btn_vocab);
         btnAddWord = view.findViewById(R.id.btn_add);
         btnPlay = view.findViewById(R.id.btn_play);
+        btnTrack = view.findViewById(R.id.btn_track);
         tts = new TextToSpeech(getActivity(), this);
 
 //        button.setOnClickListener(v -> {
@@ -126,6 +130,13 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
             Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_act, vocabFrgm)
+                    .commit();
+        });
+
+        btnTrack.setOnClickListener(v -> {
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_act, trackFrgm)
                     .commit();
         });
 

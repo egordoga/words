@@ -9,6 +9,7 @@ import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +24,8 @@ import java.util.Objects;
 
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder> {
 
-    private FullWordFragment fragment;
+//    private FullWordFragment fragment;
+    private Fragment fragment;
     private List<TranslationAndExample> taeList = new LinkedList<>();
     private LayoutInflater inflater;
     private RecyclerView.RecycledViewPool pool = new RecyclerView.RecycledViewPool();

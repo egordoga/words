@@ -1,33 +1,24 @@
 package com.e.words.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.e.words.R;
-import com.e.words.abby.JsonConvertNew;
-import com.e.words.abby.JsonData;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.ArticleFragmentPagerAdapter;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Translation;
 import com.e.words.entity.entityNew.TranslationAndExample;
-import com.e.words.repository.WordObjRepo;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class WordFragment extends Fragment {
 

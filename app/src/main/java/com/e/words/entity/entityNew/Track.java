@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import org.jetbrains.annotations.NotNull;
+
 @Entity
 public class Track {
 
@@ -20,5 +22,11 @@ public class Track {
     public Track(String name, String wordIds) {
         this.name = name;
         this.wordIds = wordIds;
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return name;
     }
 }

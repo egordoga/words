@@ -1,4 +1,4 @@
-package com.e.words.entity;
+package com.e.words.abby.depricated;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;

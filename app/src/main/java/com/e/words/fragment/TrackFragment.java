@@ -9,15 +9,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.dto_new.TrackSmall;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordWithId;
+import com.e.words.adapter.TrackAdapter;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.repository.TrackRepo;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +40,10 @@ public class TrackFragment extends Fragment {
     private Spinner trackSpin;
     private TrackRepo trackRepo;
     private RecyclerView rvTrackWords;
+    private TrackAdapter trackAdapter;
+    private List<Track> trackList;
+    private List<WordWithId> wordList;
+    private MainFragment mainFrgm;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,6 +83,8 @@ public class TrackFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mainFrgm = new MainFragment();
+        setHasOptionsMenu(true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -83,10 +96,39 @@ public class TrackFragment extends Fragment {
         rvTrackWords = view.findViewById(R.id.rv_track_words);
         rvTrackWords.setLayoutManager(new LinearLayoutManager(getContext()));
         trackRepo = new TrackRepo(getContext());
-        ArrayAdapter<Track> adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
-                android.R.layout.simple_spinner_item, Objects.requireNonNull(getAllTrack()));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trackSpin.setAdapter(adapter);
+        trackAdapter = new TrackAdapter(getContext());
+        trackList = getAllTrack();
+        Track track = trackList.get(0);
+        try {
+            wordList = trackRepo.findWordWithIdFromTrack(track.id);
+            trackAdapter.loadItems(wordList);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        rvTrackWords.setAdapter(trackAdapter);
+        ArrayAdapter<Track> spinAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
+                android.R.layout.simple_spinner_item, trackList);
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinAdapter.notifyDataSetChanged();
+        trackSpin.setAdapter(spinAdapter);
+        trackSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Track track = trackList.get(position);
+                try {
+                    trackAdapter.loadItems(trackRepo.findWordWithIdFromTrack(track.id));
+                    rvTrackWords.setAdapter(trackAdapter);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return view;
     }
 
@@ -98,5 +140,24 @@ public class TrackFragment extends Fragment {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_return, menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.act_return_main:
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_act, mainFrgm)
+                        .commit();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

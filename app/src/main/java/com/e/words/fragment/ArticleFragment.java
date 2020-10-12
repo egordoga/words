@@ -1,20 +1,18 @@
 package com.e.words.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-//import android.support.v4.app
-
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.e.words.R;
-import com.e.words.abby.JsonConvertNew;
-import com.e.words.abby.JsonData;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+
+//import android.support.v4.app
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,7 +68,7 @@ public class ArticleFragment extends Fragment {
         articleTw = view.findViewById(R.id.tw_article);
         articleTw.setMovementMethod(new ScrollingMovementMethod());
         articleTw.setText(article);
-        System.out.println("ArticleFragment  onCreateView   ".toUpperCase() + article.substring(0,100));
+        System.out.println("ArticleFragment  onCreateView   ".toUpperCase() + article.substring(0, 100));
         return view;
     }
 }

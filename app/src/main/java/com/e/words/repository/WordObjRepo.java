@@ -67,6 +67,11 @@ public class WordObjRepo {
         return wordDao.findAllVocabularyDto();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public List<WordObj> findAllWordByIds(String[] in) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> wordDao.findAllWordByIds(in)).get();
+    }
+
     public void deleteWordById(long id) {
         WordDb.dbExecutor.execute(() -> {
             wordDao.deleteWordById(id);

@@ -1,4 +1,4 @@
-package com.e.words.abby;
+package com.e.words.abby.depricated;
 
 import com.e.words.abby.depricated.dto.ExampleDtoOld;
 import com.e.words.abby.abbyEntity.dto.TranslWithExDto;

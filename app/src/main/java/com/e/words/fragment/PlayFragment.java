@@ -6,19 +6,24 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.dto_new.TrackSmall;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+import com.e.words.entity.entityNew.Track;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
+import com.e.words.temp.TestTTS;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,12 +36,20 @@ import java.util.concurrent.ExecutionException;
  * Use the {@link PlayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlayFragment extends Fragment {
+public class PlayFragment extends Fragment implements TextToSpeech.OnInitListener{
 
     private Spinner spinner;
-    List<TrackSmall> tracks;
-    private TrackRepo repo;
+    private List<Track> tracks;
+    private TrackRepo trackRepo;
     private MainFragment mainFrgm;
+    private ImageButton btnPlay;
+    private ImageButton btnStop;
+    private int lastTrackPosition;
+    private boolean isChangeTrack;
+    private Track selectedTrack;
+    private List<WordObj> wordObjList;
+    private WordObjRepo wordRepo;
+    private TextToSpeech tts;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,13 +97,45 @@ public class PlayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_play, container, false);
-        repo = new TrackRepo(getContext());
+        tts = new TextToSpeech(getActivity(), this);
+        btnPlay = view.findViewById(R.id.btn_play);
+        btnStop = view.findViewById(R.id.btn_stop);
+        trackRepo = new TrackRepo(getContext());
+        wordRepo = new WordObjRepo(getContext());
         mainFrgm = new MainFragment();
         spinner = view.findViewById(R.id.spinner_play);
-        ArrayAdapter<TrackSmall> adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
-                android.R.layout.simple_spinner_item, Objects.requireNonNull(getAllTrackSmall()));
+        ArrayAdapter<Track> adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
+                android.R.layout.simple_spinner_item, Objects.requireNonNull(getAllTrack()));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(lastTrackPosition);
+        selectedTrack = tracks.get(lastTrackPosition);
+        getWordObjList(selectedTrack);
+        TestTTS testTTS = new TestTTS();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tracks.get(lastTrackPosition).isLast = false;
+                lastTrackPosition = position;
+                selectedTrack = tracks.get(lastTrackPosition);
+                selectedTrack.isLast = true;
+                isChangeTrack = true;
+                getWordObjList(selectedTrack);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btnPlay.setOnClickListener(v -> {
+            btnPlay.setImageResource(R.drawable.btn_blue_pause);
+            for (WordObj wordObj : wordObjList) {
+                testTTS.playWordObj(wordObj, tts);
+            }
+        });
+
         return view;
     }
 
@@ -114,12 +159,34 @@ public class PlayFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private List<TrackSmall>/*TrackSmall[]*/ getAllTrackSmall() {
+    private List<Track> getAllTrack() {
         try {
-            return /*(TrackSmall[])*/ repo.findAllTrackSmall()/*.toArray()*/;
+            tracks = trackRepo.findAllTrack();
+            for (int i = 0; i < tracks.size(); i++) {
+                if (tracks.get(i).isLast) {
+                    lastTrackPosition = i;
+                    break;
+                }
+            }
+            return tracks;
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void getWordObjList(Track track) {
+        String[] ids = track.wordIds.split(";;");
+        try {
+            wordObjList = wordRepo.findAllWordByIds(ids);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onInit(int status) {
+
     }
 }

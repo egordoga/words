@@ -8,8 +8,6 @@ import androidx.room.RoomDatabase;
 
 import com.e.words.dao.daoNew.TrackDao;
 import com.e.words.dao.daoNew.WordDao;
-import com.e.words.entity.ExampleOld;
-import com.e.words.entity.Translate;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Json;
 import com.e.words.entity.entityNew.Sound;

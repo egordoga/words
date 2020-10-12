@@ -3,7 +3,7 @@ package com.e.words.dao;
 import androidx.room.Insert;
 import androidx.room.Transaction;
 
-import com.e.words.entity.ExampleOld;
+import com.e.words.abby.depricated.ExampleOld;
 import com.e.words.entity.ForeignWord;
 import com.e.words.entity.Translate;
 

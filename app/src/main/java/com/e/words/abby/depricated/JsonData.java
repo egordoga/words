@@ -1,4 +1,4 @@
-package com.e.words.abby;
+package com.e.words.abby.depricated;
 
 public class JsonData {
     public static final String MINICARD_RESP = "{\n" +

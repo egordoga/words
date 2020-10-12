@@ -1,4 +1,4 @@
-package com.e.words.fragment;
+package com.e.words.abby.depricated;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

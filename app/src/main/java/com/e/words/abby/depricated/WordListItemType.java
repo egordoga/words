@@ -1,4 +1,4 @@
-package com.e.words.abby.abbyEntity;
+package com.e.words.abby.depricated;
 
 public enum WordListItemType {
     NONE(0),                //  Nothing found. Invalid element

@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordWithId;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Json;
 import com.e.words.entity.entityNew.Sound;
@@ -89,6 +90,13 @@ public abstract class WordDao {
     @Transaction
     @Query("select * from Word order by word")
     public abstract List<WordObj> findAllWordObj();
+
+    @Transaction
+    @Query("select * from Word where id in (:in) order by word")
+    public abstract List<WordObj> findAllWordByIds(String[] in);
+
+    @Query("select id, word from Word where id in (:ids) order by word")
+    public abstract List<WordWithId> findAllWordWithIdById(String[] ids);
 
     public List<VocabularyDto> findAllVocabularyDto() {
         List<VocabularyDto> list = new LinkedList<>();

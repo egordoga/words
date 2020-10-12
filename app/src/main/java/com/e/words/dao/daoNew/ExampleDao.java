@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.e.words.entity.ExampleOld;
+import com.e.words.abby.depricated.ExampleOld;
 
 import java.util.List;
 

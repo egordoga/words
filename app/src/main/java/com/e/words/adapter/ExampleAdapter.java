@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
@@ -21,7 +22,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     private List<Example> examples;
     private LayoutInflater inflater;
 
-    public ExampleAdapter(FullWordFragment fragment, List<Example> examples) {
+    public ExampleAdapter(/*FullWordFragment fragment*/  Fragment fragment, List<Example> examples) {
         this.inflater = (LayoutInflater) Objects.requireNonNull(fragment.getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.examples = examples;
     }

@@ -1,4 +1,4 @@
-package com.e.words.abby;
+package com.e.words.abby.depricated;
 
 public class SimplePojo {
     public String str;
