@@ -14,7 +14,6 @@ import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordWithId;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Json;
-import com.e.words.entity.entityNew.Sound;
 import com.e.words.entity.entityNew.Translation;
 import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.entity.entityNew.Word;
@@ -38,8 +37,8 @@ public abstract class WordDao {
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    public abstract long addWordObj(WordObj wordObj);
 
-    @Insert
-    public abstract void addSound(Sound sound);
+//    @Insert
+//    public abstract void addSound(Sound sound);
 
     @Insert
     public abstract void addJson(Json json);
@@ -53,18 +52,18 @@ public abstract class WordDao {
     }
 
     @Transaction
-    public void addWord(WordObj wordObj, String jsonStr, @Nullable List<byte[]> sounds) {
+    public void addWord(WordObj wordObj, String jsonStr/*, @Nullable List<byte[]> sounds*/) {
         //      String transcrUS = wordObj.transcriptions.size() > 1 ? wordObj.transcriptions.get(1) : null;
         //      Word word = new Word(wordObj.word, wordObj.json, wordObj.transcriptions.get(0), transcrUS);
 
         long wordId = addWord(wordObj.word);
         Json json = new Json(jsonStr, wordId);
         addJson(json);
-        if (sounds != null) {
-            byte[] soundUS = sounds.size() > 1 ? sounds.get(1) : null;
-            Sound sound = new Sound(sounds.get(0), soundUS, wordId);
-            addSound(sound);
-        }
+//        if (sounds != null) {
+//            byte[] soundUS = sounds.size() > 1 ? sounds.get(1) : null;
+//            Sound sound = new Sound(sounds.get(0), soundUS, wordId);
+//            addSound(sound);
+//        }
         for (TranslationAndExample tae : wordObj.translations) {
             tae.translation.wordId = wordId;
             addTranslationWithExamples(tae.translation, tae.examples);
@@ -80,12 +79,28 @@ public abstract class WordDao {
     @Query("select * from Word where word = :word")
     public abstract Word findWordByWord(String word);
 
+    @Query("select * from Word where id = :wordId")
+    public abstract Word findWordById(long wordId);
+
+    @Query("select fileNames from Word where id = :wordId")
+    public abstract String findFileNamesByWordId(long wordId);
+
+    @Query("select fileNames from Word where word = :word")
+    public abstract String findFileNamesByWord(String word);
+
     @Query("select * from Json where wordId = :wordId")
     public abstract Json findJsonByWordId(long wordId);
+
+    @Query("select * from Word where trackName = :trackName")
+    public abstract List<Word> findWordsByTrackName(String trackName);
 
     @Transaction
     @Query("select * from Word where word = :word")
     public abstract WordObj findWordObjByWord(String word);
+
+    @Transaction
+    @Query("select * from Word where id = :wordId")
+    public abstract WordObj findWordObjById(long wordId);
 
     @Transaction
     @Query("select * from Word order by word")
@@ -94,6 +109,13 @@ public abstract class WordDao {
     @Transaction
     @Query("select * from Word where id in (:in) order by word")
     public abstract List<WordObj> findAllWordByIds(String[] in);
+
+    @Transaction
+    @Query("select * from Word where word in (:in) order by word")
+    public abstract List<WordObj> findAllWordByWords(String[] in);
+
+//    @Query("select fileNames from Word where word = :word")
+//    public abstract String findFileNames(String word);
 
     @Query("select id, word from Word where id in (:ids) order by word")
     public abstract List<WordWithId> findAllWordWithIdById(String[] ids);
@@ -231,5 +253,8 @@ public abstract class WordDao {
 //        }
 //        return exDtos;
 //    }
+
+
+
 
 }

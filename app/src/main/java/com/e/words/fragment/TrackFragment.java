@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.dto_new.WordWithId;
 import com.e.words.adapter.TrackAdapter;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.repository.TrackRepo;
@@ -42,7 +41,7 @@ public class TrackFragment extends Fragment {
     private RecyclerView rvTrackWords;
     private TrackAdapter trackAdapter;
     private List<Track> trackList;
-    private List<WordWithId> wordList;
+    private List<String> wordList;
     private MainFragment mainFrgm;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -100,7 +99,7 @@ public class TrackFragment extends Fragment {
         trackList = getAllTrack();
         Track track = trackList.get(0);
         try {
-            wordList = trackRepo.findWordWithIdFromTrack(track.id);
+            wordList = trackRepo.findWordsFromTrack(track.id);
             trackAdapter.loadItems(wordList);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -116,7 +115,7 @@ public class TrackFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Track track = trackList.get(position);
                 try {
-                    trackAdapter.loadItems(trackRepo.findWordWithIdFromTrack(track.id));
+                    trackAdapter.loadItems(trackRepo.findWordsFromTrack(track.id));
                     rvTrackWords.setAdapter(trackAdapter);
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();

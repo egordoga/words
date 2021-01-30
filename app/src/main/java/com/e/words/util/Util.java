@@ -13,6 +13,7 @@ import com.e.words.entity.entityNew.Translation;
 import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.repository.WordObjRepo;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class Util {
@@ -48,5 +49,23 @@ public class Util {
 
 
         return new FullWordObj(wordObj, json);
+    }
+
+    public static String arrToString(String[] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(arr[0]);
+        for (int i = 1; i < arr.length; i++) {
+            sb.append(", ").append(arr[i]);
+        }
+        return sb.toString();
+    }
+
+    public static String ListToStringForDB(List<String> list) {
+        StringBuilder sb = new StringBuilder();
+   //     sb.append(list.get(0));
+        for (String s : list) {
+            sb.append(";;").append(s);
+        }
+        return sb.toString();
     }
 }

@@ -9,7 +9,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Track" />
+        android:text="Track"
+        android:textAlignment="center"
+        android:textSize="30sp" />
 
     <Spinner
         android:id="@+id/spinner_track"

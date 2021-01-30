@@ -9,4 +9,8 @@
         android:id="@+id/act_del_word"
         android:orderInCategory="101"
         android:title="Удалить"/>
+    <item
+        android:id="@+id/act_article"
+        android:orderInCategory="102"
+        android:title="Словарная статья"/>
 </menu>

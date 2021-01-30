@@ -1,6 +1,7 @@
 package com.e.words.dao.daoNew;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -19,7 +20,7 @@ public interface TrackDao {
     @Query("select * from Track where name = :name")
     Track findTrackByName(String name);
 
-    @Query("select * from Track")
+    @Query("select * from Track order by name")
     List<Track> findAllTrack();
 
     @Query("select id, name from Track order by name")
@@ -33,4 +34,7 @@ public interface TrackDao {
 
     @Insert
     void insertTrack(Track track);
+
+    @Delete
+    void deleteTrack(Track track);
 }

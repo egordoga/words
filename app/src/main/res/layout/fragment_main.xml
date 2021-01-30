@@ -8,30 +8,111 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
-        android:id="@+id/btn_vocab"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Словарь" />
-    <Button
-        android:id="@+id/btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Добавить слово" />
-    <Button
-        android:id="@+id/btn_test_frgm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test fragment" />
-    <Button
-        android:id="@+id/btn_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play" />
-    <Button
-        android:id="@+id/btn_track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Track" />
+        android:text="Главное меню"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="Добавить слово"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_track_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="Track list"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="Play"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_test_frgm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="test 1"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_track"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="Track"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_test2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="test 2"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_vocab"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="Словарь"
+            android:textAlignment="center"
+            android:textColor="#ECE3E3" />
+
+        <Button
+            android:id="@+id/btn_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#39859C"
+            android:text="Settings"
+            android:textColor="#ECE3E3" />
+    </LinearLayout>
 
 </LinearLayout>

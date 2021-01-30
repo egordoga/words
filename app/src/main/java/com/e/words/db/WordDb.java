@@ -6,11 +6,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+//import com.e.words.dao.daoNew.SoundDao;
 import com.e.words.dao.daoNew.TrackDao;
 import com.e.words.dao.daoNew.WordDao;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.Json;
-import com.e.words.entity.entityNew.Sound;
+//import com.e.words.entity.entityNew.Sound;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Translation;
 import com.e.words.entity.entityNew.Word;
@@ -18,7 +19,7 @@ import com.e.words.entity.entityNew.Word;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Word.class, Example.class, Track.class, Translation.class, Sound.class, Json.class}, version = 9, exportSchema = false)
+@Database(entities = {Word.class, Example.class, Track.class, Translation.class, /*Sound.class,*/ Json.class}, version = 13, exportSchema = false)
 public abstract class WordDb extends RoomDatabase {
     private static WordDb instance;
     private static final String DB_NAME = "word.db";
@@ -30,6 +31,7 @@ public abstract class WordDb extends RoomDatabase {
 
     public abstract WordDao wordDao();
     public abstract TrackDao trackDao();
+  //  public abstract SoundDao soundDao();
 
     public static WordDb getDatabase(final Context context) {
         if (instance == null) {

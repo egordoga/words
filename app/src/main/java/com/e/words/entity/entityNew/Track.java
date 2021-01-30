@@ -6,22 +6,25 @@ import androidx.room.PrimaryKey;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 @Entity
-public class Track {
+public class Track implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     public long id;
     @ColumnInfo(index = true)
     public String name;
-    public String wordIds; // строка с ID слов, разделенных ";;", чтобы не мучаться со списком
+  //  public String wordIds; // строка с ID слов, разделенных ";;", чтобы не мучаться со списком
+    public String words; // строка слов, разделенных ";;", чтобы не мучаться со списком
     public boolean isLast;
 
     public Track() {
     }
 
-    public Track(String name, String wordIds) {
+    public Track(String name, String words) {
         this.name = name;
-        this.wordIds = wordIds;
+        this.words = words;
     }
 
     @NotNull

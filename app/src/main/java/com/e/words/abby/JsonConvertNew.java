@@ -18,6 +18,7 @@ public class JsonConvertNew {
 
   //  public List<String> list = new ArrayList<>();
     public List<String> sounds = new ArrayList<>();
+    public List<String> trnscrs = new ArrayList<>();
     public WordObj wordObj = new WordObj();
     public int idxTransl;
     public int idxEx;
@@ -31,6 +32,7 @@ public class JsonConvertNew {
             wordObj.word.word = jsonObj.title;
          //   wordObj.word.json = json;
             String w = convertBody(jsonObj.bodies);
+            makeTranscriptStr();
 //            wordObj.word.article = w;
 
 
@@ -76,6 +78,12 @@ public class JsonConvertNew {
                         sb.append("/")
                                 .append(markup.text)
                                 .append("/ ");
+                        break;
+                    case SOUND:
+                        sounds.add(markup.fileName);
+                        break;
+                    case TRANSCRIPTION:
+                        trnscrs.add("[" + markup.text + "]");
                         break;
                 }
             }
@@ -140,7 +148,7 @@ public class JsonConvertNew {
     }
 
     private String convertBody(List<Body> bodies) {
-        List<String> trnscrs = new ArrayList<>();
+     //   List<String> trnscrs = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (Body body : bodies) {
             switch (body.node) {
@@ -162,10 +170,10 @@ public class JsonConvertNew {
                     break;
             }
         }
-        wordObj.word.transcript = trnscrs.get(0);
-        if (trnscrs.size() > 1) {
-            wordObj.word.transcript += ("  " + trnscrs.get(1));
-        }
+//        wordObj.word.transcript = trnscrs.get(0);
+//        if (trnscrs.size() > 1) {
+//            wordObj.word.transcript += ("  " + trnscrs.get(1));
+//        }
 
 //        System.out.println("TRNSCR SIZE  " + trnscrs.size());
 //        for (String snd : trnscrs) {
@@ -192,4 +200,17 @@ public class JsonConvertNew {
 //            list.add(str);
 //        }
 //    }
+
+    private void makeTranscriptStr() {
+        if (trnscrs.size() != 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(trnscrs.get(0));
+            if (trnscrs.size() > 1) {
+                for (int i = 1; i < trnscrs.size(); i++) {
+                    sb.append("  ").append(trnscrs.get(i));
+                }
+            }
+            wordObj.word.transcript = sb.toString();
+        }
+    }
 }

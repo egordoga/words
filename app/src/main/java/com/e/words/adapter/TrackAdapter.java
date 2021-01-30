@@ -18,10 +18,10 @@ import java.util.List;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
 
-    private List<WordWithId> wordList;
+    private List<String> wordList;
     private LayoutInflater inflater;
   //  private TrackAdapter.ItemClickListener mListener;
-    public List<Long> checkedIds;
+    public List<String> checkedIds;
     private SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
     public TrackAdapter(Context context/*, TrackAdapter.ItemClickListener listener*/) {
@@ -41,17 +41,17 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
     @Override
     public void onBindViewHolder(@NonNull TrackAdapter.TrackViewHolder holder, int position) {
         holder.bind(position);
-        holder.ctvTrackWord.setText(wordList.get(position).word);
+        holder.ctvTrackWord.setText(wordList.get(position));
         holder.ctvTrackWord.setOnClickListener(v -> {
             boolean value = holder.ctvTrackWord.isChecked();
             if (!value) {
                 holder.ctvTrackWord.setChecked(true);
                 itemStateArray.put(position, true);
-                checkedIds.add(wordList.get(position).id);
+                checkedIds.add(wordList.get(position));
             } else {
                 holder.ctvTrackWord.setChecked(false);
                 itemStateArray.put(position, false);
-                checkedIds.remove(wordList.get(position).id);
+                checkedIds.remove(wordList.get(position));
             }
         });
     }
@@ -61,7 +61,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
         return wordList.size();
     }
 
-    public void loadItems(List<WordWithId> items) {
+    public void loadItems(List<String> items) {
         this.wordList = items;
        // notifyDataSetChanged();
     }

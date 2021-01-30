@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -21,12 +20,12 @@ import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.WordAdapter;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.TranslationAndExample;
+import com.e.words.worker.FileWorker;
 import com.e.words.repository.WordObjRepo;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +39,7 @@ public class FullWordFragment extends Fragment {
     private String json;
     private List<byte[]> sounds;
     private AddWordFragment addWordFragment;
+    private MainFragment mainFragment;
 
     public FullWordFragment() {
     }
@@ -90,6 +90,7 @@ public class FullWordFragment extends Fragment {
 
 
         addWordFragment = new AddWordFragment();
+        mainFragment = new MainFragment();
         TextView tvWordFw = view.findViewById(R.id.tv_word_fw);
         TextView tvTranscrFw = view.findViewById(R.id.tv_transcr_fw);
         tvWordFw.setText(wordObj.word.word);
@@ -175,17 +176,22 @@ public class FullWordFragment extends Fragment {
         WordObjRepo repo = new WordObjRepo(getContext());
         switch (id) {
             case R.id.action_save:
-                repo.addWord(smallWord, json, sounds);
+                repo.addWord(smallWord, json/*, sounds*/);
+                FileWorker worker = new FileWorker(getContext());
+                worker.saveSoundFile(Objects.requireNonNull(getContext()), sounds.get(0), smallWord.word.word);
+                if (sounds.size() > 1) {
+                    worker.saveSoundFile(Objects.requireNonNull(getContext()), sounds.get(1), smallWord.word.word + "US");
+                }
                 return true;
             case R.id.action_get:
                 try {
-                    repo.findWordByWord("look");
+                    repo.findWordObjByWord("look");
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
                 return true;
             case R.id.action_update:
-                repo.updateWord(smallWord);
+                repo.updateTranslationAndExample(smallWord);
                 return true;
             case R.id.action_delete:
                 repo.deleteWordByWord("look");
@@ -198,6 +204,12 @@ public class FullWordFragment extends Fragment {
                     .beginTransaction()
                     .replace(R.id.main_act, addWordFragment)
                     .commit();
+                return true;
+            case R.id.action_main:
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_act, mainFragment)
+                        .commit();
                 return true;
         }
 

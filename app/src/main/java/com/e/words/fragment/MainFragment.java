@@ -1,5 +1,7 @@
 package com.e.words.fragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,16 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.e.words.R;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+import com.e.words.entity.entityNew.Track;
+import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.temp.TestTTS;
+import com.e.words.temp.TestTTS1;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -31,17 +34,21 @@ import java.util.concurrent.ExecutionException;
  */
 public class MainFragment extends Fragment implements TextToSpeech.OnInitListener {
 
-    private Button buttonTest;
+    private Button buttonTest1;
+    private Button buttonTest2;
     private Button btnVocab;
     private Button btnAddWord;
     private Button btnPlay;
     private Button btnTrack;
+    private Button btnTrackList;
+    private Button btnSetting;
     private ArticleFragment af;
     private WordFragment wf;
     private AddWordFragment awf;
     private PlayFragment pf;
     private VocabularyFragment vocabFrgm;
     private TrackFragment trackFrgm;
+    private SettingFragment setFrgm;
     private TextToSpeech tts;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -88,6 +95,7 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
         pf = new PlayFragment();
         vocabFrgm = new VocabularyFragment();
         trackFrgm = new TrackFragment();
+        setFrgm = new SettingFragment();
     }
 
     @Override
@@ -101,20 +109,63 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        buttonTest = view.findViewById(R.id.btn_test_frgm);
+        buttonTest1 = view.findViewById(R.id.btn_test_frgm);
+        buttonTest2 = view.findViewById(R.id.btn_test2);
         btnVocab = view.findViewById(R.id.btn_vocab);
         btnAddWord = view.findViewById(R.id.btn_add);
         btnPlay = view.findViewById(R.id.btn_play);
         btnTrack = view.findViewById(R.id.btn_track);
-        tts = new TextToSpeech(getActivity(), this);
+        btnTrackList = view.findViewById(R.id.btn_track_list);
+        btnSetting = view.findViewById(R.id.btn_setting);
+        Context ctx = getContext();
+        tts = new TextToSpeech(ctx, this);
+        TrackRepo trackRepo = new TrackRepo(ctx);
+        List<Track> tracks = null;
+        try {
+            tracks = trackRepo.findAllTrack();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
-//        button.setOnClickListener(v -> {
-//            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.main_act, wf)
-//                    .commit();
-//
-//        });
+        buttonTest1.setOnClickListener(v -> {
+//            TestTTS testTTS = new TestTTS(ctx);
+//            WordObjRepo repo = new WordObjRepo(ctx);
+//            try {
+//                System.out.println("SSSSS " + repo.findWordsByTrackName("first").get(0).fileNames);
+//                File dir = ctx.getFilesDir();
+//                File file = new File(dir, "look2.wav");
+//                System.out.println("RR " + file.exists());
+//            } catch (ExecutionException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
+            //        testTTS.ttsToFiles(null, tts, getContext());
+       //     testTTS.addFiles(getContext());
+            new TestTTS1(ctx).testTts();
+
+        });
+        buttonTest2.setOnClickListener(v -> {
+         //   TestTTS1 testTTS = new TestTTS1(ctx);
+            WordObjRepo repo = new WordObjRepo(ctx);
+            try {
+                WordObj w = repo.findWordObjByWord("resume");
+                System.out.println("XX " + w.word.fileNames);
+                System.out.println("XX2 " + w.word.trackName);
+                WordObj w1 = repo.findWordObjByWord("lock");
+                System.out.println("XX " + w1.word.fileNames);
+                System.out.println("XX2 " + w1.word.trackName);
+                WordObj w2 = repo.findWordObjByWord("simple");
+                System.out.println("XX " + w2.word.fileNames);
+                System.out.println("XX2 " + w2.word.trackName);
+                WordObj w3 = repo.findWordObjByWord("look");
+                System.out.println("XX " + w3.word.fileNames);
+                System.out.println("XX2 " + w3.word.trackName);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+      //      testTTS.testExoPlayer();
+        });
 
         btnAddWord.setOnClickListener(v -> {
             Objects.requireNonNull(getActivity()).getSupportFragmentManager()
@@ -133,12 +184,41 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
                     .commit();
         });
 
-        btnTrack.setOnClickListener(v -> {
+        btnSetting.setOnClickListener(v -> {
             Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_act, trackFrgm)
+                    .replace(R.id.main_act, setFrgm)
                     .commit();
         });
+
+        List<Track> finalTracks = tracks;
+        btnTrack.setOnClickListener(v -> {
+            if (finalTracks.size() == 0) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+                dialog
+                        .setMessage("Не найдено ни одного трека")
+                        .create().show();
+            } else {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_act, trackFrgm)
+                        .commit();
+            }
+        });
+
+        btnTrackList.setOnClickListener(v -> {
+                    if (finalTracks.size() == 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+                        dialog
+                                .setMessage("Не найдено ни одного трека")
+                                .create().show();
+                    } else {
+                        Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_act, TrackListFragment.newInstance(finalTracks))
+                                .commit();
+                    }
+                });
 
 
         btnPlay.setOnClickListener(v -> {
@@ -155,10 +235,17 @@ public class MainFragment extends Fragment implements TextToSpeech.OnInitListene
 //            for (WordObj wordObj : list) {
 //                testTTS.playWordObj(wordObj, tts);
 //            }
-            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_act, pf)
-                    .commit();
+            if (finalTracks.size() == 0) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+                dialog
+                        .setMessage("Не найдено ни одного трека")
+                        .create().show();
+            } else {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_act, PlayFragment.newInstance(finalTracks))
+                        .commit();
+            }
 
         });
 

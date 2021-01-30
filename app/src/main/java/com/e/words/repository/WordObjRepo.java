@@ -10,12 +10,11 @@ import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.dao.daoNew.WordDao;
 import com.e.words.db.WordDb;
 import com.e.words.entity.entityNew.Json;
+import com.e.words.entity.entityNew.Word;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class WordObjRepo {
 
@@ -27,14 +26,14 @@ public class WordObjRepo {
         this.wordDao = db.wordDao();
     }
 
-    public void addWord(WordObj wordObj, String json, List<byte[]> sounds) {
+    public void addWord(WordObj wordObj, String json/*, List<byte[]> sounds*/) {
         WordDb.dbExecutor.execute(() -> {
-            wordDao.addWord(wordObj, json, sounds);
+            wordDao.addWord(wordObj, json/*, sounds*/);
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public WordObj findWordByWord(String word) throws ExecutionException, InterruptedException {
+    public WordObj findWordObjByWord(String word) throws ExecutionException, InterruptedException {
 //        WordObj w = null;
 //        try {
 //            w = new FindWordAsyncTask().get();
@@ -68,8 +67,13 @@ public class WordObjRepo {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public List<WordObj> findAllWordByIds(String[] in) throws ExecutionException, InterruptedException {
-        return CompletableFuture.supplyAsync(() -> wordDao.findAllWordByIds(in)).get();
+    public List<WordObj> findAllWordByWords(String[] in) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> wordDao.findAllWordByWords(in)).get();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public List<Word> findWordsByTrackName(String trackName) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> wordDao.findWordsByTrackName(trackName)).get();
     }
 
     public void deleteWordById(long id) {
@@ -84,9 +88,15 @@ public class WordObjRepo {
         });
     }
 
-    public void updateWord(WordObj wordObj) {
+    public void updateTranslationAndExample(WordObj wordObj) {
         WordDb.dbExecutor.execute(() -> {
             wordDao.updateTranslationAndExample(wordObj);
+        });
+    }
+
+    public void updateWord(Word word) {
+        WordDb.dbExecutor.execute(() -> {
+            wordDao.updateWord(word);
         });
     }
 
@@ -98,5 +108,7 @@ public class WordObjRepo {
         });
     }
 
-
+    public String findFileNames(String word) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> wordDao.findFileNamesByWord(word)).get();
+    }
 }

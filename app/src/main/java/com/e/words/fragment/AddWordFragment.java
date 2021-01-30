@@ -111,7 +111,7 @@ public class AddWordFragment extends Fragment {
         btnAddNewWord = view.findViewById(R.id.btn_add_new_word);
         repo = new WordObjRepo(getContext());
         btnAddNewWord.setOnClickListener(v -> {
-            String word = etNewWord.getText().toString();
+            String word = etNewWord.getText().toString().toLowerCase();
             try {
                 wordObj = new FindWordAsyncTask().execute(word).get();
             } catch (ExecutionException | InterruptedException e) {
@@ -123,7 +123,7 @@ public class AddWordFragment extends Fragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder
                             .setTitle("ERROR 404")
-                            .setMessage("Такого слова не найдено в словаре")
+                            .setMessage("Такого слова не найдено в словаре ABBY")
                             .setCancelable(true)
                             .show();
                 } else {
@@ -141,7 +141,7 @@ public class AddWordFragment extends Fragment {
                // WordObj finalWordObj = wordObj;
                 builder
                         .setTitle("Внимание!")
-                        .setMessage("Такое слово уже есть в словаре. Открыть его?")
+                        .setMessage("Такое слово уже есть в Вашем словаре. Открыть его?")
                         .setPositiveButton("YES", (dialog, which) -> {
                             FullWordObj fullWordObj = new Util(getContext()).makeFullObj(wordObj);
                             wf = WordFragment.newInstance(fullWordObj.wordObj, fullWordObj.json, null);

@@ -15,6 +15,8 @@ public class Word {
  //   public String json;
     public String transcript;
   //  public String transcrUS;
+    public String fileNames;
+    public String trackName;
     @Ignore
     public String article;
 

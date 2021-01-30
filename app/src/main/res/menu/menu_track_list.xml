@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/act_play_track"
+        android:orderInCategory="100"
+        android:title="Возпроизведение" />
+    <item
+        android:id="@+id/act_edit_track"
+        android:orderInCategory="101"
+        android:title="Редактировать" />
+    <item
+        android:id="@+id/act_del_track"
+        android:orderInCategory="102"
+        android:title="Удалить" />
+</menu>

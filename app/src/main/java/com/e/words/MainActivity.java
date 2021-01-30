@@ -3,17 +3,26 @@ package com.e.words;
 import android.os.Bundle;
 
 import com.e.words.adapter.VocabularyAdapter;
+import com.e.words.config.AppProperty;
+import com.e.words.entity.entityNew.Track;
 import com.e.words.fragment.ArticleFragment;
 import com.e.words.fragment.MainFragment;
+import com.e.words.fragment.PlayFragment;
+import com.e.words.fragment.TestFragment;
+import com.e.words.fragment.TrackListFragment;
+import com.e.words.repository.TrackRepo;
 import com.e.words.temp.TestTTS;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.speech.tts.TextToSpeech;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 
@@ -25,10 +34,11 @@ public class MainActivity extends /*FragmentActivity*/AppCompatActivity implemen
 //    Button test;
     private VocabularyAdapter adapter;
     private TextToSpeech tts;
-    TestTTS testTTS;
-    ArticleFragment artFrgm;
-    MainFragment mainFragment;
-    FragmentTransaction fTrans;
+    private TestTTS testTTS;
+    private ArticleFragment artFrgm;
+    private MainFragment mainFragment;
+    private PlayFragment playFragment;
+    private FragmentTransaction fTrans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +59,25 @@ public class MainActivity extends /*FragmentActivity*/AppCompatActivity implemen
 //        Context ctx = this;
 //        artFrgm = new ArticleFragment();
       //  artFrgm = new ArticleFragment();
-        mainFragment = new MainFragment();
+
+ //       mainFragment = new MainFragment();
+   //     playFragment = new PlayFragment();
+        Fragment target = null/* = new PlayFragment()*/;
+        TrackRepo repo = new TrackRepo(this);
+        try {
+            List<Track> tracks = repo.findAllTrack();
+            if (tracks.size() == 0) {
+                target = new MainFragment();
+            } else target = PlayFragment.newInstance(tracks);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+//        TrackListFragment trackListFragment = new TrackListFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.main_act, mainFragment)
-         //       .replace(R.id.main_act, artFrgm)
+           //     .add(R.id.main_act, playFragment)
+                .add(R.id.main_act, target)
+           //     .replace(R.id.main_act, target)
                 .commit();
 
     /*    test.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +171,21 @@ public class MainActivity extends /*FragmentActivity*/AppCompatActivity implemen
 //
 //        return super.onOptionsItemSelected(item);
 //    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("FFFFFFFFFFFFFFFFFF");
+        AppProperty.getInstance(this).saveProps();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+        AppProperty.getInstance(this).saveProps();
+    }
 
     @Override
     public void onInit(int status) {
