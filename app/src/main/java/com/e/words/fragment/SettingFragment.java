@@ -1,9 +1,6 @@
 package com.e.words.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.e.words.R;
 import com.e.words.config.AppProperty;
 
@@ -20,18 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SettingFragment extends Fragment {
 
-    private SeekBar sbSpeedTts;
-    private SeekBar sbCountRepeat;
-    private SeekBar sbPitch;
-    private SeekBar sbWordPause;
-    private SeekBar sbTranslPause;
     private TextView tvSpeedTts;
     private TextView tvCountRepeat;
     private TextView tvPitch;
@@ -39,44 +28,17 @@ public class SettingFragment extends Fragment {
     private TextView tvTranslPause;
     private MainFragment mainFrgm;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public SettingFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SettingFragment newInstance(String param1, String param2) {
         SettingFragment fragment = new SettingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         mainFrgm = new MainFragment();
         setHasOptionsMenu(true);
     }
@@ -86,11 +48,11 @@ public class SettingFragment extends Fragment {
                              Bundle savedInstanceState) {
         AppProperty props = AppProperty.getInstance(Objects.requireNonNull(getActivity()));
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
-        sbCountRepeat = view.findViewById(R.id.sb_count_repeat);
-        sbSpeedTts = view.findViewById(R.id.sb_speed_tts);
-        sbPitch = view.findViewById(R.id.sb_pitch);
-        sbWordPause = view.findViewById(R.id.sb_pause_words);
-        sbTranslPause = view.findViewById(R.id.sb_pause_transl);
+        SeekBar sbCountRepeat = view.findViewById(R.id.sb_count_repeat);
+        SeekBar sbSpeedTts = view.findViewById(R.id.sb_speed_tts);
+        SeekBar sbPitch = view.findViewById(R.id.sb_pitch);
+        SeekBar sbWordPause = view.findViewById(R.id.sb_pause_words);
+        SeekBar sbTranslPause = view.findViewById(R.id.sb_pause_transl);
         tvCountRepeat = view.findViewById(R.id.tv_count_repeat);
         tvSpeedTts = view.findViewById(R.id.tv_speed_tts);
         tvPitch = view.findViewById(R.id.tv_pitch);
@@ -102,6 +64,7 @@ public class SettingFragment extends Fragment {
         tvCountRepeat.setText(String.valueOf(props.countRepeat));
         sbCountRepeat.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue = 0;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressValue = progress;
@@ -127,6 +90,7 @@ public class SettingFragment extends Fragment {
         tvSpeedTts.setText(String.valueOf(speedProgress));
         sbSpeedTts.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue = 0;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressValue = progress;
@@ -152,6 +116,7 @@ public class SettingFragment extends Fragment {
         tvPitch.setText(String.valueOf(pitchProgress) + "%");
         sbPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue = 0;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressValue = progress;
@@ -178,6 +143,7 @@ public class SettingFragment extends Fragment {
         tvWordPause.setText(String.valueOf(wordPauseProgress));
         sbWordPause.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue = 0;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = progress / 100;
@@ -207,6 +173,7 @@ public class SettingFragment extends Fragment {
         tvTranslPause.setText(String.valueOf(translPauseProgress));
         sbTranslPause.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue = 0;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = progress / 100;
@@ -234,6 +201,7 @@ public class SettingFragment extends Fragment {
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_return, menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

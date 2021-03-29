@@ -21,13 +21,6 @@ public class Example {
     @Ignore
     public Boolean isChecked = false;
 
-//    public Example(String en, String ru, int translId) {
-//        this.en = en;
-//        this.ru = ru;
-//        this.translId = translId;
-//    }
-
-
     public Example() {
     }
 

@@ -14,8 +14,8 @@ import com.e.words.dao.daoNew.WordDao;
 import com.e.words.db.WordDb;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Word;
-import com.e.words.worker.FileWorker;
 import com.e.words.util.Util;
+import com.e.words.worker.FileWorker;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,19 +60,6 @@ public class TrackRepo {
         return CompletableFuture.supplyAsync(trackDao::findTrackNames).get();
     }
 
-//    public void addToTrack(String trackName, String word) {
-//        WordDb.dbExecutor.execute(() -> {
-//            Track track = trackDao.findTrackByName(trackName);
-//            addToTrack(track, word);
-//            if (track.wordIds == null || track.wordIds.length() == 0) {
-//                track.wordIds = String.valueOf(wordId);
-//            } else {
-//                track.wordIds = track.wordIds + ";;" + wordId;
-//            }
-//            trackDao.updateTrack(track);
-//        });
-//    }
-
     public void addToTrack(Track track, String word, TextToSpeech tts) {
         WordDb.dbExecutor.execute(() -> {
             if (track.words == null || track.words.length() == 0) {
@@ -87,7 +74,7 @@ public class TrackRepo {
 
     public void updateTrack(Track track) {
         WordDb.dbExecutor.execute(() ->
-            trackDao.updateTrack(track));
+                trackDao.updateTrack(track));
     }
 
     @Transaction
@@ -100,27 +87,13 @@ public class TrackRepo {
     }
 
     private void makeTranslateFiles(String word, String trackName, TextToSpeech tts) {
-        FileWorker worker = new FileWorker(ctx);
+        FileWorker worker = new FileWorker();
         WordObj wordObj = wordDao.findWordObjByWord(word);
         List<String> fileNames = worker.ttsToFiles(ctx, wordObj, tts);
-        //  if (wordObj.word.fileNames == null || wordObj.word.fileNames.length() == 0) {
         wordObj.word.fileNames = word + ".wav" + Util.ListToStringForDB(fileNames);
         wordObj.word.trackName = trackName;
-//        } else {
-//            wordObj.word.fileNames += (";;" + Util.ListToStringForDB(fileNames));
-//        }
         wordDao.updateWord(wordObj.word);
     }
-
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    public List<WordWithId> findWordWithIdFromTrack(long trackId) throws ExecutionException, InterruptedException {
-//        return CompletableFuture.supplyAsync(() -> {
-//            Track track = trackDao.findTrackById(trackId);
-//            String[] ids = track.wordIds.split(";;");
-//            List<WordWithId> list = wordDao.findAllWordWithIdById(ids);
-//            return list;
-//        }).get();
-//    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public List<String> findWordsFromTrack(long trackId) throws ExecutionException, InterruptedException {
@@ -134,7 +107,7 @@ public class TrackRepo {
     public void deleteTrack(Track track) {
         WordDb.dbExecutor.execute(() -> {
             List<Word> words = wordDao.findWordsByTrackName(track.name);
-            FileWorker worker = new FileWorker(ctx);
+            FileWorker worker = new FileWorker();
             for (Word word : words) {
                 String[] files = word.fileNames.split(";;");
                 for (int i = 1; i < files.length; i++) {

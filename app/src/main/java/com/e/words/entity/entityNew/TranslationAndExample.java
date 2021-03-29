@@ -1,11 +1,8 @@
 package com.e.words.entity.entityNew;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Ignore;
 import androidx.room.Relation;
-
-import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,12 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TranslationAndExample implements Serializable {
-//    public int id;
-//    public String translation;
-//    @ColumnInfo(name = "idx")
-//    public int index;
-//    @Ignore
-//    public Boolean isChecked = false;
     @Embedded
     public Translation translation = new Translation();  //TODO thinking
 

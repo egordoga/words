@@ -12,9 +12,7 @@ public class Word {
     public long id;
     @ColumnInfo(index = true)
     public String word;
- //   public String json;
     public String transcript;
-  //  public String transcrUS;
     public String fileNames;
     public String trackName;
     @Ignore
@@ -24,10 +22,8 @@ public class Word {
     }
 
     @Ignore
-    public Word(String word, /*String json,*/ String transcript/*, String transcrUS*/) {
+    public Word(String word, String transcript) {
         this.word = word;
-     //   this.json = json;
         this.transcript = transcript;
-      //  this.transcrUS = transcrUS;
     }
 }

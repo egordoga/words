@@ -11,18 +11,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.dto_new.ExampleDto;
 import com.e.words.entity.entityNew.Example;
-import com.e.words.fragment.FullWordFragment;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
-    private List<Example> examples;
-    private LayoutInflater inflater;
+    private final List<Example> examples;
+    private final LayoutInflater inflater;
 
-    public ExampleAdapter(/*FullWordFragment fragment*/  Fragment fragment, List<Example> examples) {
+    public ExampleAdapter(Fragment fragment, List<Example> examples) {
         this.inflater = (LayoutInflater) Objects.requireNonNull(fragment.getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.examples = examples;
     }
@@ -36,7 +34,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     @Override
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
-        holder.ctvExample.setText(examples.get(position).example /*+ "   " + examples.get(position).index*/);
+        holder.ctvExample.setText(examples.get(position).example);
         holder.ctvExample.setChecked(examples.get(position).isChecked);
         holder.ctvExample.setOnClickListener(v -> {
             if (!examples.get(position).isChecked) {

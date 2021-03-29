@@ -15,7 +15,7 @@ public class Track implements Serializable {
     public long id;
     @ColumnInfo(index = true)
     public String name;
-  //  public String wordIds; // строка с ID слов, разделенных ";;", чтобы не мучаться со списком
+    //  public String wordIds; // строка с ID слов, разделенных ";;", чтобы не мучаться со списком
     public String words; // строка слов, разделенных ";;", чтобы не мучаться со списком
     public boolean isLast;
 

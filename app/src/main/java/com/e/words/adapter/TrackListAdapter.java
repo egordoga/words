@@ -20,11 +20,11 @@ import java.util.concurrent.ExecutionException;
 
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder> {
 
-    private List<Track> trackList;
-    private List<String> wordList;
-    private LayoutInflater inflater;
-    private ItemClickListener mListener;
-    private Context context;
+    private final List<Track> trackList;
+    private final List<String> wordList;
+    private final LayoutInflater inflater;
+    private final ItemClickListener mListener;
+    private final Context context;
 
     public TrackListAdapter(Context context, TrackListAdapter.ItemClickListener listener) {
         this.context = context;
@@ -50,7 +50,13 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
     public void setItem(List<Track> items) {
         trackList.addAll(items);
         makeWordList(items);
-        notifyDataSetChanged();
+       // notifyDataSetChanged();
+       // notifyAll();
+    }
+
+    public void deleteItem(int position) {
+        trackList.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override
@@ -67,7 +73,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
                 List<WordObj> objList = repo.findAllWordByWords(words);
                 sb = new StringBuilder();
                 sb.append(objList.get(0).word.word);
-                for (int i = 1; i <objList.size(); i++) {
+                for (int i = 1; i < objList.size(); i++) {
                     sb.append(", ").append(objList.get(i).word.word);
                 }
                 wordList.add(sb.toString());
@@ -77,7 +83,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
         }
     }
 
-    static class TrackListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    static class TrackListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTrackName;
         TextView tvTrackWords;
         private final ItemClickListener listener;

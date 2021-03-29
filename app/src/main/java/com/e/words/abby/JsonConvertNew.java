@@ -16,12 +16,10 @@ import java.util.List;
 
 public class JsonConvertNew {
 
-  //  public List<String> list = new ArrayList<>();
     public List<String> sounds = new ArrayList<>();
     public List<String> trnscrs = new ArrayList<>();
     public WordObj wordObj = new WordObj();
     public int idxTransl;
-    public int idxEx;
 
     public WordObj jsonToObj(String json) {
         ObjectMapper mapper = new ObjectMapper();
@@ -30,17 +28,8 @@ public class JsonConvertNew {
         try {
             JsonObj jsonObj = mapper.readValue(json, JsonObj.class);
             wordObj.word.word = jsonObj.title;
-         //   wordObj.word.json = json;
             String w = convertBody(jsonObj.bodies);
             makeTranscriptStr();
-//            wordObj.word.article = w;
-
-
-
-            System.out.println("TRAN  " + wordObj.word.transcript);
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +76,6 @@ public class JsonConvertNew {
                         break;
                 }
             }
-            //  addToList(s.toString(), isExample);
             return s.toString();
         }
         return null;
@@ -110,9 +98,8 @@ public class JsonConvertNew {
                     break;
                 case EXAMPLES:
                     List<String> exs = convertExampleItem(markup.items, sb);
-                 //   idxEx = 0;
                     for (String ex : exs) {
-                        tae.examples.add(new Example(ex, tae.examples.size()  /*idxEx++*/));
+                        tae.examples.add(new Example(ex, tae.examples.size()));
                     }
                     break;
                 case LIST:
@@ -148,7 +135,6 @@ public class JsonConvertNew {
     }
 
     private String convertBody(List<Body> bodies) {
-     //   List<String> trnscrs = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (Body body : bodies) {
             switch (body.node) {
@@ -170,36 +156,9 @@ public class JsonConvertNew {
                     break;
             }
         }
-//        wordObj.word.transcript = trnscrs.get(0);
-//        if (trnscrs.size() > 1) {
-//            wordObj.word.transcript += ("  " + trnscrs.get(1));
-//        }
-
-//        System.out.println("TRNSCR SIZE  " + trnscrs.size());
-//        for (String snd : trnscrs) {
-//            System.out.println("CC " + snd);
-//        }
-//
-//        for (String trnscr : trnscrs) {
-//            if (!(trnscr == null/* || "".equals(trnscr) || "null".equals(trnscr)*/) ) {
-//                wordObj.word.transcript += ("  " + trnscr);
-//            }
-//        }
         wordObj.word.article = sb.toString();
         return sb.toString();
     }
-
-//    private void addToList(Markup markup, boolean isExample) {
-//        if (!(markup.isOptional || markup.isItalics || markup.isAccent) && !isExample) {
-//            list.add(markup.text);
-//        }
-//    }
-//
-//    private void addToList(String str, boolean isExample) {
-//        if (!isExample) {
-//            list.add(str);
-//        }
-//    }
 
     private void makeTranscriptStr() {
         if (trnscrs.size() != 0) {

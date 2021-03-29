@@ -37,7 +37,7 @@
             android:src="@drawable/btn_blue_first" />
 
         <ImageButton
-            android:id="@+id/btn_rew"
+            android:id="@+id/btn_previous"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/design_default_color_background"
@@ -65,7 +65,7 @@
             android:src="@drawable/btn_blue_stop" />
 
         <ImageButton
-            android:id="@+id/btn_ffw"
+            android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/design_default_color_background"

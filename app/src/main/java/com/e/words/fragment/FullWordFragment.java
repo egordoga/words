@@ -1,5 +1,6 @@
 package com.e.words.fragment;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -36,17 +38,20 @@ public class FullWordFragment extends Fragment {
     private WordObj wordObj;
     private WordObj smallWord;
     private int positionTab;
+    private Button btnSave;
     private String json;
     private List<byte[]> sounds;
     private AddWordFragment addWordFragment;
     private MainFragment mainFragment;
+    private Context ctx;
+    private boolean isPresent;
 
     public FullWordFragment() {
     }
 
 
     public static FullWordFragment newInstance(WordObj wordObj, WordObj smallWord, int positionTab,
-                            String json, List<byte[]> sounds) {
+                            String json, List<byte[]> sounds, boolean isPresent) {
         FullWordFragment fragment = new FullWordFragment();
         Bundle args = new Bundle();
         args.putSerializable("wordObj", wordObj);
@@ -54,6 +59,7 @@ public class FullWordFragment extends Fragment {
         args.putInt("positionTab", positionTab);
         args.putSerializable("sounds", (Serializable) sounds);
         args.putString("json", json);
+        args.putBoolean("isPresent", isPresent);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,46 +67,48 @@ public class FullWordFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            wordObj = (WordObj) getArguments().getSerializable("wordObj");
-            smallWord = (WordObj) getArguments().getSerializable("smallWord");
-            positionTab = getArguments().getInt("positionTab");
-            json = getArguments().getString("json");
-            sounds = (List<byte[]>) getArguments().getSerializable("sounds");
+        Bundle args = getArguments();
+        if (args != null) {
+            wordObj = (WordObj) args.getSerializable("wordObj");
+            smallWord = (WordObj) args.getSerializable("smallWord");
+            positionTab = args.getInt("positionTab");
+            json = args.getString("json");
+            ctx = getContext();
+            sounds = (List<byte[]>) args.getSerializable("sounds");
+            isPresent = args.getBoolean("isPresent");
         }
         if (positionTab == 2) {
             setHasOptionsMenu(true);
         }
-
-
-     //   System.out.println("FullWordFragment  onCreate   ".toUpperCase()  + wordObj.word.word);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_full_word, container, false);
-
-
-
-    //    System.out.println("FullWordFragment  onCreateView   ".toUpperCase()  + wordObj.word.word);
-
-
-
         addWordFragment = new AddWordFragment();
         mainFragment = new MainFragment();
+        btnSave = view.findViewById(R.id.btn_save_word);
+        btnSave.setVisibility(View.GONE);
         TextView tvWordFw = view.findViewById(R.id.tv_word_fw);
         TextView tvTranscrFw = view.findViewById(R.id.tv_transcr_fw);
         tvWordFw.setText(wordObj.word.word);
-    //    String transcrUS = wordObj.word.transcrUS != null ? "   " + wordObj.word.word : "";
         tvTranscrFw.setText(wordObj.word.transcript);
         RecyclerView rvFullWord = view.findViewById(R.id.rv_fw);
-        rvFullWord.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvFullWord.setLayoutManager(new LinearLayoutManager(ctx));
         adapter = new WordAdapter(this);
         rvFullWord.setAdapter(adapter);
-
+        WordObjRepo repo = new WordObjRepo(ctx);
+        if (positionTab == 2) {
+            btnSave.setVisibility(View.VISIBLE);
+            btnSave.setOnClickListener(v -> {
+                if (!isPresent) {
+                    saveWord(repo);
+                } else {
+                    repo.updateTranslationAndExample(smallWord);
+                }
+            });
+        }
 
         return view;
     }
@@ -126,7 +134,8 @@ public class FullWordFragment extends Fragment {
         smallWord.translations.clear();
         for (TranslationAndExample tae : wordObj.translations) {
             if (tae.translation.isChecked) {
-                smallWord.translations.add(new TranslationAndExample(tae.translation.translation, tae.translation.index, tae.getCheckedExamples(), false));
+                smallWord.translations.add(new TranslationAndExample(tae.translation.translation,
+                        tae.translation.index, tae.getCheckedExamples(), false));
             }
         }
     }
@@ -148,6 +157,8 @@ public class FullWordFragment extends Fragment {
         }
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
@@ -155,33 +166,11 @@ public class FullWordFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_save) {
-//            Toast.makeText(getContext(), wordObj.word.word, Toast.LENGTH_LONG).show();
-//            byte[] arr = {1, 5, 6};
-//            List<byte[]> list = new ArrayList<>();
-//            list.add(arr);
-//         //   new WordObjRepo(getContext()).addWord(smallWord, list);
-//        //    new WordObjRepo(getContext()).findWordByWord("look");
-//         //   new WordObjRepo(getContext()).deleteWordByWord("look");
-//            new WordObjRepo(getContext()).printCount();
-//            return true;
-//        }
-
-        WordObjRepo repo = new WordObjRepo(getContext());
+        WordObjRepo repo = new WordObjRepo(ctx);
         switch (id) {
             case R.id.action_save:
-                repo.addWord(smallWord, json/*, sounds*/);
-                FileWorker worker = new FileWorker(getContext());
-                worker.saveSoundFile(Objects.requireNonNull(getContext()), sounds.get(0), smallWord.word.word);
-                if (sounds.size() > 1) {
-                    worker.saveSoundFile(Objects.requireNonNull(getContext()), sounds.get(1), smallWord.word.word + "US");
-                }
+                saveWord(repo);
                 return true;
             case R.id.action_get:
                 try {
@@ -214,5 +203,14 @@ public class FullWordFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveWord(WordObjRepo repo) {
+        repo.addWord(smallWord, json);
+        FileWorker worker = new FileWorker();
+        worker.saveSoundFile(Objects.requireNonNull(ctx), sounds.get(0), smallWord.word.word);
+        if (sounds.size() > 1) {
+            worker.saveSoundFile(Objects.requireNonNull(ctx), sounds.get(1), smallWord.word.word + "US");
+        }
     }
 }

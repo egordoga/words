@@ -9,21 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.e.words.DataTest;
 import com.e.words.R;
 import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
-import com.e.words.entity.ForeignWordWithTranslate;
-import com.e.words.entity.Translate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.VocabularyViewHolder>
-        implements ItemTouchHelperAdapter{
+public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.VocabularyViewHolder> {
 
-    private List<VocabularyDto> wordList;
-    private LayoutInflater inflater;
-    private ItemClickListener mListener;
+    private final List<VocabularyDto> wordList;
+    private final LayoutInflater inflater;
+    private final ItemClickListener mListener;
 
     public VocabularyAdapter(Context context, ItemClickListener listener) {
         inflater = LayoutInflater.from(context);
@@ -50,10 +46,6 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
         return wordList.size();
     }
 
-    @Override
-    public void onItemDelete(int position) {
-
-    }
 
     public void setItem(List<VocabularyDto> items) {
         wordList.addAll(items);
@@ -65,7 +57,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
         TextView tvTranscr;
         TextView tvTransl;
 
-        private ItemClickListener mListener;
+        private final ItemClickListener mListener;
 
         public VocabularyViewHolder(@NonNull View itemView, ItemClickListener listener) {
             super(itemView);
@@ -86,14 +78,4 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
     public interface ItemClickListener {
         void onClick(View view, int position);
     }
-
-//    private String makeTranslateString(List<Translate> translate) {
-//        StringBuilder sb = new StringBuilder();
-//        for (Translate s : translate) {
-//            sb.append(s.word).append(", ");
-//        }
-//        sb.delete(sb.length() - 2, sb.length());
-//       // sb.substring(0, sb.length() - 3);
-//        return sb.toString();
-//    }
 }

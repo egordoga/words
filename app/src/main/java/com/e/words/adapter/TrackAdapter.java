@@ -19,14 +19,12 @@ import java.util.List;
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
 
     private List<String> wordList;
-    private LayoutInflater inflater;
-  //  private TrackAdapter.ItemClickListener mListener;
+    private final LayoutInflater inflater;
     public List<String> checkedIds;
-    private SparseBooleanArray itemStateArray = new SparseBooleanArray();
+    private final SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
     public TrackAdapter(Context context/*, TrackAdapter.ItemClickListener listener*/) {
         inflater = LayoutInflater.from(context);
-   //     mListener = listener;
         wordList = new ArrayList<>();
         checkedIds = new ArrayList<>();
     }

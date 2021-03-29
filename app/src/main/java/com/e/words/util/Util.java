@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Util {
 
-    private WordObjRepo repo;
+    private final WordObjRepo repo;
 
     public Util(Context context) {
         repo = new WordObjRepo(context);
@@ -62,7 +62,6 @@ public class Util {
 
     public static String ListToStringForDB(List<String> list) {
         StringBuilder sb = new StringBuilder();
-   //     sb.append(list.get(0));
         for (String s : list) {
             sb.append(";;").append(s);
         }

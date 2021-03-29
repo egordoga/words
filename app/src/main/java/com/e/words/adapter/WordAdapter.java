@@ -4,9 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CheckedTextView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.abby.abbyEntity.dto.TranslAndEx;
 import com.e.words.entity.entityNew.TranslationAndExample;
 import com.e.words.fragment.FullWordFragment;
 
@@ -24,11 +21,10 @@ import java.util.Objects;
 
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder> {
 
-//    private FullWordFragment fragment;
-    private Fragment fragment;
+    private final Fragment fragment;
     private List<TranslationAndExample> taeList = new LinkedList<>();
-    private LayoutInflater inflater;
-    private RecyclerView.RecycledViewPool pool = new RecyclerView.RecycledViewPool();
+    private final LayoutInflater inflater;
+    private final RecyclerView.RecycledViewPool pool = new RecyclerView.RecycledViewPool();
 
     public WordAdapter(FullWordFragment fragment) {
         this.fragment = fragment;
@@ -44,8 +40,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
-//        holder.tvTranslWe.setText(taeList.get(position).transl);
-        holder.ctvTranslWe.setText(taeList.get(position).translation.translation /*+ "   " + taeList.get(position).index*/);
+        holder.ctvTranslWe.setText(taeList.get(position).translation.translation);
         holder.ctvTranslWe.setChecked(taeList.get(position).translation.isChecked);
         holder.ctvTranslWe.setOnClickListener(v -> {
             if (!taeList.get(position).translation.isChecked) {
@@ -78,14 +73,10 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
 
     static class WordViewHolder extends RecyclerView.ViewHolder {
         CheckedTextView ctvTranslWe;
-        TextView tvTranslWe;
-        CheckBox cbTranslWe;
         RecyclerView rvExample;
 
         public WordViewHolder(@NonNull View itemView) {
             super(itemView);
-           // tvTranslWe = itemView.findViewById(R.id.tv_transl_we);
-           // cbTranslWe = itemView.findViewById(R.id.cb_transl_we);
             rvExample = itemView.findViewById(R.id.rv_example);
             ctvTranslWe = itemView.findViewById(R.id.ctv_transl);
         }

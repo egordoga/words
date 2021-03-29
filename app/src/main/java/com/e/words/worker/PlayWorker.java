@@ -1,32 +1,10 @@
 package com.e.words.worker;
 
-import android.content.Context;
 import android.net.Uri;
 
 import com.e.words.R;
-import com.e.words.config.AppProperty;
-import com.e.words.entity.entityNew.Track;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-
-import java.io.File;
 
 public class PlayWorker {
-
-    private Context ctx;
-
-    public PlayWorker(Context ctx) {
-        this.ctx = ctx;
-    }
-
-//    public SimpleExoPlayer getPlayer(String fileNamesStr) {
-//        SimpleExoPlayer player = new SimpleExoPlayer.Builder(ctx).build();
-//        File dir = ctx.getFilesDir();
-//        String[] fileNames = fileNamesStr.split(";;");
-//        for (String fileName : fileNames) {
-//
-//        }
-//        return null;
-//    }
 
     public static Uri getSilentUri(int pause) {
         if (pause < 150) {

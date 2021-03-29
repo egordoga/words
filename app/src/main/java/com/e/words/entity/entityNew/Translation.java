@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = @ForeignKey(entity = Word.class, parentColumns = "id", childColumns = "wordId",
-                     onDelete = CASCADE))
+        onDelete = CASCADE))
 public class Translation {
 
     @PrimaryKey(autoGenerate = true)

@@ -18,47 +18,26 @@ import java.util.concurrent.ExecutionException;
 
 public class WordObjRepo {
 
-    private WordDao wordDao;
-   // private WordDb db;
+    private final WordDao wordDao;
 
     public WordObjRepo(Context ctx) {
         WordDb db = WordDb.getDatabase(ctx);
         this.wordDao = db.wordDao();
     }
 
-    public void addWord(WordObj wordObj, String json/*, List<byte[]> sounds*/) {
+    public void addWord(WordObj wordObj, String json) {
         WordDb.dbExecutor.execute(() -> {
-            wordDao.addWord(wordObj, json/*, sounds*/);
+            wordDao.addWord(wordObj, json);
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public WordObj findWordObjByWord(String word) throws ExecutionException, InterruptedException {
-//        WordObj w = null;
-//        try {
-//            w = new FindWordAsyncTask().get();
-//        } catch (ExecutionException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        WordDb.dbExecutor.execute(() -> {
-//            Word ww = wordDao.findWordByWord("look");
-//            System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH " + ww.word);
-//           WordObj w = wordDao.findWordObjByWord(word);
-//            System.out.println(w.word.transcript);
-//            System.out.println(w.translations.get(0).examples.get(0).example);
-//            System.out.println(w.word.id);
-//        });
-//        Word ww = wordDao.findWordByWord("look");
-//        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH " + ww.word);
-//        WordObj w = wordDao.findWordObjByWord(word);
-//        System.out.println(w);
         return CompletableFuture.supplyAsync(() ->wordDao.findWordObjByWord(word)).get();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public Json findJsonByWordId(long wordId) throws ExecutionException, InterruptedException {
-      //  CompletableFuture<Json> future = (CompletableFuture<Json>) WordDb.dbExecutor.submit(() -> wordDao.findJsonByWordId(wordId));
-      //  CompletableFuture<Json> future =  CompletableFuture.supplyAsync(() -> wordDao.findJsonByWordId(wordId));
         return CompletableFuture.supplyAsync(() -> wordDao.findJsonByWordId(wordId)).get();
     }
 
