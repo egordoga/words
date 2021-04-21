@@ -113,6 +113,8 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
                         for (Word word : words) {
                             String[] names = word.fileNames.split(";;");
                             worker.deleteTranslateFiles(names, ctx);
+                            word.trackName = null;
+                            repo.updateWord(word);
                         }
                         new TrackRepo(ctx).deleteTrack(track);
                     } catch (ExecutionException | InterruptedException e) {

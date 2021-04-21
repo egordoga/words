@@ -23,29 +23,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
 import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
+import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.VocabularyAdapter;
+import com.e.words.adapter.VocabularyAdapterNew;
 import com.e.words.entity.entityNew.Track;
+import com.e.words.entity.entityNew.Word;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.worker.FileWorker;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-public class VocabularyFragment extends Fragment implements VocabularyAdapter.ItemClickListener {
+//public class VocabularyFragment extends Fragment implements VocabularyAdapter.ItemClickListener {
+public class VocabularyFragment extends Fragment implements VocabularyAdapterNew.ItemClickListenerNew {
 
     private static WordObjRepo repoWord;
-    private TrackRepo repoTrack;
+    private TrackRepo trackRepo;
+    private WordObjRepo wordObjRepo;
     private MainFragment mainFrgm;
     private List<VocabularyDto> vocabList;
+    private List<WordObj> wordObjList;
     private String[] trackNames;
     private boolean isTrackAdd = false;
     private Context ctx;
     private TextToSpeech tts;
+    private List<String> wordsStr;
 
     public VocabularyFragment() {
     }
@@ -54,7 +62,8 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         repoWord = new WordObjRepo(getContext());
-        repoTrack = new TrackRepo(getContext());
+        trackRepo = new TrackRepo(getContext());
+        wordObjRepo = new WordObjRepo(getContext());
         mainFrgm = new MainFragment();
         ctx = getContext();
         setHasOptionsMenu(true);
@@ -66,10 +75,13 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
         View view = inflater.inflate(R.layout.fragment_vocabulary, container, false);
         RecyclerView rvVocab = view.findViewById(R.id.rv_vocab);
         rvVocab.setLayoutManager(new LinearLayoutManager(ctx));
-        VocabularyAdapter adapter = new VocabularyAdapter(ctx, this);
+     //   VocabularyAdapter adapter = new VocabularyAdapter(ctx, this);
+        VocabularyAdapterNew adapter = new VocabularyAdapterNew(ctx, this);
         try {
             vocabList = new FindWordsAsyncTask().execute().get();
-            adapter.setItem(vocabList);
+            wordObjList = new WordObjRepo(getContext()).findAllWordObj();
+            wordsStr = getWordList();
+            adapter.setItem(wordObjList);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -120,7 +132,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
                                                 tts = new TextToSpeech(ctx, status -> {
                                                     String trackName = etName.getText().toString();
                                                     try {
-                                                        Track track = repoTrack.findTrackByName(trackName);
+                                                        Track track = trackRepo.findTrackByName(trackName);
                                                         if (track != null) {
                                                             AlertDialog.Builder trackPresent = new AlertDialog.Builder(ctx);
                                                             trackPresent
@@ -129,7 +141,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
                                                                     .create()
                                                                     .show();
                                                         } else {
-                                                            repoTrack.insertTrack(trackName, vocabList.get(position).word, tts);
+                                                            trackRepo.insertTrack(trackName, vocabList.get(position).word, tts);
                                                         }
                                                     } catch (ExecutionException | InterruptedException e) {
                                                         e.printStackTrace();
@@ -142,9 +154,9 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
                                             .show();
                                 } else {
                                     try {
-                                        Track track = repoTrack.findTrackByName(trackNames[which]);
-                                        String[] words = track.words.split(";;");
-                                        boolean isPresent = Arrays.asList(words).contains(String.valueOf(vocabList.get(position).word));
+                                        Track track = trackRepo.findTrackByName(trackNames[which]);
+                                     //   String[] words = track.words.split(";;");
+                                        boolean isPresent = wordsStr.contains(String.valueOf(vocabList.get(position).word));
                                         if (isPresent) {
                                             AlertDialog.Builder wordPresent = new AlertDialog.Builder(ctx);
                                             wordPresent
@@ -154,7 +166,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
                                                     .show();
                                         } else {
                                             tts = new TextToSpeech(ctx, status ->
-                                                    repoTrack.addToTrack(track, vocabList.get(position).word, tts));
+                                                    trackRepo.addToTrack(track, vocabList.get(position).word, tts));
                                         }
                                     } catch (ExecutionException | InterruptedException e) {
                                         e.printStackTrace();
@@ -167,10 +179,15 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
                     Toast.makeText(getContext(), vocabList.get(position).word, Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.act_del_word:
-                    FileWorker worker = new FileWorker();
-                    worker.deleteFile(vocabList.get(position).word, ctx);
-                    worker.deleteFile(vocabList.get(position).word + "US", ctx);
-                    new WordObjRepo(getContext()).deleteWordById(vocabList.get(position).wordId);
+                    try {
+                        Word word = wordObjRepo.findWordById(vocabList.get(position).wordId);
+                        FileWorker worker = new FileWorker();
+                        worker.deleteFile(vocabList.get(position).word, ctx);
+                        worker.deleteFile(vocabList.get(position).word + "US", ctx);
+                        new WordObjRepo(getContext()).deleteWordById(vocabList.get(position).wordId);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 case R.id.act_article:
 
@@ -185,7 +202,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
     private String[] getTrackNames() {
         if (trackNames == null || isTrackAdd) {
             try {
-                List<String> list = repoTrack.findTrackNames();
+                List<String> list = trackRepo.findTrackNames();
                 list.add(0, "Создать новый трек");
                 trackNames = list.toArray(new String[0]);
             } catch (ExecutionException | InterruptedException e) {
@@ -210,5 +227,13 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapter.It
             tts.stop();
             tts.shutdown();
         }
+    }
+
+    private List<String> getWordList() {
+        List<String> list = new ArrayList<>();
+        for (WordObj wordObj : wordObjList) {
+            list.add(wordObj.word.word);
+        }
+        return list;
     }
 }

@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -56,6 +57,7 @@ public class PlayFragmentNew extends Fragment {
     private int oldTrackPosition;
     private boolean isChangeTrack;
     private Track selectedTrack;
+    private Track oldTrack;
     private WordObjRepo wordRepo;
     private TextToSpeech tts;
     private Context ctx;
@@ -67,11 +69,11 @@ public class PlayFragmentNew extends Fragment {
     private String currentTrackName;
 
 
-
     private PlayerService.PlayerServiceBinder playerServiceBinder;
     private MediaControllerCompat mediaController;
     private MediaControllerCompat.Callback callback;
     private ServiceConnection serviceConnection;
+    private PlayerService playerService;
 
     private static final String TRACK_PARAM = "tracks";
     private final String TAG = "DEBUG " + getClass().getSimpleName();
@@ -104,6 +106,7 @@ public class PlayFragmentNew extends Fragment {
         wordRepo = new WordObjRepo(ctx);
         trackRepo = new TrackRepo(ctx);
         mainFrgm = new MainFragment();
+        playerService = new PlayerService();
 //        getLastTrack();
 //        try {
 //            words = wordRepo.findWordsByTrackName(selectedTrack.name);
@@ -112,26 +115,52 @@ public class PlayFragmentNew extends Fragment {
 //        }
 
 
-
-
         TrackHelper.allTrack = tracks;
-//        for (int i = 0; i < tracks.size(); i++) {
-//            if (tracks.get(i).isLast) {
-//                selectedTrack = tracks.get(i);
-//                lastTrackPosition = i;
-//                oldTrackPosition = i;
-//                break;
-//            }
-//        }
-//        if (selectedTrack == null) {
-//            selectedTrack = tracks.get(0);
-//        }
-//        Spinner spinner = view.findViewById(R.id.spinner_play);
-//        ArrayAdapter<Track> adapter = new ArrayAdapter<>(Objects.requireNonNull(ctx),
-//                android.R.layout.simple_spinner_item, Objects.requireNonNull(tracks));
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(adapter);
-//        spinner.setSelection(lastTrackPosition);
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).isLast) {
+                selectedTrack = tracks.get(i);
+
+                lastTrackPosition = i;
+                //               oldTrackPosition = i;
+                break;
+            }
+        }
+        if (selectedTrack == null) {
+            selectedTrack = tracks.get(0);
+        }
+        TrackHelper.currentTrack = selectedTrack;
+        oldTrack = selectedTrack;
+        Spinner spinner = view.findViewById(R.id.spinner_play);
+        ArrayAdapter<Track> adapter = new ArrayAdapter<>(Objects.requireNonNull(ctx),
+                android.R.layout.simple_spinner_item, Objects.requireNonNull(tracks));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(lastTrackPosition);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                lastTrackPosition = position;
+                selectedTrack = tracks.get(lastTrackPosition);
+                TrackHelper.currentTrack = selectedTrack;
+ //               playerService.mediaSessionCallback.onRewind();
+//                releasePlayer();
+//                getWordObjList(selectedTrack);
+//                initializePlayer();
+
+
+                if (mediaController != null) {
+                    mediaController.getTransportControls().rewind();
+         //           mediaController.getTransportControls().play();
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         btnPlay = view.findViewById(R.id.btn_play);
         btnPause = view.findViewById(R.id.btn_pause);
@@ -187,8 +216,7 @@ public class PlayFragmentNew extends Fragment {
                     mediaController = new MediaControllerCompat(ctx, playerServiceBinder.getMediaSessionToken());
                     mediaController.registerCallback(callback);
                     callback.onPlaybackStateChanged(mediaController.getPlaybackState());
-                }
-                catch (RemoteException e) {
+                } catch (RemoteException e) {
                     mediaController = null;
                 }
             }
@@ -210,6 +238,15 @@ public class PlayFragmentNew extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         closeService();
+        selectedTrack = TrackHelper.getCurrentTrack();
+        if (!oldTrack.equals(selectedTrack)) {
+//            Track old = tracks.get(oldTrackPosition);
+//            Track last = tracks.get(lastTrackPosition);
+            oldTrack.isLast = false;
+            selectedTrack.isLast = true;
+            trackRepo.updateTrack(oldTrack);
+            trackRepo.updateTrack(selectedTrack);
+        }
     }
 
     private void closeService() {
@@ -220,16 +257,6 @@ public class PlayFragmentNew extends Fragment {
         }
         ctx.unbindService(serviceConnection);
     }
-
-//    private void getLastTrack() {
-//        for (Track track : tracks) {
-//            if (track.isLast) {
-//                selectedTrack = track;
-//                return;
-//            }
-//        }
-//        selectedTrack = tracks.get(0);
-//    }
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {

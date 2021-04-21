@@ -7,9 +7,11 @@ import androidx.annotation.RequiresApi;
 
 import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
+import com.e.words.dao.daoNew.TrackDao;
 import com.e.words.dao.daoNew.WordDao;
 import com.e.words.db.WordDb;
 import com.e.words.entity.entityNew.Json;
+import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Word;
 
 import java.util.List;
@@ -19,10 +21,12 @@ import java.util.concurrent.ExecutionException;
 public class WordObjRepo {
 
     private final WordDao wordDao;
+    private final TrackDao trackDao;
 
     public WordObjRepo(Context ctx) {
         WordDb db = WordDb.getDatabase(ctx);
         this.wordDao = db.wordDao();
+        this.trackDao = db.trackDao();
     }
 
     public void addWord(WordObj wordObj, String json) {
@@ -34,6 +38,14 @@ public class WordObjRepo {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public WordObj findWordObjByWord(String word) throws ExecutionException, InterruptedException {
         return CompletableFuture.supplyAsync(() ->wordDao.findWordObjByWord(word)).get();
+    }
+
+    public Word findWordById(long id) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> wordDao.findWordById(id)).get();
+    }
+
+    public List<WordObj> findAllWordObj() throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(wordDao::findAllWordObj).get();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -55,9 +67,22 @@ public class WordObjRepo {
         return CompletableFuture.supplyAsync(() -> wordDao.findWordsByTrackName(trackName)).get();
     }
 
+//    public void deleteWordById(long id) {
+//        WordDb.dbExecutor.execute(() -> {
+//            wordDao.deleteWordById(id);
+//        });
+//    }
+
+
     public void deleteWordById(long id) {
         WordDb.dbExecutor.execute(() -> {
-            wordDao.deleteWordById(id);
+            try {
+                Word word = findWordById(id);
+
+                wordDao.deleteWordById(id);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -89,5 +114,10 @@ public class WordObjRepo {
 
     public String findFileNames(String word) throws ExecutionException, InterruptedException {
         return CompletableFuture.supplyAsync(() -> wordDao.findFileNamesByWord(word)).get();
+    }
+
+    private void checkTrackEmpty(String word) {
+        WordObj wordObj = wordDao.findWordObjByWord(word);
+        Track track = trackDao.findTrackByName(wordObj.word.trackName);
     }
 }

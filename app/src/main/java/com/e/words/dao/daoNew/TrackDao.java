@@ -4,8 +4,10 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.e.words.abby.abbyEntity.dto.TrackWithWords;
 import com.e.words.abby.abbyEntity.dto.dto_new.TrackSmall;
 import com.e.words.entity.entityNew.Track;
 
@@ -37,4 +39,9 @@ public interface TrackDao {
 
     @Delete
     void deleteTrack(Track track);
+
+    @Transaction
+    @Query("select * from Track where name = :name")
+    TrackWithWords findTrackWithWordsByName(String name);
+
 }

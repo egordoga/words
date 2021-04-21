@@ -65,6 +65,9 @@ public abstract class WordDao {
     @Query("select * from Word where word = :word")
     public abstract WordObj findWordObjByWord(String word);
 
+    @Query("select * from Word where id = :id")
+    public abstract Word findWordById(long id);
+
     @Transaction
     @Query("select * from Word order by word")
     public abstract List<WordObj> findAllWordObj();

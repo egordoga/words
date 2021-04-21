@@ -183,15 +183,10 @@ final public class PlayerService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mediaSession.release();
-      //  exoPlayer.release();
         releasePlayer();
-     //   unregisterReceiver(becomingNoisyReceiver);
     }
 
-    private MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
-
-     //   private Uri currentUri;
-
+    public MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
         private Track currentTrack;
         int currentState = PlaybackStateCompat.STATE_STOPPED;
 
@@ -278,53 +273,30 @@ final public class PlayerService extends Service {
 
         @Override
         public void onSkipToNext() {
-//            MusicRepository.Track track = musicRepository.getNext();
             Track track = TrackHelper.getNext();
-
-            System.out.println("NAME " + track.name);
-
-
-          //  onStop();
-
-
-            exoPlayer.setPlayWhenReady(false);
-            updateMetadataFromTrack(track);
-            exoPlayer.removeMediaItems(0, exoPlayer.getMediaItemCount());
-
-
-      //      refreshNotificationAndForegroundStatus(currentState);
-
-
-            onPlay();
-
-
-     //       releasePlayerWithoutNull();
-      //      initializePlayer(track);
-            currentTrack = track;
-//
-//            prepareToPlay(track.getUri());
+            changeTrack(track);
         }
 
         @Override
         public void onSkipToPrevious() {
             Track track = TrackHelper.getPrevious();
+            changeTrack(track);
+        }
 
+        @Override
+        public void onRewind() {
+            Track track = TrackHelper.getCurrentTrack();
+            changeTrack(track);
+        }
 
-            System.out.println("NAME " + track.name);
-
-
+        private void changeTrack(Track track) {
+            exoPlayer.setPlayWhenReady(false);
             updateMetadataFromTrack(track);
-            refreshNotificationAndForegroundStatus(currentState);
-        //    releasePlayerWithoutNull();
-            exoPlayer.removeMediaItems(0, exoPlayer.getMediaItemCount() - 1);
-            initializePlayer(track);
+            //       refreshNotificationAndForegroundStatus(currentState);
+            //    releasePlayerWithoutNull();
+            exoPlayer.removeMediaItems(0, exoPlayer.getMediaItemCount());
+            onPlay();
             currentTrack = track;
-//            MusicRepository.Track track = musicRepository.getPrevious();
-//            updateMetadataFromTrack(track);
-//
-//            refreshNotificationAndForegroundStatus(currentState);
-//
-//            prepareToPlay(track.getUri());
         }
 
 //        private void prepareToPlay(Uri uri) {
