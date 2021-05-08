@@ -1,5 +1,6 @@
 package com.e.words.fragment;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,19 +19,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.e.words.MainActivity;
 import com.e.words.R;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Word;
+import com.e.words.menu.MenuMain;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.service.PlayerService;
 import com.e.words.service.TrackHelper;
+import com.e.words.util.Util;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
@@ -43,7 +47,7 @@ import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
-public class PlayFragmentNew extends Fragment {
+public class PlayFragmentNew extends Fragment implements Util.CallSpin {
     private List<Track> tracks;
     private List<Word> words;
     private TrackRepo trackRepo;
@@ -67,6 +71,14 @@ public class PlayFragmentNew extends Fragment {
     private int currentWindow = 0;
     private long playbackPosition = 0;
     private String currentTrackName;
+//    private TrackHelper trackHelper;
+
+//    @SuppressLint("StaticFieldLeak")
+//    public static PlayFragmentNew instance;
+    public Spinner spinner;
+
+    private TextView tvPlayTrack;
+    private Button btnChoiceTrack;
 
 
     private PlayerService.PlayerServiceBinder playerServiceBinder;
@@ -96,17 +108,27 @@ public class PlayFragmentNew extends Fragment {
             tracks = (List<Track>) getArguments().getSerializable(TRACK_PARAM);
         }
         setHasOptionsMenu(true);
+
+
+        System.out.println("ON CREATE--------------------------------------------------");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_play, container, false);
+
+
+        System.out.println("ON CREATE VIEW---------------------------------------");
+
+
         ctx = getContext();
         wordRepo = new WordObjRepo(ctx);
         trackRepo = new TrackRepo(ctx);
         mainFrgm = new MainFragment();
         playerService = new PlayerService();
+ //       instance = this;
+//        trackHelper = new TrackHelper();
 //        getLastTrack();
 //        try {
 //            words = wordRepo.findWordsByTrackName(selectedTrack.name);
@@ -116,41 +138,63 @@ public class PlayFragmentNew extends Fragment {
 
 
         TrackHelper.allTrack = tracks;
-        for (int i = 0; i < tracks.size(); i++) {
-            if (tracks.get(i).isLast) {
-                selectedTrack = tracks.get(i);
+//        for (int i = 0; i < tracks.size(); i++) {
+//            if (tracks.get(i).isLast) {
+//                selectedTrack = tracks.get(i);
+//
+//                lastTrackPosition = i;
+//                //               oldTrackPosition = i;
+//                break;
+//            }
+//        }
+//        if (selectedTrack == null) {
+//            selectedTrack = tracks.get(0);
+//        }
+//        TrackHelper.currentTrack = selectedTrack;
 
-                lastTrackPosition = i;
-                //               oldTrackPosition = i;
-                break;
-            }
-        }
-        if (selectedTrack == null) {
-            selectedTrack = tracks.get(0);
-        }
-        TrackHelper.currentTrack = selectedTrack;
+
+        tvPlayTrack = view.findViewById(R.id.tv_play_track);
+        btnChoiceTrack = view.findViewById(R.id.btn_choice_track);
+
+
+
+
+        selectedTrack = TrackHelper.getCurrentTrack();
+        lastTrackPosition = TrackHelper.position;
         oldTrack = selectedTrack;
-        Spinner spinner = view.findViewById(R.id.spinner_play);
+        spinner = view.findViewById(R.id.spinner_play);
         ArrayAdapter<Track> adapter = new ArrayAdapter<>(Objects.requireNonNull(ctx),
                 android.R.layout.simple_spinner_item, Objects.requireNonNull(tracks));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(lastTrackPosition);
+        spinner.setSelection(lastTrackPosition, false);
+
+
+      //  spinner.
+
+
+
+        TrackHelper.fragPlay = this;
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 lastTrackPosition = position;
                 selectedTrack = tracks.get(lastTrackPosition);
                 TrackHelper.currentTrack = selectedTrack;
- //               playerService.mediaSessionCallback.onRewind();
+                TrackHelper.position = position;
+                playerService.changeTrack(selectedTrack);
 //                releasePlayer();
 //                getWordObjList(selectedTrack);
 //                initializePlayer();
 
 
+
+
+
                 if (mediaController != null) {
-                    mediaController.getTransportControls().rewind();
-         //           mediaController.getTransportControls().play();
+
+             //        mediaController.getTransportControls()..rewind();
+           //         mediaController.getTransportControls().playFromMediaId("PlayerService", null);
                 }
 
 
@@ -185,17 +229,53 @@ public class PlayFragmentNew extends Fragment {
         btnSkipToPrevious.setOnClickListener(v -> {
             if (mediaController != null)
                 mediaController.getTransportControls().skipToPrevious();
+//            lastTrackPosition = getNewLastTrackPosition(lastTrackPosition, false);
+//            selectedTrack = tracks.get(lastTrackPosition);
+//
+//
+//            System.out.println("YYY " + selectedTrack.name + "  " + lastTrackPosition);
+//
+//
+//            spinner.setSelection(lastTrackPosition);
         });
         btnSkipToNext.setOnClickListener(v -> {
             if (mediaController != null)
                 mediaController.getTransportControls().skipToNext();
+//            lastTrackPosition = getNewLastTrackPosition(lastTrackPosition, true);
+//            selectedTrack = tracks.get(lastTrackPosition);
+//
+//
+//            System.out.println("MMM " + selectedTrack.name + "  " + lastTrackPosition);
+//
+//
+//            spinner.setSelection(lastTrackPosition);
         });
+
+
+        btnChoiceTrack.setOnClickListener(v -> {
+         //   String[] names =
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Выберите трек")
+                        .setItems((CharSequence[]) tracks.stream().map(track -> track.name).toArray(), (dialog, which) -> {
+                    //        getTrackByName(which);
+                            selectedTrack = tracks.get(which);
+                            lastTrackPosition = which;
+                            TrackHelper.currentTrack = selectedTrack;
+                            TrackHelper.position = lastTrackPosition;
+                            playerService.changeTrack(selectedTrack);
+                            tvPlayTrack.setText(selectedTrack.name);
+                        });
+        });
+
+
+
+
 
         return view;
     }
 
     private void initService() {
-        PlayerService.words = this.words;
+      //  PlayerService.words = this.words;
         callback = new MediaControllerCompat.Callback() {
             @Override
             public void onPlaybackStateChanged(PlaybackStateCompat state) {
@@ -236,6 +316,12 @@ public class PlayFragmentNew extends Fragment {
 
     @Override
     public void onDestroy() {
+
+
+
+        System.out.println("ON DESTROY");
+
+
         super.onDestroy();
         closeService();
         selectedTrack = TrackHelper.getCurrentTrack();
@@ -260,22 +346,66 @@ public class PlayFragmentNew extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_return, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.act_return_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFrgm)
-                        .commit();
-                return true;
-        }
-
+        new MenuMain(getActivity()).getMain(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 
+    private int getNewLastTrackPosition(int position, boolean isNext) {
+        if (isNext) {
+            if (position == tracks.size() - 1) {
+                return 0;
+            } else {
+                return ++position;
+            }
+        } else {
+            if (position == 0) {
+                return tracks.size() - 1;
+            } else {
+                return --position;
+            }
+        }
+    }
+
+    @Override
+    public void refreshSpin(int position) {
+     //   spinner.setSelection(position, false);
+        tvPlayTrack.setText(tracks.get(position).name);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("ON PAUSE-------------------------------------------");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        System.out.println("ON STOP-----------------------------------------");
+    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        System.out.println("ON START---------------------------------------");
+//        lastTrackPosition = TrackHelper.position;
+//        selectedTrack = TrackHelper.getCurrentTrack();
+//        spinner.setSelection(lastTrackPosition);
+//    }
+
+    private void getTrackByName(String name) {
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).name.equals(name)) {
+                selectedTrack = tracks.get(i);
+                lastTrackPosition = i;
+                break;
+            }
+        }
+    }
 }

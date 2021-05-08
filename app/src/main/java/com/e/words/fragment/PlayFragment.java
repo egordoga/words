@@ -25,6 +25,7 @@ import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.config.AppProperty;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Word;
+import com.e.words.menu.MenuMain;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.worker.PlayWorker;
@@ -114,14 +115,14 @@ public class PlayFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setSelection(lastTrackPosition);
-        getWordObjList(selectedTrack);
+ //       getWordObjList(selectedTrack);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 lastTrackPosition = position;
                 selectedTrack = tracks.get(lastTrackPosition);
                 releasePlayer();
-                getWordObjList(selectedTrack);
+ //               getWordObjList(selectedTrack);
                 initializePlayer();
             }
 
@@ -155,20 +156,22 @@ public class PlayFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_return, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.act_return_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFrgm)
-                        .commit();
-                return true;
-        }
+//        switch (id) {
+//            case R.id.act_return_main:
+//                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.main_act, mainFrgm)
+//                        .commit();
+//                return true;
+//        }
+
+        new MenuMain(getActivity()).getMain(id);
 
         return super.onOptionsItemSelected(item);
     }
@@ -188,15 +191,15 @@ public class PlayFragment extends Fragment {
 //        }
 //    }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void getWordObjList(Track track) {
-        String[] words = track.words.split(";;");
-        try {
-            List<WordObj> wordObjList = wordRepo.findAllWordByWords(words);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    private void getWordObjList(Track track) {
+//        String[] words = track.words.split(";;");
+//        try {
+//            List<WordObj> wordObjList = wordRepo.findAllWordByWords(words);
+//        } catch (ExecutionException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void initializePlayer() {
         player = new SimpleExoPlayer.Builder(ctx).build();
@@ -204,7 +207,9 @@ public class PlayFragment extends Fragment {
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         player.setRepeatMode(Player.REPEAT_MODE_ALL);
-        addFilesToPlayer();
+
+        // Потом раскоментить
+     //   addFilesToPlayer();
         player.prepare();
     }
 
@@ -218,17 +223,19 @@ public class PlayFragment extends Fragment {
         }
     }
 
-    private void addFilesToPlayer() {
-        AppProperty props = AppProperty.getInstance(ctx);
-        try {
-            List<Word> words = wordRepo.findWordsByTrackName(selectedTrack.name);
-            for (Word word : words) {
-                addWordFiles(word, props);
-            }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+    //Потом раскоментить
+
+//    private void addFilesToPlayer() {
+//        AppProperty props = AppProperty.getInstance(ctx);
+//        try {
+//            List<Word> words = wordRepo.findWordsByTrackName(selectedTrack.name);
+//            for (Word word : words) {
+//                addWordFiles(word, props);
+//            }
+//        } catch (ExecutionException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void addWordFiles(Word word, AppProperty props) {
         Log.d(TAG, word.fileNames);

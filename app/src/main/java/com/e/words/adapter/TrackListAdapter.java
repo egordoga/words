@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
+import com.e.words.abby.abbyEntity.dto.TrackWithWords;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.entity.entityNew.Track;
+import com.e.words.entity.entityNew.Word;
 import com.e.words.repository.WordObjRepo;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder> {
 
-    private final List<Track> trackList;
+    private final List<TrackWithWords> trackList;
     private final List<String> wordList;
     private final LayoutInflater inflater;
     private final ItemClickListener mListener;
@@ -43,14 +45,15 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
 
     @Override
     public void onBindViewHolder(@NonNull TrackListViewHolder holder, int position) {
-        holder.tvTrackName.setText(trackList.get(position).name);
+        holder.tvTrackName.setText(trackList.get(position).track.name);
         holder.tvTrackWords.setText(wordList.get(position));
     }
 
-    public void setItem(List<Track> items) {
+    public void setItem(List<TrackWithWords> items) {
+        trackList.clear();
         trackList.addAll(items);
         makeWordList(items);
-       // notifyDataSetChanged();
+        notifyDataSetChanged();
        // notifyAll();
     }
 
@@ -64,22 +67,19 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
         return trackList.size();
     }
 
-    private void makeWordList(List<Track> items) {
+    private void makeWordList(List<TrackWithWords> items) {
         WordObjRepo repo = new WordObjRepo(context);
-        try {
-            StringBuilder sb;
-            for (Track item : items) {
-                String[] words = item.words.split(";;");
-                List<WordObj> objList = repo.findAllWordByWords(words);
-                sb = new StringBuilder();
-                sb.append(objList.get(0).word.word);
-                for (int i = 1; i < objList.size(); i++) {
-                    sb.append(", ").append(objList.get(i).word.word);
-                }
-                wordList.add(sb.toString());
+        StringBuilder sb;
+        for (TrackWithWords item : items) {
+//                String[] words = item.words.split(";;");
+//                List<WordObj> objList = repo.findAllWordByWords(words);
+            List<Word> objList = item.wordList;
+            sb = new StringBuilder();
+            sb.append(objList.get(0).word);
+            for (int i = 1; i < objList.size(); i++) {
+                sb.append(", ").append(objList.get(i).word);
             }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            wordList.add(sb.toString());
         }
     }
 

@@ -17,12 +17,14 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.e.words.MainActivity;
 import com.e.words.R;
 import com.e.words.abby.JsonConvertNew;
 import com.e.words.abby.abbyEntity.dto.dto_new.FullWordObj;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.abby.model.Lang;
 import com.e.words.abby.rest.RestRequest;
+import com.e.words.menu.MenuMain;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.util.Util;
 
@@ -110,21 +112,12 @@ public class AddWordFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_return, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.act_return_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFrgm)
-                        .commit();
-                return true;
-        }
-
+        new MenuMain(getActivity()).getMain(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 

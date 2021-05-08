@@ -14,8 +14,10 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.e.words.R;
+import com.e.words.abby.abbyEntity.dto.TrackWithWords;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.entity.entityNew.Track;
+import com.e.words.entity.entityNew.Word;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.temp.TestTTS1;
@@ -72,37 +74,27 @@ public class MainFragment extends Fragment {
         Button btnSetting = view.findViewById(R.id.btn_setting);
         Context ctx = getContext();
         TrackRepo trackRepo = new TrackRepo(ctx);
-        List<Track> tracks = null;
+        List<TrackWithWords> tracks = null;
         try {
-            tracks = trackRepo.findAllTrack();
+            tracks = trackRepo.findAllTrackWithWords();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        List<Track> finalTracks = tracks;
-        buttonTest1.setOnClickListener(v -> {
-            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_act, PlayFragmentNew.newInstance(finalTracks))
-                    .commit();
-
-        });
+        List<TrackWithWords> finalTracks = tracks;
+//        buttonTest1.setOnClickListener(v -> {
+//            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.main_act, PlayFragmentNew.newInstance(finalTracks))
+//                    .commit();
+//
+//        });
         buttonTest2.setOnClickListener(v -> {
             //   TestTTS1 testTTS = new TestTTS1(ctx);
             WordObjRepo repo = new WordObjRepo(ctx);
             try {
-                WordObj w = repo.findWordObjByWord("resume");
-                System.out.println("XX " + w.word.fileNames);
-                System.out.println("XX2 " + w.word.trackName);
-                WordObj w1 = repo.findWordObjByWord("lock");
-                System.out.println("XX " + w1.word.fileNames);
-                System.out.println("XX2 " + w1.word.trackName);
-                WordObj w2 = repo.findWordObjByWord("simple");
-                System.out.println("XX " + w2.word.fileNames);
-                System.out.println("XX2 " + w2.word.trackName);
-                WordObj w3 = repo.findWordObjByWord("look");
-                System.out.println("XX " + w3.word.fileNames);
-                System.out.println("XX2 " + w3.word.trackName);
+                List<WordObj> trackList = repo.findAllWordObj();
+                trackList.forEach(System.out::println);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -161,20 +153,20 @@ public class MainFragment extends Fragment {
         });
 
 
-        btnPlay.setOnClickListener(v -> {
-            if (finalTracks.size() == 0) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
-                dialog
-                        .setMessage("Не найдено ни одного трека")
-                        .create().show();
-            } else {
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, PlayFragment.newInstance(finalTracks))
-                        .commit();
-            }
-
-        });
+//        btnPlay.setOnClickListener(v -> {
+//            if (finalTracks.size() == 0) {
+//                AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+//                dialog
+//                        .setMessage("Не найдено ни одного трека")
+//                        .create().show();
+//            } else {
+//                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.main_act, PlayFragment.newInstance(finalTracks))
+//                        .commit();
+//            }
+//
+//        });
 
 
         return view;

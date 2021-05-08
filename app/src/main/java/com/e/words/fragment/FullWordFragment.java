@@ -3,6 +3,7 @@ package com.e.words.fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,8 @@ import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.adapter.WordAdapter;
 import com.e.words.entity.entityNew.Example;
 import com.e.words.entity.entityNew.TranslationAndExample;
+import com.e.words.entity.entityNew.Word;
+import com.e.words.menu.MenuMain;
 import com.e.words.worker.FileWorker;
 import com.e.words.repository.WordObjRepo;
 
@@ -45,6 +48,7 @@ public class FullWordFragment extends Fragment {
     private MainFragment mainFragment;
     private Context ctx;
     private boolean isPresent;
+    private TextToSpeech tts;
 
     public FullWordFragment() {
     }
@@ -77,9 +81,7 @@ public class FullWordFragment extends Fragment {
             sounds = (List<byte[]>) args.getSerializable("sounds");
             isPresent = args.getBoolean("isPresent");
         }
-        if (positionTab == 2) {
             setHasOptionsMenu(true);
-        }
     }
 
     @Override
@@ -102,11 +104,23 @@ public class FullWordFragment extends Fragment {
         if (positionTab == 2) {
             btnSave.setVisibility(View.VISIBLE);
             btnSave.setOnClickListener(v -> {
-                if (!isPresent) {
-                    saveWord(repo);
-                } else {
-                    repo.updateTranslationAndExample(smallWord);
+                try {
+                    WordObj wordObj = repo.findWordObjByWord(smallWord.word.word);
+                    if (wordObj == null) {
+                        saveWord(repo);
+                    } else if (!wordObj.translations.equals(smallWord.translations)){
+                        long[] translIds = wordObj.translations.stream().map(tae -> tae.translation.id).mapToLong(Long::longValue).toArray();
+                        boolean isNeedFiles = wordObj.word.trackId != null;
+                        smallWord.word.id = wordObj.word.id;
+                        smallWord.word.trackId = wordObj.word.trackId;
+                        tts = new TextToSpeech(ctx, status -> {
+                            repo.updateTranslationAndExample(smallWord, translIds, isNeedFiles, tts);
+                        });
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
                 }
+
             });
         }
 
@@ -166,42 +180,7 @@ public class FullWordFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        WordObjRepo repo = new WordObjRepo(ctx);
-        switch (id) {
-            case R.id.action_save:
-                saveWord(repo);
-                return true;
-            case R.id.action_get:
-                try {
-                    repo.findWordObjByWord("look");
-                } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            case R.id.action_update:
-                repo.updateTranslationAndExample(smallWord);
-                return true;
-            case R.id.action_delete:
-                repo.deleteWordByWord("look");
-                return true;
-            case R.id.action_count:
-                repo.printCount();
-                return true;
-            case R.id.action_add:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_act, addWordFragment)
-                    .commit();
-                return true;
-            case R.id.action_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFragment)
-                        .commit();
-                return true;
-        }
-
+        new MenuMain(getActivity()).getMain(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 

@@ -86,4 +86,21 @@ public class FileWorker {
         }
     }
 
+    public void deleteFiles(String name, boolean isTranslateOnly, Context ctx) {
+        File dir = ctx.getFilesDir();
+        String start = "^" + name;
+        String end = "\\.wav$";
+        String middle = "\\d*";;
+        if (isTranslateOnly) {
+            middle = "\\d+";
+        }
+        String reg = start + middle + end;
+        for (File file : dir.listFiles()) {
+            String fileName = file.getName();
+            if (fileName.matches(reg) || (!isTranslateOnly && fileName.equals(name + "US.wav"))) {
+                file.delete();
+            }
+        }
+    }
+
 }

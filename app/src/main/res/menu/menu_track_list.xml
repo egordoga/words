@@ -6,9 +6,9 @@
         android:orderInCategory="100"
         android:title="Возпроизведение" />
     <item
-        android:id="@+id/act_edit_track"
+        android:id="@+id/act_rename_track"
         android:orderInCategory="101"
-        android:title="Редактировать" />
+        android:title="Переименовать" />
     <item
         android:id="@+id/act_del_track"
         android:orderInCategory="102"

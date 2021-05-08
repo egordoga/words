@@ -17,7 +17,7 @@ import com.e.words.entity.entityNew.Word;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Word.class, Example.class, Track.class, Translation.class, Json.class}, version = 13, exportSchema = false)
+@Database(entities = {Word.class, Example.class, Track.class, Translation.class, Json.class}, version = 18, exportSchema = false)
 public abstract class WordDb extends RoomDatabase {
     private static WordDb instance;
     private static final String DB_NAME = "word.db";

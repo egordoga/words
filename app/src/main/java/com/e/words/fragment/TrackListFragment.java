@@ -1,13 +1,16 @@
 package com.e.words.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 
 import androidx.fragment.app.Fragment;
@@ -15,9 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
+import com.e.words.abby.abbyEntity.dto.TrackWithWords;
 import com.e.words.adapter.TrackListAdapter;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Word;
+import com.e.words.menu.MenuMain;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
 import com.e.words.worker.FileWorker;
@@ -35,13 +40,13 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
     private PlayFragment playFrgm;
     private Context ctx;
     private static final String TRACKS = "tracks";
-    private List<Track> tracks;
+    private List<TrackWithWords> tracks;
     private TrackListAdapter adapter;
 
     public TrackListFragment() {
     }
 
-    public static TrackListFragment newInstance(List<Track> tracks) {
+    public static TrackListFragment newInstance(List<TrackWithWords> tracks) {
         TrackListFragment fragment = new TrackListFragment();
         Bundle args = new Bundle();
         args.putSerializable(TRACKS, (Serializable) tracks);
@@ -53,7 +58,7 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            tracks = (List<Track>) getArguments().getSerializable(TRACKS);
+            tracks = (List<TrackWithWords>) getArguments().getSerializable(TRACKS);
         }
         mainFrgm = new MainFragment();
         setHasOptionsMenu(true);
@@ -74,21 +79,12 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_return, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.act_return_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFrgm)
-                        .commit();
-                return true;
-        }
-
+        new MenuMain(getActivity()).getMain(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 
@@ -105,22 +101,60 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
                             .commit();
                     return true;
                 case R.id.act_del_track:
-                    Track track = tracks.get(position);
+                    //  Track track = tracks.get(position).track;
+                    TrackWithWords trackWw = tracks.get(position);
                     WordObjRepo repo = new WordObjRepo(ctx);
-                    try {
-                        List<Word> words = repo.findWordsByTrackName(track.name);
-                        FileWorker worker = new FileWorker();
-                        for (Word word : words) {
-                            String[] names = word.fileNames.split(";;");
-                            worker.deleteTranslateFiles(names, ctx);
-                            word.trackName = null;
-                            repo.updateWord(word);
-                        }
-                        new TrackRepo(ctx).deleteTrack(track);
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
+                    //  List<Word> words = repo.findWordsByTrackName(trackWw.name);
+                    FileWorker worker = new FileWorker();
+                    for (Word word : trackWw.wordList) {
+//                        String[] fileNames = word.fileNames.split(";;");
+//                        worker.deleteTranslateFiles(fileNames, ctx);
+                        worker.deleteFiles(word.word, true, ctx);
+                        word.trackId = null;
                     }
+                    repo.updateWords(trackWw.wordList);
+                    new TrackRepo(ctx).deleteTrack(trackWw);
                     adapter.deleteItem(position);
+                    return true;
+                case R.id.act_rename_track:
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                    builder.setTitle("Выберите трек")
+//                            .setItems(getTrackNames(), (dialog, which) -> {
+//                                if (which == 0) {
+                    AlertDialog.Builder adName = new AlertDialog.Builder(ctx);
+                //    adName.setTitle("Выберите трек");
+                    LayoutInflater li = LayoutInflater.from(ctx);
+                    View nameView = li.inflate(R.layout.track_name_alert, null);
+                    adName.setView(nameView);
+                    final EditText etName = nameView.findViewById(R.id.et_track_name);
+                    adName
+                            .setCancelable(false)
+                            .setPositiveButton("OK", (dialog1, id) -> {
+                                //                        tts = new TextToSpeech(ctx, status -> {
+                                String trackName = etName.getText().toString().trim();
+                                TrackRepo trackRepo = new TrackRepo(ctx);
+                                try {
+                                    Track track = trackRepo.findTrackByName(trackName);
+                                    if (track != null) {
+                                        AlertDialog.Builder trackPresent = new AlertDialog.Builder(ctx);
+                                        trackPresent
+                                                .setTitle("Предупреждение")
+                                                .setMessage("Такое имя уже есть в списке треков")
+                                                .create()
+                                                .show();
+                                    } else {
+                                        TrackWithWords trackUpd = tracks.get(position);
+                                        trackUpd.track.name = trackName;
+                                        adapter.setItem(tracks);
+                                        trackRepo.updateTrack(trackUpd.track);
+                                    }
+                                } catch (ExecutionException | InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                    adName.create();
+                    adName.show();
+
                     return true;
             }
             return super.onOptionsItemSelected(item);

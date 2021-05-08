@@ -2,6 +2,7 @@ package com.e.words.entity.entityNew;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,27 +29,17 @@ public class Track implements Serializable {
 //        this.words = words;
 //    }
 
+
+    @Ignore
+    public Track(String name) {
+        this.name = name;
+    }
+
     @NotNull
     @Override
     public String toString() {
         return name;
     }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof Track)) return false;
-//        Track track = (Track) o;
-//        return id == track.id &&
-//                Objects.equals(name, track.name) &&
-//                Objects.equals(words, track.words);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, name, words);
-//    }
-
 
     @Override
     public boolean equals(Object o) {

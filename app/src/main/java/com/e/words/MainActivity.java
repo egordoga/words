@@ -8,6 +8,7 @@ import com.e.words.entity.entityNew.Track;
 import com.e.words.fragment.ArticleFragment;
 import com.e.words.fragment.MainFragment;
 import com.e.words.fragment.PlayFragment;
+import com.e.words.fragment.PlayFragmentNew;
 import com.e.words.fragment.TestFragment;
 import com.e.words.fragment.TrackListFragment;
 import com.e.words.repository.TrackRepo;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             List<Track> tracks = repo.findAllTrack();
             if (tracks.size() == 0) {
                 target = new MainFragment();
-            } else target = PlayFragment.newInstance(tracks);
+            } else target = PlayFragmentNew.newInstance(tracks);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

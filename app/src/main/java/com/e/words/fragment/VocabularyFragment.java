@@ -22,20 +22,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
+import com.e.words.abby.abbyEntity.dto.TrackWithWords;
+import com.e.words.abby.abbyEntity.dto.dto_new.FullWordObj;
 import com.e.words.abby.abbyEntity.dto.dto_new.VocabularyDto;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
-import com.e.words.adapter.VocabularyAdapter;
 import com.e.words.adapter.VocabularyAdapterNew;
 import com.e.words.entity.entityNew.Track;
 import com.e.words.entity.entityNew.Word;
+import com.e.words.menu.MenuMain;
 import com.e.words.repository.TrackRepo;
 import com.e.words.repository.WordObjRepo;
+import com.e.words.util.Util;
 import com.e.words.worker.FileWorker;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -43,17 +45,18 @@ import java.util.concurrent.ExecutionException;
 //public class VocabularyFragment extends Fragment implements VocabularyAdapter.ItemClickListener {
 public class VocabularyFragment extends Fragment implements VocabularyAdapterNew.ItemClickListenerNew {
 
-    private static WordObjRepo repoWord;
+ //   private static WordObjRepo repoWord;
     private TrackRepo trackRepo;
     private WordObjRepo wordObjRepo;
     private MainFragment mainFrgm;
-    private List<VocabularyDto> vocabList;
+//    private List<VocabularyDto> vocabList;
     private List<WordObj> wordObjList;
     private String[] trackNames;
     private boolean isTrackAdd = false;
     private Context ctx;
     private TextToSpeech tts;
-    private List<String> wordsStr;
+  //  private List<String> wordsStr;
+    private VocabularyAdapterNew adapter;
 
     public VocabularyFragment() {
     }
@@ -61,7 +64,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        repoWord = new WordObjRepo(getContext());
+   //     repoWord = new WordObjRepo(getContext());
         trackRepo = new TrackRepo(getContext());
         wordObjRepo = new WordObjRepo(getContext());
         mainFrgm = new MainFragment();
@@ -76,11 +79,11 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
         RecyclerView rvVocab = view.findViewById(R.id.rv_vocab);
         rvVocab.setLayoutManager(new LinearLayoutManager(ctx));
      //   VocabularyAdapter adapter = new VocabularyAdapter(ctx, this);
-        VocabularyAdapterNew adapter = new VocabularyAdapterNew(ctx, this);
+        adapter = new VocabularyAdapterNew(ctx, this);
         try {
-            vocabList = new FindWordsAsyncTask().execute().get();
+        //    vocabList = new FindWordsAsyncTask().execute().get();
             wordObjList = new WordObjRepo(getContext()).findAllWordObj();
-            wordsStr = getWordList();
+         //   wordsStr = getWordList();
             adapter.setItem(wordObjList);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -91,21 +94,13 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_return, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.act_return_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFrgm)
-                        .commit();
-                return true;
-        }
-
+        new MenuMain(getActivity()).getMain(id);
         return super.onOptionsItemSelected(item);
     }
 
@@ -141,7 +136,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
                                                                     .create()
                                                                     .show();
                                                         } else {
-                                                            trackRepo.insertTrack(trackName, vocabList.get(position).word, tts);
+                                                            trackRepo.insertTrackWithWords(trackName, wordObjList.get(position).word, tts);
                                                         }
                                                     } catch (ExecutionException | InterruptedException e) {
                                                         e.printStackTrace();
@@ -154,9 +149,11 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
                                             .show();
                                 } else {
                                     try {
-                                        Track track = trackRepo.findTrackByName(trackNames[which]);
+                                     //   Track track = trackRepo.findTrackByName(trackNames[which]);
+                                        TrackWithWords trackWw = trackRepo.findTrackWithWordsByName(trackNames[which]);
                                      //   String[] words = track.words.split(";;");
-                                        boolean isPresent = wordsStr.contains(String.valueOf(vocabList.get(position).word));
+                                     //   boolean isPresent = wordsStr.contains(String.valueOf(vocabList.get(position).word));
+                                        boolean isPresent = getWordStrList(trackWw).contains(wordObjList.get(position).word.word);
                                         if (isPresent) {
                                             AlertDialog.Builder wordPresent = new AlertDialog.Builder(ctx);
                                             wordPresent
@@ -166,7 +163,7 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
                                                     .show();
                                         } else {
                                             tts = new TextToSpeech(ctx, status ->
-                                                    trackRepo.addToTrack(track, vocabList.get(position).word, tts));
+                                                    trackRepo.addToTrack(trackWw.track, wordObjList.get(position).word, tts));
                                         }
                                     } catch (ExecutionException | InterruptedException e) {
                                         e.printStackTrace();
@@ -176,26 +173,49 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
 
                     builder.create();
                     builder.show();
-                    Toast.makeText(getContext(), vocabList.get(position).word, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), wordObjList.get(position).word.word, Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.act_del_word:
-                    try {
-                        Word word = wordObjRepo.findWordById(vocabList.get(position).wordId);
-                        FileWorker worker = new FileWorker();
-                        worker.deleteFile(vocabList.get(position).word, ctx);
-                        worker.deleteFile(vocabList.get(position).word + "US", ctx);
-                        new WordObjRepo(getContext()).deleteWordById(vocabList.get(position).wordId);
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
+                    WordObj wordObj = wordObjList.get(position);
+                    FileWorker worker = new FileWorker();
+//                    worker.deleteFile(word.word + ".wav", ctx);
+//                    worker.deleteFile(word.word + "US.wav", ctx);
+                    worker.deleteFiles(wordObj.word.word, false, ctx);
+                    Track track = isWordLastInTrack(wordObj.word);
+                    if (track != null) {
+                        trackRepo.deleteTrackWithLastWord(track, wordObj);
+                    } else {
+                        wordObjRepo.deleteWordObj(wordObj);
                     }
+                    wordObjList.remove(position);
+                    adapter.deleteItem(position);
                     return true;
                 case R.id.act_article:
-
+                    FullWordObj fullWordObj = new Util(ctx).makeFullObj(wordObjList.get(position));
+                    WordFragment wf = WordFragment.newInstance(fullWordObj.wordObj, fullWordObj.json, null, true);
+                    Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_act, wf)
+                            .commit();
                     return true;
             }
             return super.onOptionsItemSelected(item);
         });
         pMenu.show();
+    }
+
+    private Track isWordLastInTrack(Word word) {
+        if (word.trackId != null) {
+            try {
+                TrackWithWords trackWw = trackRepo.findTrackWithWordsById(word.trackId);
+                if (trackWw.wordList.size() == 1 && trackWw.wordList.get(0).id == word.id) {
+                    return trackWw.track;
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -213,12 +233,12 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
         return trackNames;
     }
 
-    static class FindWordsAsyncTask extends AsyncTask<Void, Void, List<VocabularyDto>> {
-        @Override
-        protected List<VocabularyDto> doInBackground(Void... voids) {
-            return repoWord.findAllVocabularyDto();
-        }
-    }
+//    static class FindWordsAsyncTask extends AsyncTask<Void, Void, List<VocabularyDto>> {
+//        @Override
+//        protected List<VocabularyDto> doInBackground(Void... voids) {
+//            return repoWord.findAllVocabularyDto();
+//        }
+//    }
 
     @Override
     public void onStop() {
@@ -229,10 +249,10 @@ public class VocabularyFragment extends Fragment implements VocabularyAdapterNew
         }
     }
 
-    private List<String> getWordList() {
+    private List<String> getWordStrList(TrackWithWords trackWw) {
         List<String> list = new ArrayList<>();
-        for (WordObj wordObj : wordObjList) {
-            list.add(wordObj.word.word);
+        for (Word word : trackWw.wordList) {
+            list.add(word.word);
         }
         return list;
     }

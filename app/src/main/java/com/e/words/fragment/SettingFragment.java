@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.e.words.R;
 import com.e.words.config.AppProperty;
+import com.e.words.menu.MenuMain;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -199,21 +200,12 @@ public class SettingFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_return, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.act_return_main:
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, mainFrgm)
-                        .commit();
-                return true;
-        }
-
+        new MenuMain(getActivity()).getMain(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 }

@@ -11,6 +11,7 @@ import com.e.words.entity.entityNew.Word;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class WordObj implements Serializable {
 
@@ -31,5 +32,19 @@ public class WordObj implements Serializable {
             sb.append(i++).append(". ").append(translation).append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WordObj)) return false;
+        WordObj wordObj = (WordObj) o;
+        return Objects.equals(word, wordObj.word) &&
+                Objects.equals(translations, wordObj.translations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(word, translations);
     }
 }

@@ -67,4 +67,8 @@ public class Util {
         }
         return sb.toString();
     }
+
+    public interface CallSpin {
+        void refreshSpin(int position);
+    }
 }

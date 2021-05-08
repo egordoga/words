@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Words</string>
     <string name="action_save">Сохранить</string>
+    <string name="act_vocabulary">Словарь</string>
+    <string name="act_play">Плейер</string>
+    <string name="act_add">Добавить слово</string>
+    <string name="act_track">Трек</string>
+    <string name="act_track_list">Все треки</string>
+    <string name="act_setting">Настройки</string>
+    <string name="act_main_menu">Главное меню</string>
     <string name="play_track_txt">PLAY TRACK</string>
 
     <string name="notification_channel_name">Player controls</string>
@@ -11,6 +18,8 @@
 
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+
+    <string name="mess_not_find_track">Не найдено ни одного трека</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

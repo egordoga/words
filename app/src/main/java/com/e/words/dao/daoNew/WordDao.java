@@ -1,6 +1,7 @@
 package com.e.words.dao.daoNew;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -24,13 +25,13 @@ public abstract class WordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addAllExample(List<Example> examples);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract long addTranslation(Translation translation);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract long addWord(Word word);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addJson(Json json);
 
     private void addTranslationWithExamples(Translation translation, List<Example> examples) {
@@ -58,12 +59,18 @@ public abstract class WordDao {
     @Query("select * from Json where wordId = :wordId")
     public abstract Json findJsonByWordId(long wordId);
 
-    @Query("select * from Word where trackName = :trackName")
-    public abstract List<Word> findWordsByTrackName(String trackName);
+//    @Query("select * from Word where trackName = :trackName")
+//    public abstract List<Word> findWordsByTrackName(String trackName);
+
+    @Query("select * from Word where word = :word")
+    public abstract Word findWordByWord(String word);
 
     @Transaction
     @Query("select * from Word where word = :word")
     public abstract WordObj findWordObjByWord(String word);
+
+    @Query("select * from Word where word = :word")
+    public abstract Word findWordByWordStr(String word);
 
     @Query("select * from Word where id = :id")
     public abstract Word findWordById(long id);
@@ -98,6 +105,9 @@ public abstract class WordDao {
     @Update
     public abstract void updateWord(Word word);
 
+    @Update
+    public abstract void updateWords(List<Word> words);
+
     @Transaction
     public void updateTranslationWithExample(long wordId) {
 
@@ -109,18 +119,53 @@ public abstract class WordDao {
     @Query("delete from Word where word = :word")
     public abstract void deleteWordByWord(String word);
 
+    @Delete
+    public abstract void deleteWord(Word word);
+
+    @Delete
+    public abstract void deleteTranslation(Translation translation);
+
+    @Delete
+    public abstract void deleteExamples(List<Example> examples);
+
+  //  @Transaction
+    public void deleteTranslationAndExample(TranslationAndExample tae) {
+        deleteExamples(tae.examples);
+        deleteTranslation(tae.translation);
+    }
+
     @Query("delete from Translation where wordId = :wordId")
     public abstract void deleteTranslationByWordId(long wordId);
 
+    @Query("delete from Example where translId = :translId")
+    public abstract void deleteExampleByTranslationId(long translId);
+
+    @Query("delete from Example where translId in (:translIds)")
+    public abstract void deleteAllExampleByTranslationId(long[] translIds);
+
+    @Query("delete from Json where wordId = :wordId")
+    public abstract void deleteJsonByWordId(long wordId);
+
 
     @Transaction
-    public void deleteWord(WordObj wordObj) {
-        //deleteWordById(wordObj.word.id);
+    public void deleteWordObj(WordObj wordObj) {
+        for (TranslationAndExample tae : wordObj.translations) {
+            deleteExamples(tae.examples);
+            deleteTranslation(tae.translation);
+        }
+        deleteJsonByWordId(wordObj.word.id);
+        deleteWord(wordObj.word);
     }
 
     @Transaction
-    public void updateTranslationAndExample(WordObj wordObj) {
+    public void updateTranslationAndExample(WordObj wordObj, long[] oldTranslId) {
+      //  long[] translIds = new long[wordObj.translations.size()];
+
         long wordId = wordObj.word.id;
+//        for (TranslationAndExample tae : wordObj.translations) {
+//            deleteExamples(tae.examples);
+//        }
+        deleteAllExampleByTranslationId(oldTranslId);
         deleteTranslationByWordId(wordId);
         for (TranslationAndExample tae : wordObj.translations) {
             tae.translation.wordId = wordId;

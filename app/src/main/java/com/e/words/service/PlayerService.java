@@ -17,6 +17,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -102,7 +103,7 @@ final public class PlayerService extends Service {
     private int currentWindow = 0;
     private long playbackPosition = 0;
 
-    public static List<Word> words;
+ //   public static List<Word> words;
     private TrackRepo trackRepo;
     private WordObjRepo wordRepo;
     private List<Track> allTrack;
@@ -273,31 +274,37 @@ final public class PlayerService extends Service {
 
         @Override
         public void onSkipToNext() {
-            Track track = TrackHelper.getNext();
-            changeTrack(track);
+            currentTrack = TrackHelper.getNext();
+            changeTrack(currentTrack);
         }
 
         @Override
         public void onSkipToPrevious() {
-            Track track = TrackHelper.getPrevious();
-            changeTrack(track);
+            currentTrack = TrackHelper.getPrevious();
+            changeTrack(currentTrack);
         }
 
-        @Override
-        public void onRewind() {
-            Track track = TrackHelper.getCurrentTrack();
-            changeTrack(track);
-        }
+//        @Override
+//        public void onRewind() {
+//            Track track = TrackHelper.getCurrentTrack();
+//            changeTrack(track);
+//        }
 
-        private void changeTrack(Track track) {
-            exoPlayer.setPlayWhenReady(false);
-            updateMetadataFromTrack(track);
-            //       refreshNotificationAndForegroundStatus(currentState);
-            //    releasePlayerWithoutNull();
-            exoPlayer.removeMediaItems(0, exoPlayer.getMediaItemCount());
-            onPlay();
-            currentTrack = track;
-        }
+//        @Override
+//        public void onPlayFromMediaId(String mediaId, Bundle extras) {
+//            Track track = TrackHelper.getCurrentTrack();
+//            changeTrack(track);
+//        }
+
+//        public void changeTrack(Track track) {
+//            exoPlayer.setPlayWhenReady(false);
+//            updateMetadataFromTrack(track);
+//            //       refreshNotificationAndForegroundStatus(currentState);
+//            //    releasePlayerWithoutNull();
+//            exoPlayer.removeMediaItems(0, exoPlayer.getMediaItemCount());
+//            onPlay();
+//            currentTrack = track;
+//        }
 
 //        private void prepareToPlay(Uri uri) {
 //            if (!uri.equals(currentUri)) {
@@ -316,36 +323,60 @@ final public class PlayerService extends Service {
                 exoPlayer.setPlayWhenReady(playWhenReady);
                 exoPlayer.seekTo(currentWindow, playbackPosition);
                 exoPlayer.setRepeatMode(Player.REPEAT_MODE_ALL);
+
+
+
+                //Потом раскоментить
                 addFilesToPlayer(track);
                 exoPlayer.prepare();
                 currentTrack = track;
             }
         }
 
-        private void updateMetadataFromTrack(Track track) {
-            //  metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(getResources(), track.getBitmapResId()));
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "Title");
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Artist");
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist");
-            //  metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 1000);
-            mediaSession.setMetadata(metadataBuilder.build());
-        }
+//        public void updateMetadataFromTrack(Track track) {
+//            //  metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(getResources(), track.getBitmapResId()));
+//            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "Title");
+//            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Artist");
+//            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist");
+//            //  metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 1000);
+//            mediaSession.setMetadata(metadataBuilder.build());
+//        }
     };
 
-    private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-        @Override
-        public void onAudioFocusChange(int focusChange) {
-            switch (focusChange) {
-                case AudioManager.AUDIOFOCUS_GAIN:
-                    mediaSessionCallback.onPlay(); // Не очень красиво
-                    break;
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                    mediaSessionCallback.onPause();
-                    break;
-                default:
-                    mediaSessionCallback.onPause();
-                    break;
-            }
+
+    public void changeTrack(Track track) {
+        exoPlayer.setPlayWhenReady(false);
+        updateMetadataFromTrack(track);
+        //       refreshNotificationAndForegroundStatus(currentState);
+        //    releasePlayerWithoutNull();
+        exoPlayer.removeMediaItems(0, exoPlayer.getMediaItemCount());
+        mediaSessionCallback.onPlay();
+    }
+
+    public void updateMetadataFromTrack(Track track) {
+        //  metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(getResources(), track.getBitmapResId()));
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "Title");
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Artist");
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist");
+        //  metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 1000);
+        mediaSession.setMetadata(metadataBuilder.build());
+    }
+
+
+
+
+
+    private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = focusChange -> {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                mediaSessionCallback.onPlay(); // Не очень красиво
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                mediaSessionCallback.onPause();
+                break;
+            default:
+                mediaSessionCallback.onPause();
+                break;
         }
     };
 
@@ -466,11 +497,14 @@ final public class PlayerService extends Service {
         }
     }
 
+    //Потом раскоментить
+
     private void addFilesToPlayer(Track track) {
         AppProperty props = AppProperty.getInstance(ctx);
 //        TrackHelper trackHelper = new TrackHelper(ctx);
         try {
-            List<Word> words = wordRepo.findWordsByTrackName(track.name);
+//            List<Word> words = wordRepo.findWordsByTrackName(track.name);
+            List<Word> words = trackRepo.findTrackWithWordsById(track.id).wordList;
             for (Word word : words) {
                 addWordFiles(word, props);
             }

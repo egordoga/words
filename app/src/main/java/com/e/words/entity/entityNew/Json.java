@@ -3,6 +3,7 @@ package com.e.words.entity.entityNew;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
@@ -22,6 +23,7 @@ public class Json {
     public Json() {
     }
 
+    @Ignore
     public Json(String json, long wordId) {
         this.json = json;
         this.wordId = wordId;

@@ -14,8 +14,8 @@ public class Word {
     public String word;
     public String transcript;
     public String fileNames;
-    public String trackName;
-    public long trackId;
+//    public String trackName;
+    public Long trackId;
     @Ignore
     public String article;
 

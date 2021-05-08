@@ -6,10 +6,13 @@ import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 import static androidx.room.ForeignKey.CASCADE;
 
-@Entity(foreignKeys = @ForeignKey(entity = Translation.class, parentColumns = "id", childColumns = "translId",
-        onDelete = CASCADE, onUpdate = CASCADE))
+//@Entity(foreignKeys = @ForeignKey(entity = Translation.class, parentColumns = "id", childColumns = "translId",
+//        onDelete = CASCADE, onUpdate = CASCADE))
+@Entity
 public class Example {
 
     @PrimaryKey(autoGenerate = true)
@@ -35,5 +38,18 @@ public class Example {
         this.example = example;
         this.index = index;
         this.isChecked = isChecked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Example)) return false;
+        Example example1 = (Example) o;
+        return example.equals(example1.example);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(example);
     }
 }

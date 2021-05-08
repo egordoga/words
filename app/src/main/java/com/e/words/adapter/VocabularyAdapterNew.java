@@ -50,7 +50,16 @@ public class VocabularyAdapterNew extends RecyclerView.Adapter<VocabularyAdapter
 
     public void setItem(List<WordObj> items) {
         wordList.addAll(items);
-        notifyDataSetChanged();
+     //   notifyDataSetChanged();
+        // notifyDataSetChanged();
+      //   notifyAll();
+    }
+
+    public void deleteItem(int position) {
+        wordList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, wordList.size());
+      //  notifyAll();
     }
 
     static class VocabularyViewHolderNew extends RecyclerView.ViewHolder implements View.OnClickListener {

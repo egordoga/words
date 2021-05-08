@@ -19,11 +19,19 @@ public interface TrackDao {
     @Query("select * from Track where id = :id")
     Track findTrackById(long id);
 
+    @Transaction
+    @Query("select * from Track where id = :id")
+    TrackWithWords findTrackWithWordsById(long id);
+
     @Query("select * from Track where name = :name")
     Track findTrackByName(String name);
 
     @Query("select * from Track order by name")
     List<Track> findAllTrack();
+
+    @Transaction
+    @Query("select * from Track order by name")
+    List<TrackWithWords> findAllTrackWithWords();
 
     @Query("select id, name from Track order by name")
     List<TrackSmall> findAllTrackSmall();
@@ -34,8 +42,16 @@ public interface TrackDao {
     @Update
     void updateTrack(Track track);
 
+//    @Transaction
+//    @Update
+//    void updateTrackWithWords(TrackWithWords track);
+
     @Insert
-    void insertTrack(Track track);
+    long insertTrack(Track track);
+
+//    @Transaction
+//    @Insert
+//    void insertTrackWithWords(TrackWithWords track);
 
     @Delete
     void deleteTrack(Track track);

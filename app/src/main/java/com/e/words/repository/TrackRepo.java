@@ -7,6 +7,7 @@ import android.speech.tts.TextToSpeech;
 import androidx.annotation.RequiresApi;
 import androidx.room.Transaction;
 
+import com.e.words.abby.abbyEntity.dto.TrackWithWords;
 import com.e.words.abby.abbyEntity.dto.dto_new.TrackSmall;
 import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
 import com.e.words.dao.daoNew.TrackDao;
@@ -17,10 +18,12 @@ import com.e.words.entity.entityNew.Word;
 import com.e.words.util.Util;
 import com.e.words.worker.FileWorker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class TrackRepo {
 
@@ -46,8 +49,22 @@ public class TrackRepo {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+    public TrackWithWords findTrackWithWordsByName(String trackName) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> trackDao.findTrackWithWordsByName(trackName)).get();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public TrackWithWords findTrackWithWordsById(long id) throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(() -> trackDao.findTrackWithWordsById(id)).get();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public List<Track> findAllTrack() throws ExecutionException, InterruptedException {
         return CompletableFuture.supplyAsync(trackDao::findAllTrack).get();
+    }
+
+    public List<TrackWithWords> findAllTrackWithWords() throws ExecutionException, InterruptedException {
+        return CompletableFuture.supplyAsync(trackDao::findAllTrackWithWords).get();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -60,29 +77,46 @@ public class TrackRepo {
         return CompletableFuture.supplyAsync(trackDao::findTrackNames).get();
     }
 
-    public void addToTrack(Track track, String word, TextToSpeech tts) {
+    public void addToTrack(Track track, Word word, TextToSpeech tts) {
         WordDb.dbExecutor.execute(() -> {
-            if (track.words == null || track.words.length() == 0) {
-                track.words = word;
-            } else {
-                track.words = track.words + ";;" + word;
-            }
-            trackDao.updateTrack(track);
-            makeTranslateFiles(word, track.name, tts);
+         //   Word word = wordDao.findWordByWordStr(wordStr);
+            word.trackId = track.id;
+            wordDao.updateWord(word);
+            makeTranslateFiles(word.word, track.name, tts);
         });
     }
+
+//    public void addToTrackWithWords(TrackWithWords trackWw, String wordStr, TextToSpeech tts) {
+//        WordDb.dbExecutor.execute(() -> {
+//            Word word = wordDao.findWordByWordStr(wordStr);
+//            trackWw.wordList.add(word);
+//            trackDao.updateTrackWithWords(trackWw);
+//            makeTranslateFiles(wordStr, trackWw.track.name, tts);
+//        });
+//    }
 
     public void updateTrack(Track track) {
         WordDb.dbExecutor.execute(() ->
                 trackDao.updateTrack(track));
     }
 
+//    @Transaction
+//    public void insertTrack(String trackName, String word, TextToSpeech tts) {
+//        WordDb.dbExecutor.execute(() -> {
+//            Track track = new Track(trackName, word);
+//            trackDao.insertTrack(track);
+//            makeTranslateFiles(word, trackName, tts);
+//        });
+//    }
+
     @Transaction
-    public void insertTrack(String trackName, String word, TextToSpeech tts) {
+    public void insertTrackWithWords(String trackName, Word word, TextToSpeech tts) {
         WordDb.dbExecutor.execute(() -> {
-            Track track = new Track(trackName, word);
-            trackDao.insertTrack(track);
-            makeTranslateFiles(word, trackName, tts);
+         //   Word word = wordDao.findWordByWordStr(wordStr);
+            Track track = new Track(trackName);
+            word.trackId = trackDao.insertTrack(track);
+            wordDao.updateWord(word);
+            makeTranslateFiles(word.word, trackName, tts);
         });
     }
 
@@ -91,36 +125,50 @@ public class TrackRepo {
         WordObj wordObj = wordDao.findWordObjByWord(word);
         List<String> fileNames = worker.ttsToFiles(ctx, wordObj, tts);
         wordObj.word.fileNames = word + ".wav" + Util.ListToStringForDB(fileNames);
-        wordObj.word.trackName = trackName;
+   //     wordObj.word.trackName = trackName;
         wordDao.updateWord(wordObj.word);
     }
 
+
+
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public List<String> findWordsFromTrack(long trackId) throws ExecutionException, InterruptedException {
+//        return CompletableFuture.supplyAsync(() -> {
+//            TrackWithWords track = trackDao.findTrackWithWordsById(trackId);
+//            return track.wordList.stream().map(w -> w.word).collect(Collectors.toList());
+//        }).get();
+//    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public List<String> findWordsFromTrack(long trackId) throws ExecutionException, InterruptedException {
+    public List<Word> findWordsFromTrack(long trackId) throws ExecutionException, InterruptedException {
         return CompletableFuture.supplyAsync(() -> {
-            Track track = trackDao.findTrackById(trackId);
-            String[] words = track.words.split(";;");
-            return Arrays.asList(words);
+            TrackWithWords track = trackDao.findTrackWithWordsById(trackId);
+            return track.wordList;
         }).get();
     }
 
-    public void deleteTrack(Track track) {
+
+    public void deleteTrack(TrackWithWords trackWw) {
         WordDb.dbExecutor.execute(() -> {
-            List<Word> words = wordDao.findWordsByTrackName(track.name);
             FileWorker worker = new FileWorker();
-            for (Word word : words) {
-                String[] files = word.fileNames.split(";;");
-                for (int i = 1; i < files.length; i++) {
-                    if ("silent".equalsIgnoreCase(files[i])) {
-                        continue;
-                    }
-                    worker.deleteFile(files[i], ctx);
-                }
-                word.fileNames = null;
-                word.trackName = null;
-                wordDao.updateWord(word);
+            for (Word word : trackWw.wordList) {
+                word.trackId = null;
+                worker.deleteFiles(word.word, true, ctx);
             }
+            wordDao.updateWords(trackWw.wordList);
+            trackDao.deleteTrack(trackWw.track);
+        });
+    }
+
+    public void deleteTrack(Track track) {
+        WordDb.dbExecutor.execute(() -> trackDao.deleteTrack(track));
+    }
+
+    @Transaction
+    public void deleteTrackWithLastWord(Track track, WordObj wordObj) {
+        WordDb.dbExecutor.execute(() -> {
             trackDao.deleteTrack(track);
+            wordDao.deleteWordObj(wordObj);
         });
     }
 }

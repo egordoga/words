@@ -3,38 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.e.words.MainActivity">
     <item
-        android:id="@+id/action_save"
+        android:id="@+id/act_vocabulary"
         android:orderInCategory="99"
-        android:title="@string/action_save"
+        android:title="@string/act_vocabulary"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_get"
+        android:id="@+id/act_play"
         android:orderInCategory="100"
-        android:title="Получить"
+        android:title="@string/act_play"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_update"
+        android:id="@+id/act_add"
         android:orderInCategory="101"
-        android:title="Обновить"
+        android:title="@string/act_add"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_delete"
+        android:id="@+id/act_track"
         android:orderInCategory="102"
-        android:title="Удалить"
+        android:title="@string/act_track"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_count"
+        android:id="@+id/act_track_list"
         android:orderInCategory="103"
-        android:title="Count"
+        android:title="@string/act_track_list"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_add"
+        android:id="@+id/act_setting"
         android:orderInCategory="104"
-        android:title="Add word"
+        android:title="@string/act_setting"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_main"
+        android:id="@+id/act_main_menu"
         android:orderInCategory="105"
-        android:title="На главную"
+        android:title="@string/act_main_menu"
         app:showAsAction="never" />
 </menu>

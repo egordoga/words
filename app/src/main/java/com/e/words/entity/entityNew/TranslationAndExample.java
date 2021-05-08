@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class TranslationAndExample implements Serializable {
     @Embedded
@@ -42,5 +43,27 @@ public class TranslationAndExample implements Serializable {
             }
         }
         return checkedList;
+    }
+
+    @Override
+    public String toString() {
+        return "TranslationAndExample{" +
+                "translation=" + translation.translation +
+                ", examples=" + examples.toString() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TranslationAndExample)) return false;
+        TranslationAndExample that = (TranslationAndExample) o;
+        return translation.equals(that.translation) &&
+                Objects.equals(examples, that.examples);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(translation, examples);
     }
 }
