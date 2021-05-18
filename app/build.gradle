@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.e.words"
         minSdkVersion 26
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -26,24 +26,24 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "androidx.viewpager2:viewpager2:1.1.0-alpha01"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'androidx.room:room-runtime:2.2.5'
-    annotationProcessor 'androidx.room:room-compiler:2.2.5'
-    implementation 'com.jakewharton:butterknife:10.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.2'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
-    implementation('com.squareup.okhttp3:okhttp:4.3.1')
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.1'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.12.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.1'
+    implementation 'androidx.room:room-runtime:2.3.0'
+    annotationProcessor 'androidx.room:room-compiler:2.3.0'
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
+    implementation('com.squareup.okhttp3:okhttp:5.0.0-alpha.2')
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.14.0'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.14.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.14.0'
 }

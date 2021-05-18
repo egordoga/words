@@ -1,12 +1,13 @@
 package com.e.words.abby;
 
-import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
-import com.e.words.abby.abbyEntity.genereted.Body;
-import com.e.words.abby.abbyEntity.genereted.Item;
-import com.e.words.abby.abbyEntity.genereted.JsonObj;
-import com.e.words.abby.abbyEntity.genereted.Markup;
-import com.e.words.entity.entityNew.Example;
-import com.e.words.entity.entityNew.TranslationAndExample;
+import com.e.words.entity.dto.WordObj;
+import com.e.words.abby.model.Body;
+import com.e.words.abby.model.Item;
+import com.e.words.abby.model.JsonObj;
+import com.e.words.abby.model.Markup;
+import com.e.words.abby.model.NodeType;
+import com.e.words.entity.Example;
+import com.e.words.entity.TranslationAndExample;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,7 +29,7 @@ public class JsonConvertNew {
         try {
             JsonObj jsonObj = mapper.readValue(json, JsonObj.class);
             wordObj.word.word = jsonObj.title;
-            String w = convertBody(jsonObj.bodies);
+            convertBody(jsonObj.bodies);
             makeTranscriptStr();
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,24 +118,20 @@ public class JsonConvertNew {
     private List<String> convertExampleItem(List<Item> items, StringBuilder sb) {
         List<String> exs = new ArrayList<>();
         for (Item item : items) {
-            switch (item.node) {
-                case EXAMPLE_ITEM:
-                    for (Markup markup : item.markupList) {
-                        switch (markup.node) {
-                            case EXAMPLE:
-                                String s = convertParagraph(markup, sb, true);
-                                exs.add(s);
-                                sb.append("\n");
-                                break;
-                        }
+            if (item.node == NodeType.EXAMPLE_ITEM) {
+                for (Markup markup : item.markupList) {
+                    if (markup.node == NodeType.EXAMPLE) {
+                        String s = convertParagraph(markup, sb, true);
+                        exs.add(s);
+                        sb.append("\n");
                     }
-                    break;
+                }
             }
         }
         return exs;
     }
 
-    private String convertBody(List<Body> bodies) {
+    private void convertBody(List<Body> bodies) {
         StringBuilder sb = new StringBuilder();
         for (Body body : bodies) {
             switch (body.node) {
@@ -157,7 +154,7 @@ public class JsonConvertNew {
             }
         }
         wordObj.word.article = sb.toString();
-        return sb.toString();
+        //   sb.toString();
     }
 
     private void makeTranscriptStr() {

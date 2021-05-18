@@ -6,12 +6,12 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.e.words.abby.JsonConvertNew;
-import com.e.words.abby.abbyEntity.dto.dto_new.FullWordObj;
-import com.e.words.abby.abbyEntity.dto.dto_new.WordObj;
-import com.e.words.entity.entityNew.Example;
-import com.e.words.entity.entityNew.Translation;
-import com.e.words.entity.entityNew.TranslationAndExample;
-import com.e.words.repository.WordObjRepo;
+import com.e.words.entity.dto.FullWordObj;
+import com.e.words.entity.dto.WordObj;
+import com.e.words.entity.Example;
+import com.e.words.entity.Translation;
+import com.e.words.entity.TranslationAndExample;
+import com.e.words.db.repository.WordObjRepo;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -50,15 +50,15 @@ public class Util {
 
         return new FullWordObj(wordObj, json);
     }
-
-    public static String arrToString(String[] arr) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(arr[0]);
-        for (int i = 1; i < arr.length; i++) {
-            sb.append(", ").append(arr[i]);
-        }
-        return sb.toString();
-    }
+//
+//    public static String arrToString(String[] arr) {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(arr[0]);
+//        for (int i = 1; i < arr.length; i++) {
+//            sb.append(", ").append(arr[i]);
+//        }
+//        return sb.toString();
+//    }
 
     public static String ListToStringForDB(List<String> list) {
         StringBuilder sb = new StringBuilder();

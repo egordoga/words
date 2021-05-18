@@ -2,30 +2,18 @@ package com.e.words;
 
 import android.os.Bundle;
 
-import com.e.words.adapter.VocabularyAdapter;
 import com.e.words.config.AppProperty;
-import com.e.words.entity.entityNew.Track;
-import com.e.words.fragment.ArticleFragment;
-import com.e.words.fragment.MainFragment;
-import com.e.words.fragment.PlayFragment;
-import com.e.words.fragment.PlayFragmentNew;
-import com.e.words.fragment.TestFragment;
-import com.e.words.fragment.TrackListFragment;
-import com.e.words.repository.TrackRepo;
-import com.e.words.temp.TestTTS;
+import com.e.words.entity.Track;
+import com.e.words.view.fragment.MainFragment;
+import com.e.words.view.fragment.PlayFragment;
+import com.e.words.db.repository.TrackRepo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.speech.tts.TextToSpeech;
-
-import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             List<Track> tracks = repo.findAllTrack();
             if (tracks.size() == 0) {
                 target = new MainFragment();
-            } else target = PlayFragmentNew.newInstance(tracks);
+            } else target = PlayFragment.newInstance(tracks, null);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package com.e.words.service;
 
-import com.e.words.entity.entityNew.Track;
+import com.e.words.entity.Track;
 import com.e.words.util.Util;
 
 import java.util.List;
@@ -10,7 +10,6 @@ public class TrackHelper {
     public static Track currentTrack;
     public static int position = 0;
     public static List<Track> allTrack;
-  //  public  Spinner spinner;
     public static Util.CallSpin fragPlay;
 
     public static Track getCurrentTrack() {
@@ -30,21 +29,11 @@ public class TrackHelper {
     public static Track getNext() {
         if (position == allTrack.size() - 1) {
             position = 0;
-            currentTrack =  allTrack.get(position);
+            currentTrack = allTrack.get(position);
         } else {
             currentTrack = allTrack.get(++position);
         }
-
-
-
-
-        System.out.println("JJJJJJJ " + currentTrack.name + "  " + position);
-       // PlayFragmentNew.instance.spinner.setSelection(position);
         fragPlay.refreshSpin(position);
-
-
-
-
         return currentTrack;
     }
 
@@ -55,13 +44,7 @@ public class TrackHelper {
         } else {
             currentTrack = allTrack.get(--position);
         }
-
-
-
-        System.out.println("AAAAAAAAA " + currentTrack.name + "  " + position);
         fragPlay.refreshSpin(position);
-
-
         return currentTrack;
     }
 }

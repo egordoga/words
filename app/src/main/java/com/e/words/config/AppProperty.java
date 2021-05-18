@@ -13,15 +13,21 @@ public class AppProperty {
     public int wordPause;
     public int translPause;
 
+    private final static int COUNT_REPEAT_DEF_VALUE = 2;
+    private final static int WORD_PAUSE_DEF_VALUE = 700;
+    private final static int TRANSL_PAUSE_DEF_VALUE = 500;
+    private final static float SPEED_TTS_DEF_VALUE = 1f;
+    private final static float PITCH_DEF_VALUE = 1f;
+
     private final SharedPreferences prefs;
 
     private AppProperty(Context ctx) {
         prefs = ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE);
-        countRepeat = prefs.getInt("countRepeat", 2);
-        wordPause = prefs.getInt("wordPause", 700);
-        translPause = prefs.getInt("translPause", 500);
-        speedTts = prefs.getFloat("speedTts", 1f);
-        pitch = prefs.getFloat("pitch", 1f);
+        countRepeat = prefs.getInt("countRepeat", COUNT_REPEAT_DEF_VALUE);
+        wordPause = prefs.getInt("wordPause", WORD_PAUSE_DEF_VALUE);
+        translPause = prefs.getInt("translPause", TRANSL_PAUSE_DEF_VALUE);
+        speedTts = prefs.getFloat("speedTts", SPEED_TTS_DEF_VALUE);
+        pitch = prefs.getFloat("pitch", PITCH_DEF_VALUE);
     }
 
     public static AppProperty getInstance(Context ctx) {

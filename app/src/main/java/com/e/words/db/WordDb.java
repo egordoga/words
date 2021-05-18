@@ -6,13 +6,13 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.e.words.dao.daoNew.TrackDao;
-import com.e.words.dao.daoNew.WordDao;
-import com.e.words.entity.entityNew.Example;
-import com.e.words.entity.entityNew.Json;
-import com.e.words.entity.entityNew.Track;
-import com.e.words.entity.entityNew.Translation;
-import com.e.words.entity.entityNew.Word;
+import com.e.words.db.dao.TrackDao;
+import com.e.words.db.dao.WordDao;
+import com.e.words.entity.Example;
+import com.e.words.entity.Json;
+import com.e.words.entity.Track;
+import com.e.words.entity.Translation;
+import com.e.words.entity.Word;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
