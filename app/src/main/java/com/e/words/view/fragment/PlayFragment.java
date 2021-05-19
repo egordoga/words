@@ -22,10 +22,10 @@ import androidx.fragment.app.Fragment;
 
 import com.e.words.R;
 import com.e.words.entity.Track;
-import com.e.words.view.menu.MenuMain;
 import com.e.words.service.PlayerService;
 import com.e.words.service.TrackHelper;
 import com.e.words.util.Util;
+import com.e.words.view.menu.MenuMain;
 
 import org.jetbrains.annotations.NotNull;
 

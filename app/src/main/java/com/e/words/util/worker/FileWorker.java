@@ -84,7 +84,7 @@ public class FileWorker {
         String start = "^" + name;
         String end = "\\.wav$";
         String middle = "\\d*";
-        ;
+
         if (isTranslateOnly) {
             middle = "\\d+";
         }

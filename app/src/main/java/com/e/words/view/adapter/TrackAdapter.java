@@ -64,7 +64,6 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
 
     public void loadItems(List<Word> items) {
         this.wordList = items;
-        // notifyDataSetChanged();
     }
 
     public void deleteChecked() {

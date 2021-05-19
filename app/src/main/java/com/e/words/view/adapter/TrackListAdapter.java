@@ -10,9 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.entity.dto.TrackWithWords;
 import com.e.words.entity.Word;
-import com.e.words.db.repository.WordObjRepo;
+import com.e.words.entity.dto.TrackWithWords;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +22,8 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
     private final List<String> wordList;
     private final LayoutInflater inflater;
     private final ItemClickListener mListener;
-    private final Context context;
 
     public TrackListAdapter(Context context, TrackListAdapter.ItemClickListener listener) {
-        this.context = context;
         this.trackList = new ArrayList<>();
         this.wordList = new ArrayList<>();
         this.inflater = LayoutInflater.from(context);
@@ -51,7 +48,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
         trackList.addAll(items);
         makeWordList(items);
         notifyDataSetChanged();
-       // notifyAll();
+        // notifyAll();
     }
 
     public void deleteItem(int position) {
@@ -65,11 +62,8 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.Trac
     }
 
     private void makeWordList(List<TrackWithWords> items) {
-        WordObjRepo repo = new WordObjRepo(context);
         StringBuilder sb;
         for (TrackWithWords item : items) {
-//                String[] words = item.words.split(";;");
-//                List<WordObj> objList = repo.findAllWordByWords(words);
             List<Word> objList = item.wordList;
             sb = new StringBuilder();
             sb.append(objList.get(0).word);

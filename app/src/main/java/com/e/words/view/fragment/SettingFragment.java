@@ -27,20 +27,13 @@ public class SettingFragment extends Fragment {
     private TextView tvPitch;
     private TextView tvWordPause;
     private TextView tvTranslPause;
-    private MainFragment mainFrgm;
 
     public SettingFragment() {
-    }
-
-    public static SettingFragment newInstance(String param1, String param2) {
-        SettingFragment fragment = new SettingFragment();
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainFrgm = new MainFragment();
         setHasOptionsMenu(true);
     }
 

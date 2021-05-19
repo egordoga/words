@@ -31,12 +31,6 @@ public class TranslationAndExample implements Serializable {
         this.translation.isChecked = isChecked;
     }
 
-    public TranslationAndExample(String transl, List<Example> examples, int index) {
-        this.translation.translation = transl;
-        this.examples = examples;
-        this.translation.index = index;
-    }
-
     public List<Example> getCheckedExamples() {
         List<Example> checkedList = new LinkedList<>();
         for (Example example : examples) {

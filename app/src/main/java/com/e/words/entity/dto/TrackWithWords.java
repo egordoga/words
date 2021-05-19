@@ -12,7 +12,7 @@ import java.util.List;
 public class TrackWithWords implements Serializable {
 
     @Embedded
-    public Track track/* = new Track()*/; // TODO
+    public Track track;
 
     @Relation(parentColumn = "id", entity = Word.class, entityColumn = "trackId")
     public List<Word> wordList;

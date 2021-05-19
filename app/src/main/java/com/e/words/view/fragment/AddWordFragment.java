@@ -19,13 +19,13 @@ import androidx.fragment.app.Fragment;
 
 import com.e.words.R;
 import com.e.words.abby.JsonConvertNew;
-import com.e.words.entity.dto.FullWordObj;
-import com.e.words.entity.dto.WordObj;
 import com.e.words.abby.model.Lang;
 import com.e.words.abby.rest.RestRequest;
-import com.e.words.view.menu.MenuMain;
 import com.e.words.db.repository.WordObjRepo;
+import com.e.words.entity.dto.FullWordObj;
+import com.e.words.entity.dto.WordObj;
 import com.e.words.util.Util;
+import com.e.words.view.menu.MenuMain;
 
 import org.jetbrains.annotations.NotNull;
 

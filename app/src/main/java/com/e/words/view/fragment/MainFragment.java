@@ -13,10 +13,10 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.e.words.R;
-import com.e.words.entity.dto.TrackWithWords;
-import com.e.words.entity.dto.WordObj;
 import com.e.words.db.repository.TrackRepo;
 import com.e.words.db.repository.WordObjRepo;
+import com.e.words.entity.dto.TrackWithWords;
+import com.e.words.entity.dto.WordObj;
 
 import java.util.List;
 import java.util.Objects;

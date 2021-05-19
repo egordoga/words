@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.entity.dto.WordObj;
-import com.e.words.view.adapter.WordAdapter;
+import com.e.words.db.repository.WordObjRepo;
 import com.e.words.entity.Example;
 import com.e.words.entity.TranslationAndExample;
-import com.e.words.view.menu.MenuMain;
-import com.e.words.db.repository.WordObjRepo;
+import com.e.words.entity.dto.WordObj;
 import com.e.words.util.worker.FileWorker;
+import com.e.words.view.adapter.WordAdapter;
+import com.e.words.view.menu.MenuMain;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +43,6 @@ public class FullWordFragment extends Fragment {
     private String json;
     private List<byte[]> sounds;
     private Context ctx;
-    private boolean isPresent;
     private TextToSpeech tts;
 
     public FullWordFragment() {
@@ -75,7 +74,6 @@ public class FullWordFragment extends Fragment {
             json = args.getString("json");
             ctx = getContext();
             sounds = (List<byte[]>) args.getSerializable("sounds");
-            isPresent = args.getBoolean("isPresent");
         }
         setHasOptionsMenu(true);
     }
