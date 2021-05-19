@@ -17,14 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
-import com.e.words.entity.dto.TrackWithWords;
-import com.e.words.view.adapter.TrackListAdapter;
-import com.e.words.entity.Track;
-import com.e.words.entity.Word;
-import com.e.words.view.menu.MenuMain;
 import com.e.words.db.repository.TrackRepo;
 import com.e.words.db.repository.WordObjRepo;
+import com.e.words.entity.Track;
+import com.e.words.entity.Word;
+import com.e.words.entity.dto.TrackWithWords;
 import com.e.words.util.worker.FileWorker;
+import com.e.words.view.adapter.TrackListAdapter;
+import com.e.words.view.menu.MenuMain;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +36,6 @@ import java.util.concurrent.ExecutionException;
 
 public class TrackListFragment extends Fragment implements TrackListAdapter.ItemClickListener {
 
-    private MainFragment mainFrgm;
     private PlayFragment playFrgm;
     private Context ctx;
     private static final String TRACKS = "tracks";
@@ -60,7 +59,6 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
         if (getArguments() != null) {
             tracks = (List<TrackWithWords>) getArguments().getSerializable(TRACKS);
         }
-        mainFrgm = new MainFragment();
         setHasOptionsMenu(true);
     }
 
@@ -102,14 +100,10 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
                             .commit();
                     return true;
                 case R.id.act_del_track:
-                    //  Track track = tracks.get(position).track;
                     TrackWithWords trackWw = tracks.get(position);
                     WordObjRepo repo = new WordObjRepo(ctx);
-                    //  List<Word> words = repo.findWordsByTrackName(trackWw.name);
                     FileWorker worker = new FileWorker();
                     for (Word word : trackWw.wordList) {
-//                        String[] fileNames = word.fileNames.split(";;");
-//                        worker.deleteTranslateFiles(fileNames, ctx);
                         worker.deleteFiles(word.word, true, ctx);
                         word.trackId = null;
                     }
@@ -118,12 +112,7 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
                     adapter.deleteItem(position);
                     return true;
                 case R.id.act_rename_track:
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                    builder.setTitle("Выберите трек")
-//                            .setItems(getTrackNames(), (dialog, which) -> {
-//                                if (which == 0) {
                     AlertDialog.Builder adName = new AlertDialog.Builder(ctx);
-                //    adName.setTitle("Выберите трек");
                     LayoutInflater li = LayoutInflater.from(ctx);
                     View nameView = li.inflate(R.layout.track_name_alert, null);
                     adName.setView(nameView);
@@ -131,7 +120,6 @@ public class TrackListFragment extends Fragment implements TrackListAdapter.Item
                     adName
                             .setCancelable(false)
                             .setPositiveButton("OK", (dialog1, id) -> {
-                                //                        tts = new TextToSpeech(ctx, status -> {
                                 String trackName = etName.getText().toString().trim();
                                 TrackRepo trackRepo = new TrackRepo(ctx);
                                 try {

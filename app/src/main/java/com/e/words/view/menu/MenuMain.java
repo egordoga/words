@@ -5,8 +5,9 @@ import android.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 
 import com.e.words.R;
-import com.e.words.entity.dto.TrackWithWords;
+import com.e.words.db.repository.TrackRepo;
 import com.e.words.entity.Track;
+import com.e.words.entity.dto.TrackWithWords;
 import com.e.words.view.fragment.AddWordFragment;
 import com.e.words.view.fragment.MainFragment;
 import com.e.words.view.fragment.PlayFragment;
@@ -14,7 +15,6 @@ import com.e.words.view.fragment.SettingFragment;
 import com.e.words.view.fragment.TrackFragment;
 import com.e.words.view.fragment.TrackListFragment;
 import com.e.words.view.fragment.VocabularyFragment;
-import com.e.words.db.repository.TrackRepo;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -55,10 +55,23 @@ public class MenuMain {
                         .commit();
                 return;
             case R.id.act_track:
-                activity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_act, new TrackFragment())
-                        .commit();
+                try {
+                    TrackRepo repo = new TrackRepo(activity);
+                    List<Track> tracks = repo.findAllTrack();
+                    if (tracks.size() == 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+                        dialog
+                                .setMessage(R.string.mess_not_find_track)
+                                .create().show();
+                    } else {
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_act, TrackFragment.newInstance(tracks))
+                                .commit();
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return;
             case R.id.act_track_list:
                 try {

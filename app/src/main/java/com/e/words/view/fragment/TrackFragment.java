@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.words.R;
+import com.e.words.entity.dto.TrackWithWords;
 import com.e.words.view.adapter.TrackAdapter;
 import com.e.words.entity.Track;
 import com.e.words.entity.Word;
@@ -32,6 +33,7 @@ import com.e.words.util.worker.FileWorker;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,22 +47,30 @@ public class TrackFragment extends Fragment implements TrackAdapter.ItemClickLis
     private RecyclerView rvTrackWords;
     private TrackAdapter trackAdapter;
     private List<Track> trackList;
-    private MainFragment mainFrgm;
     private Button btnDelFromTrack;
-    private ImageButton btnPlay;
     private Context ctx;
     private List<Word> checkedWords;
     private List<Word> wordList;
     private Track currentTrack;
-    private int currentPosition;
+    private static final String TRACKS = "tracks";
 
     public TrackFragment() {
+    }
+
+    public static TrackFragment newInstance(List<Track> tracks) {
+        TrackFragment fragment = new TrackFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(TRACKS, (Serializable) tracks);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainFrgm = new MainFragment();
+        if (getArguments() != null) {
+            trackList = (List<Track>) getArguments().getSerializable(TRACKS);
+        }
         setHasOptionsMenu(true);
     }
 
@@ -76,12 +86,10 @@ public class TrackFragment extends Fragment implements TrackAdapter.ItemClickLis
         trackRepo = new TrackRepo(ctx);
         checkedWords = new ArrayList<>();
         trackAdapter = new TrackAdapter(checkedWords, ctx, this);
-        trackList = getAllTrack();
         btnDelFromTrack = view.findViewById(R.id.btn_del_from_track);
-        btnPlay = view.findViewById(id.btn_play_track);
+        ImageButton btnPlay = view.findViewById(id.btn_play_track);
         btnDelFromTrack.setEnabled(false);
         currentTrack = trackList.get(0);
-        currentPosition = 0;
         try {
             wordList = trackRepo.findWordsFromTrack(currentTrack.id);
             trackAdapter.loadItems(wordList);
@@ -99,7 +107,6 @@ public class TrackFragment extends Fragment implements TrackAdapter.ItemClickLis
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 checkedWords.clear();
                 currentTrack = trackList.get(position);
-                currentPosition = position;
                 try {
                     wordList = trackRepo.findWordsFromTrack(currentTrack.id);
                     trackAdapter.loadItems(wordList);
@@ -143,16 +150,6 @@ public class TrackFragment extends Fragment implements TrackAdapter.ItemClickLis
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private List<Track> getAllTrack() {
-        try {
-            return trackRepo.findAllTrack();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
@@ -167,13 +164,5 @@ public class TrackFragment extends Fragment implements TrackAdapter.ItemClickLis
     @Override
     public void onClick(View view, int position) {
         btnDelFromTrack.setEnabled(checkedWords.size() != 0);
-    }
-
-    private int getNextPosition(int position) {
-        if (++position == trackList.size() - 1) {
-            return 0;
-        } else {
-            return ++position;
-        }
     }
 }

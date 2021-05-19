@@ -17,13 +17,6 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private VocabularyAdapter adapter;
-//    private TestTTS testTTS;
-//    private ArticleFragment artFrgm;
-//    private MainFragment mainFragment;
-//    private PlayFragment playFragment;
-//    private FragmentTransaction fTrans;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

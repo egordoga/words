@@ -49,7 +49,6 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vo
 
     public void setItem(List<WordObj> items) {
         wordList.addAll(items);
-        notifyAll();
     }
 
     public void deleteItem(int position) {
